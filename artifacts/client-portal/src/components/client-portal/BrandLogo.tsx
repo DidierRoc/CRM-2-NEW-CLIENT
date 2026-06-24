@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { PortalBranding } from '@/lib/portalBranding';
-import ubsLogoSrc from '@/assets/ubs-logo.svg';
+import ubsLogoSrc from '@/assets/ubs-logo.png';
 
 type BrandLogoSize = 'header' | 'login' | 'sidebar';
 type LogoTone = 'dark' | 'light';
