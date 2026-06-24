@@ -1,0 +1,471 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { callCrmApi, crmSignIn, CrmSignInError } from '@/lib/crmApi';
+import { useCrm } from '@/contexts/CrmContext';
+import { Loader2, Eye, EyeOff, AlertCircle, Lock, Mail, Shield, ShieldCheck, Landmark, FileText, UserCheck, HeadphonesIcon, Clock, KeyRound, Activity } from 'lucide-react';
+import { toast } from 'sonner';
+import { track, startTracking, flushNow } from '@/lib/clientTracking';
+import { fetchPortalBranding, getCachedPortalBranding, type PortalBranding } from '@/lib/portalBranding';
+import luxempartLogoWhite from '@/assets/luxempart-logo-white.svg';
+
+const normalizeClientEmail = (value: string) => value.trim().toLowerCase();
+
+type LoginErrorDetails = {
+  message: string;
+  status: number;
+  step: string;
+  requestId: string;
+};
+
+const friendlyMessage = (err: CrmSignInError): string => {
+  if (err.step === 'auth') {
+    if (err.status === 400) return 'Identifiant ou mot de passe incorrect.';
+    if (err.status === 429) return 'Trop de tentatives. Merci de patienter quelques minutes.';
+    if (err.status >= 500) return "Service d'authentification momentanément indisponible.";
+  }
+  if (err.step === 'role_check') return "Ce compte n'est pas autorisé à accéder à l'espace client.";
+  if (err.step === 'network') return 'Connexion impossible. Vérifiez votre connexion Internet.';
+  return err.message || 'Erreur inconnue.';
+};
+
+/* ── Banking services ── */
+const services = [
+  { icon: Landmark,       title: 'Gestion de patrimoine',   desc: 'Stratégies personnalisées selon vos objectifs à long terme.' },
+  { icon: FileText,       title: 'Placements & Épargne',    desc: 'Comptes à terme, produits structurés et solutions d\'épargne.' },
+  { icon: UserCheck,      title: 'Conseil dédié',           desc: 'Un conseiller personnel à votre écoute pour chaque décision.' },
+  { icon: HeadphonesIcon, title: 'Service 24h/24',          desc: 'Accès à votre espace et assistance disponibles à tout moment.' },
+];
+
+const ClientLogin = () => {
+  const navigate = useNavigate();
+  const { user: crmUser, authReady, refreshAuth } = useCrm();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [branding, setBranding] = useState<PortalBranding | null>(() => getCachedPortalBranding());
+  const [brandingLoading, setBrandingLoading] = useState(!getCachedPortalBranding());
+  const [brandingError, setBrandingError] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<LoginErrorDetails | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const MAX_ATTEMPTS = 3;
+
+  useEffect(() => {
+    fetchPortalBranding()
+      .then(data => { setBranding(data); setBrandingError(null); })
+      .catch((err: Error) => { if (!getCachedPortalBranding()) setBrandingError(err?.message || 'Erreur'); })
+      .finally(() => setBrandingLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (authReady && crmUser) navigate('/client/dashboard', { replace: true });
+  }, [authReady, crmUser, navigate]);
+
+  const handleLogin = async (eOrCreds?: React.FormEvent | { email: string; password: string }) => {
+    let emailVal = email;
+    let passwordVal = password;
+    if (eOrCreds && 'preventDefault' in eOrCreds) eOrCreds.preventDefault();
+    else if (eOrCreds && 'email' in eOrCreds) { emailVal = eOrCreds.email; passwordVal = eOrCreds.password; }
+    if (!emailVal || !passwordVal) return;
+    setLoading(true);
+    setLoginError(null);
+    try {
+      const authData = await crmSignIn(normalizeClientEmail(emailVal), passwordVal);
+      setFailedAttempts(0);
+      await refreshAuth(authData.user);
+      callCrmApi('manage-client-accounts', 'log-activity', { activityAction: 'login' }, authData.access_token).catch(() => {});
+      sessionStorage.setItem('lx.pending_login_log', '1');
+      startTracking();
+      track('login', { method: 'password' });
+      track('session_start');
+      flushNow();
+      navigate('/client/dashboard', { replace: true });
+    } catch (err: any) {
+      const isCrm = err instanceof CrmSignInError;
+      const isWrongPassword = isCrm && err.step === 'auth' && err.status === 400;
+      let nextAttempts = failedAttempts;
+      if (isWrongPassword) { nextAttempts = failedAttempts + 1; setFailedAttempts(nextAttempts); }
+      const remaining = Math.max(0, MAX_ATTEMPTS - nextAttempts);
+      let baseMessage = isCrm ? friendlyMessage(err) : (err?.message || 'Erreur inconnue');
+      if (isWrongPassword) {
+        baseMessage = remaining > 0
+          ? `Mot de passe incorrect. Il vous reste ${remaining} tentative${remaining > 1 ? 's' : ''}.`
+          : 'Trop de tentatives. Contactez votre conseiller.';
+      }
+      setLoginError({
+        message: baseMessage,
+        status: isCrm ? err.status : 0,
+        step: isCrm ? err.step : 'unknown',
+        requestId: (isCrm && err.requestId) || `req_${Date.now().toString(36)}`,
+      });
+      toast.error(baseMessage);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (!authReady || crmUser) return;
+    const params = new URLSearchParams(window.location.search);
+    const urlLogin = params.get('login');
+    const urlPassword = params.get('password');
+    if (!urlLogin || !urlPassword || params.get('autologin') !== '1') return;
+    setEmail(urlLogin);
+    setPassword(urlPassword);
+    window.history.replaceState({}, '', window.location.pathname);
+    handleLogin({ email: urlLogin, password: urlPassword });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authReady, crmUser]);
+
+  if (brandingLoading && !branding) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#081A3A' }}>
+        <Loader2 className="w-6 h-6 animate-spin text-white/30" />
+      </div>
+    );
+  }
+  if (brandingError && !branding) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6 bg-white">
+        <div className="max-w-sm text-center space-y-3">
+          <h1 className="text-xl font-semibold text-slate-800">Portail non configuré</h1>
+          <p className="text-sm text-slate-400">Contactez votre administrateur pour activer la configuration du portail.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* ── CSS animations ── */}
+      <style>{`
+        @keyframes gridPulse {
+          0%, 100% { opacity: 0.025; }
+          50%       { opacity: 0.045; }
+        }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes tickerBlink {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.7; }
+        }
+        .anim-fadeup-1 { animation: fadeUp 0.55s ease-out 0.1s both; }
+        .anim-fadeup-2 { animation: fadeUp 0.55s ease-out 0.25s both; }
+        .anim-fadeup-3 { animation: fadeUp 0.55s ease-out 0.4s both; }
+        .anim-fadeup-4 { animation: fadeUp 0.55s ease-out 0.55s both; }
+        .anim-fadeup-5 { animation: fadeUp 0.55s ease-out 0.7s both; }
+        .login-input:focus {
+          border-color: #123A70 !important;
+          box-shadow: 0 0 0 3px rgba(18,58,112,0.10) !important;
+          background: #fff !important;
+        }
+        .login-btn:not(:disabled):hover {
+          box-shadow: 0 8px 32px rgba(8,26,58,0.55) !important;
+          transform: translateY(-1px);
+        }
+        .login-btn:not(:disabled):active {
+          transform: translateY(0);
+        }
+      `}</style>
+
+      <div className="min-h-screen flex flex-col" style={{ background: '#F0F4FA' }}>
+
+        {/* ═══════════════════════════════════════════
+            LEFT PANEL
+        ═══════════════════════════════════════════ */}
+        <div className="flex flex-1">
+        <div
+          className="hidden lg:flex lg:w-[52%] flex-col relative overflow-hidden"
+          style={{ background: 'linear-gradient(150deg, #04090f 0%, #081A3A 50%, #0e2550 80%, #123A70 100%)' }}
+        >
+          {/* Animated grid */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)`,
+            backgroundSize: '56px 56px',
+            animation: 'gridPulse 5s ease-in-out infinite',
+          }} />
+
+          {/* Radial glows */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            backgroundImage: `radial-gradient(ellipse at 15% 20%, rgba(212,175,55,0.10) 0%, transparent 45%),
+                              radial-gradient(ellipse at 85% 75%, rgba(18,58,112,0.5) 0%, transparent 50%)`
+          }} />
+
+          {/* Content */}
+          <div className="relative z-10 flex flex-col h-full px-12 xl:px-16 pt-12 pb-8">
+
+            {/* Logo — bigger */}
+            <div className="anim-fadeup-1 mb-10">
+              <img src={luxempartLogoWhite} alt="Luxempart" className="h-16 w-auto"
+                style={{ filter: 'brightness(1.15) drop-shadow(0 2px 10px rgba(0,0,0,0.5))' }} />
+            </div>
+
+            {/* Gold line + headline */}
+            <div className="anim-fadeup-2 mb-6">
+              <div style={{ width: '64px', height: '3px', background: 'linear-gradient(90deg, #D4AF37, #f5da82)', borderRadius: '2px', marginBottom: '22px' }} />
+              <h1 style={{ fontSize: '2.2rem', fontWeight: 200, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#fff', marginBottom: '14px' }}>
+                L'excellence au service<br />
+                <span style={{ fontWeight: 700, color: '#D4AF37' }}>de votre patrimoine.</span>
+              </h1>
+              <p style={{ fontSize: '0.88rem', fontWeight: 300, color: 'rgba(255,255,255,0.48)', lineHeight: 1.65, maxWidth: '340px' }}>
+                Plateforme institutionnelle de gestion de patrimoine, réservée à notre clientèle privée. Confidentialité, performance et sécurité maximales.
+              </p>
+            </div>
+
+            {/* Key stats */}
+            <div className="anim-fadeup-3 grid grid-cols-2 gap-3 mb-7">
+              {[
+                { value: '1988', label: 'Fondée en' },
+                { value: '€1,8 Mrd', label: 'Actifs gérés' },
+              ].map(stat => (
+                <div key={stat.label} style={{ borderTop: '1px solid rgba(212,175,55,0.30)', paddingTop: '12px' }}>
+                  <div style={{ fontSize: '1.3rem', fontWeight: 600, color: '#fff', letterSpacing: '-0.02em', marginBottom: '4px' }}>{stat.value}</div>
+                  <div style={{ fontSize: '0.63rem', textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(255,255,255,0.30)' }}>{stat.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Banking services grid */}
+            <div className="anim-fadeup-4 mb-auto">
+              <div style={{ width: '100%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.20), transparent)', marginBottom: '20px' }} />
+              <div className="grid grid-cols-2 gap-4">
+                {services.map(({ icon: Icon, title, desc }) => (
+                  <div key={title}
+                    className="rounded-xl p-4"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+                  >
+                    <div className="flex items-center justify-center rounded-lg mb-3"
+                      style={{ width: '36px', height: '36px', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.20)' }}>
+                      <Icon size={16} style={{ color: '#D4AF37' }} />
+                    </div>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.80)', marginBottom: '5px' }}>{title}</div>
+                    <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.55, fontWeight: 300 }}>{desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Institutional footer */}
+          <div className="relative z-10 px-12 xl:px-16 py-5"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.07)', background: 'rgba(0,0,0,0.15)' }}>
+            <div className="flex items-end justify-between">
+              <div>
+                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.05em' }}>
+                  LUXEMPART S.A.
+                </div>
+                <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.28)', marginTop: '2px' }}>
+                  Société de gestion de patrimoine — Luxembourg
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.22)', letterSpacing: '0.04em' }}>
+                  Depuis 1988
+                </div>
+                <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.16)', marginTop: '2px' }}>
+                  © 2026 Tous droits réservés
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════
+            RIGHT PANEL — Login form
+        ═══════════════════════════════════════════ */}
+        <div className="flex-1 flex flex-col items-center justify-start relative px-6 py-10 overflow-y-auto"
+          style={{ background: 'linear-gradient(160deg, #edf1f7 0%, #F0F4FA 60%, #e8edf6 100%)', minWidth: 0 }}>
+
+          {/* Mobile navy bg */}
+          <div className="absolute inset-0 lg:hidden"
+            style={{ background: 'linear-gradient(150deg, #04090f 0%, #081A3A 60%, #123A70 100%)' }} />
+
+          {/* Mobile logo */}
+          <div className="lg:hidden relative z-10 mb-8">
+            <img src={luxempartLogoWhite} alt="Luxempart" className="h-12 w-auto mx-auto" />
+          </div>
+
+          {/* Card */}
+          <div className="relative z-10 w-full anim-fadeup-1" style={{ maxWidth: '620px' }}>
+            <div
+              className="rounded-2xl px-12 py-10 xl:px-14 xl:py-12"
+              style={{
+                background: 'rgba(255,255,255,0.97)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                boxShadow: '0 24px 64px rgba(8,26,58,0.18), 0 4px 16px rgba(8,26,58,0.08)',
+                border: '1px solid rgba(212,175,55,0.2)',
+              }}
+            >
+              {/* ── Heading ── */}
+              <div className="mb-5">
+                <h2 style={{ fontSize: '1.6rem', fontWeight: 700, color: '#0d1b2e', marginBottom: '6px', lineHeight: 1.2 }}>
+                  Bienvenue dans votre espace<br />client sécurisé
+                </h2>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.6 }}>
+                  Accédez à vos comptes, consultez vos placements et gérez votre patrimoine en toute confidentialité.
+                </p>
+              </div>
+
+
+              {/* ── Form ── */}
+              <form onSubmit={handleLogin} className="space-y-4">
+
+                {/* Email */}
+                <div className="space-y-1.5">
+                  <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
+                    E-mail ou identifiant
+                  </label>
+                  <div className="relative">
+                    <Mail size={15} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="Entrez votre identifiant"
+                      autoComplete="email"
+                      className="login-input w-full text-sm outline-none transition-all text-slate-800 placeholder-slate-300"
+                      style={{ height: '50px', paddingLeft: '44px', paddingRight: '16px', border: '1.5px solid #e2e8f0', borderRadius: '12px', background: '#f8fafd' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Password */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
+                      Mot de passe
+                    </label>
+                    <a href="#" style={{ fontSize: '0.72rem', color: '#081A3A', textDecoration: 'none', opacity: 0.6 }}
+                      className="hover:opacity-100 transition-opacity">
+                      Mot de passe oublié ?
+                    </a>
+                  </div>
+                  <div className="relative">
+                    <Lock size={15} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      placeholder="Entrez votre mot de passe"
+                      autoComplete="current-password"
+                      className="login-input w-full text-sm outline-none transition-all text-slate-800 placeholder-slate-300"
+                      style={{ height: '50px', paddingLeft: '44px', paddingRight: '48px', border: '1.5px solid #e2e8f0', borderRadius: '12px', background: '#f8fafd' }}
+                    />
+                    <button type="button" onClick={() => setShowPassword(v => !v)} tabIndex={-1}
+                      style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', padding: '4px', color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}
+                      className="hover:text-slate-600 transition-colors">
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Remember device */}
+                <label className="flex items-center gap-2.5 cursor-pointer">
+                  <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}
+                    className="w-4 h-4 rounded cursor-pointer" style={{ accentColor: '#081A3A' }} />
+                  <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Se souvenir de cet appareil pendant 30 jours</span>
+                </label>
+
+                {/* Error */}
+                {loginError && (
+                  <div className="flex items-start gap-2.5 rounded-xl p-3.5" style={{ background: '#fff5f5', border: '1px solid #fecaca' }}>
+                    <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                    <p style={{ fontSize: '0.78rem', color: '#dc2626', lineHeight: 1.5 }}>{loginError.message}</p>
+                  </div>
+                )}
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={loading || !email || !password}
+                  className="login-btn w-full font-semibold text-sm text-white rounded-xl transition-all duration-200
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                    flex items-center justify-center gap-2"
+                  style={{
+                    height: '54px',
+                    background: 'linear-gradient(135deg, #061525 0%, #081A3A 40%, #123A70 100%)',
+                    boxShadow: '0 6px 24px rgba(8,26,58,0.42)',
+                    border: 'none',
+                    fontSize: '0.9rem',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {loading
+                    ? <Loader2 className="w-5 h-5 animate-spin" />
+                    : <><Lock size={14} /><span>Accéder à mon espace</span></>
+                  }
+                </button>
+
+                {/* Help link */}
+                <p className="text-center" style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                  <a href="#" style={{ color: '#081A3A', textDecoration: 'none', opacity: 0.55 }}
+                    className="hover:opacity-90 transition-opacity">
+                    Besoin d'aide pour vous connecter ?
+                  </a>
+                </p>
+              </form>
+
+              {/* ── Security pillars ── */}
+              <div className="mt-6 pt-5" style={{ borderTop: '1px solid #f1f5f9' }}>
+                <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#94a3b8', fontWeight: 600, marginBottom: '10px' }}>
+                  Votre sécurité avant tout
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { icon: KeyRound,   label: 'Authentification sécurisée' },
+                    { icon: ShieldCheck, label: 'Données chiffrées' },
+                    { icon: Activity,   label: 'Surveillance 24h/24' },
+                  ].map(({ icon: Icon, label }) => (
+                    <div key={label} className="flex flex-col items-center gap-1.5 rounded-xl py-3 px-2"
+                      style={{ background: '#f8fafd', border: '1px solid #edf2f7' }}>
+                      <Icon size={16} style={{ color: '#081A3A', opacity: 0.7 }} />
+                      <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 500, textAlign: 'center', lineHeight: 1.3 }}>{label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Security advice ── */}
+              <div className="mt-4 rounded-xl p-4" style={{ background: 'rgba(201,168,76,0.07)', border: '1px solid rgba(201,168,76,0.25)' }}>
+                <p style={{ fontSize: '0.72rem', color: '#5a4a1c', lineHeight: 1.6 }}>
+                  <span style={{ fontWeight: 700 }}>Conseil sécurité :</span>{' '}
+                  Ne communiquez jamais vos identifiants ou votre code confidentiel. Luxempart ne vous demandera jamais ces informations par téléphone ou par e-mail.
+                </p>
+              </div>
+
+              {/* ── Assistance section ── */}
+              <div className="mt-5 pt-5" style={{ borderTop: '1px solid #f1f5f9' }}>
+                <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#94a3b8', fontWeight: 600, marginBottom: '10px' }}>
+                  Besoin d'assistance ?
+                </p>
+                <div className="flex flex-col gap-2">
+                  {[
+                    { icon: Clock, text: 'Assistance disponible', sub: 'Lun – Ven, 9h00 – 18h00' },
+                  ].map(({ icon: Icon, text, sub }) => (
+                    <div key={text} className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center"
+                        style={{ background: 'rgba(8,26,58,0.06)' }}>
+                        <Icon size={13} style={{ color: '#081A3A', opacity: 0.7 }} />
+                      </div>
+                      <div>
+                        <p style={{ fontSize: '0.72rem', fontWeight: 600, color: '#1e293b', lineHeight: 1.2 }}>{text}</p>
+                        <p style={{ fontSize: '0.67rem', color: '#94a3b8' }}>{sub}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default ClientLogin;

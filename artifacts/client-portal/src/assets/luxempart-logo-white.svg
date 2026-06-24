@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 62" fill="none" overflow="visible">
+  <!-- LU -->
+  <text x="0" y="36" font-family="Arial,Helvetica,sans-serif" font-size="27" font-weight="600" letter-spacing="3" fill="#FFFFFF">LU</text>
+  <!-- X : dark backslash (top-left → bottom-right, same weight as letters) -->
+  <line x1="46" y1="11" x2="63" y2="37" stroke="rgba(255,255,255,0.90)" stroke-width="3.2" stroke-linecap="round"/>
+  <!-- X : copper forward slash (bottom-left → top-right, taller, extends above cap height) -->
+  <line x1="46" y1="43" x2="61" y2="1" stroke="#C4833C" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- EMPART -->
+  <text x="65" y="36" font-family="Arial,Helvetica,sans-serif" font-size="27" font-weight="600" letter-spacing="3" fill="#FFFFFF">EMPART</text>
+  <!-- GROWING TOGETHER in copper -->
+  <text x="14" y="53" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="400" letter-spacing="4.5" fill="#C4833C">GROWING TOGETHER</text>
+</svg>
