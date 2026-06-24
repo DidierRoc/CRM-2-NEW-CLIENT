@@ -244,7 +244,7 @@ const ClientLogin = () => {
             <div className="anim-fadeup-3 grid grid-cols-2 gap-3 mb-7">
               {[
                 { value: '2021', label: t.login.founded },
-                { value: '$4,2 Bn', label: t.login.assets },
+                { value: lang === 'en' ? '$4.2 Billion' : '$4,2 Milliards', label: t.login.assets },
               ].map(stat => (
                 <div key={stat.label} style={{ borderTop: '1px solid #E8DDD5', paddingTop: '12px' }}>
                   <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0D0D0D', letterSpacing: '-0.02em', marginBottom: '4px' }}>{stat.value}</div>
