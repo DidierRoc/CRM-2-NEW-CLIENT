@@ -2,20 +2,43 @@ import { Router } from "express";
 
 const router = Router();
 
-const RSS_FEEDS = [
+// ── French RSS feeds ──────────────────────────────────────────────────────────
+const FR_FEEDS = [
   { url: 'https://www.bfmtv.com/rss/economie/bourse/', category: 'Bourse', source: 'BFM Bourse' },
-  { url: 'https://www.lefigaro.fr/rss/figaro_bourse.xml', category: 'Bourse', source: 'Le Figaro' },
+  { url: 'https://www.lefigaro.fr/rss/figaro_bourse.xml', category: 'Bourse', source: 'Le Figaro Bourse' },
   { url: 'https://www.bfmtv.com/rss/economie/patrimoine/', category: 'Épargne', source: 'BFM Patrimoine' },
-  { url: 'https://www.lefigaro.fr/rss/figaro_placement.xml', category: 'Épargne', source: 'Le Figaro Placement' },
+  { url: 'https://www.lefigaro.fr/rss/figaro_placement.xml', category: 'Épargne', source: 'Le Figaro Placements' },
   { url: 'https://www.lefigaro.fr/rss/figaro_economie.xml', category: 'Finance', source: 'Le Figaro Économie' },
   { url: 'https://coinacademy.fr/feed/', category: 'Crypto', source: 'CoinAcademy' },
 ];
 
+// ── English RSS feeds ─────────────────────────────────────────────────────────
+const EN_FEEDS = [
+  { url: 'https://feeds.marketwatch.com/marketwatch/topstories/', category: 'Finance', source: 'MarketWatch' },
+  { url: 'https://www.cnbc.com/id/10000664/device/rss/rss.html', category: 'Finance', source: 'CNBC Finance' },
+  { url: 'https://www.cnbc.com/id/15839069/device/rss/rss.html', category: 'Markets', source: 'CNBC Markets' },
+  { url: 'https://feeds.reuters.com/reuters/businessNews', category: 'Finance', source: 'Reuters Business' },
+  { url: 'https://finance.yahoo.com/news/rssindex', category: 'Markets', source: 'Yahoo Finance' },
+  { url: 'https://cointelegraph.com/rss', category: 'Crypto', source: 'CoinTelegraph' },
+];
+
+const CATEGORY_COLORS_EN: Record<string, string> = {
+  Finance: 'Finance',
+  Markets: 'Markets',
+  Crypto:  'Crypto',
+  Savings: 'Savings',
+};
+
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
-let cachedArticles: ReturnType<typeof buildArticleList> | null = null;
-let cacheTimestamp = 0;
-let refreshInProgress = false;
+type Feed = { url: string; category: string; source: string };
+type Article = { title: string; link: string; pubDate: string; description: string; image: string | null; category: string; source: string };
+
+// Separate caches per language
+const cache: Record<'fr' | 'en', { articles: Article[] | null; timestamp: number; inProgress: boolean }> = {
+  fr: { articles: null, timestamp: 0, inProgress: false },
+  en: { articles: null, timestamp: 0, inProgress: false },
+};
 
 function extractTag(xml: string, tag: string): string {
   const m = xml.match(new RegExp(`<${tag}[^>]*>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?<\\/${tag}>`, 's'));
@@ -36,7 +59,7 @@ function extractImage(itemXml: string): string | null {
   return null;
 }
 
-async function fetchFeed(feed: typeof RSS_FEEDS[number]) {
+async function fetchFeed(feed: Feed): Promise<Article[]> {
   try {
     const res = await fetch(feed.url, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NewsBot/1.0)' },
@@ -59,7 +82,7 @@ async function fetchFeed(feed: typeof RSS_FEEDS[number]) {
   }
 }
 
-function buildArticleList(results: Awaited<ReturnType<typeof fetchFeed>>[]) {
+function buildArticleList(results: Article[][]): Article[] {
   return results.flat().sort((a, b) => {
     const da = new Date(a.pubDate).getTime() || 0;
     const db = new Date(b.pubDate).getTime() || 0;
@@ -67,42 +90,44 @@ function buildArticleList(results: Awaited<ReturnType<typeof fetchFeed>>[]) {
   }).slice(0, 100);
 }
 
-async function refreshCache() {
-  if (refreshInProgress) return;
-  refreshInProgress = true;
+async function refreshCache(lang: 'fr' | 'en') {
+  if (cache[lang].inProgress) return;
+  cache[lang].inProgress = true;
   try {
-    const results = await Promise.all(RSS_FEEDS.map(fetchFeed));
-    cachedArticles = buildArticleList(results);
-    cacheTimestamp = Date.now();
+    const feeds = lang === 'fr' ? FR_FEEDS : EN_FEEDS;
+    const results = await Promise.all(feeds.map(fetchFeed));
+    cache[lang].articles = buildArticleList(results);
+    cache[lang].timestamp = Date.now();
   } catch {
     // keep stale cache on error
   } finally {
-    refreshInProgress = false;
+    cache[lang].inProgress = false;
   }
 }
 
-// Warm the cache on server start so the first user request is instant
-refreshCache();
+// Warm both caches on server start
+refreshCache('fr');
+refreshCache('en');
 
 router.get('/news', async (req, res) => {
-  const isStale = Date.now() - cacheTimestamp > CACHE_TTL_MS;
+  const lang: 'fr' | 'en' = req.query.lang === 'en' ? 'en' : 'fr';
+  const c = cache[lang];
+  const isStale = Date.now() - c.timestamp > CACHE_TTL_MS;
 
-  if (cachedArticles && !isStale) {
-    // Fresh cache — respond immediately
-    res.json({ articles: cachedArticles });
+  if (c.articles && !isStale) {
+    res.json({ articles: c.articles });
     return;
   }
 
-  if (cachedArticles && isStale) {
-    // Stale cache — serve immediately, refresh in background
-    res.json({ articles: cachedArticles });
-    refreshCache();
+  if (c.articles && isStale) {
+    res.json({ articles: c.articles });
+    refreshCache(lang);
     return;
   }
 
-  // No cache yet (cold start) — wait for the first fetch
-  await refreshCache();
-  res.json({ articles: cachedArticles ?? [] });
+  // Cold start — wait for first fetch
+  await refreshCache(lang);
+  res.json({ articles: c.articles ?? [] });
 });
 
 export default router;

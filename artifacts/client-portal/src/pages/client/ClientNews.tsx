@@ -20,11 +20,14 @@ const CATEGORY_COLORS: Record<string, string> = {
   Bourse:   'bg-green-500/10 text-green-700 border-green-500/20',
   Épargne:  'bg-blue-500/10 text-blue-700 border-blue-500/20',
   Finance:  'bg-indigo-500/10 text-indigo-700 border-indigo-500/20',
+  Markets:  'bg-green-500/10 text-green-700 border-green-500/20',
   Crypto:   'bg-purple-500/10 text-purple-700 border-purple-500/20',
+  Savings:  'bg-blue-500/10 text-blue-700 border-blue-500/20',
   Forex:    'bg-amber-500/10 text-amber-700 border-amber-500/20',
 };
 
-const ALL_CATEGORIES_KEYS = ['all', 'Bourse', 'Épargne', 'Finance', 'Crypto'];
+const FR_CATEGORIES = ['all', 'Bourse', 'Épargne', 'Finance', 'Crypto'];
+const EN_CATEGORIES = ['all', 'Finance', 'Markets', 'Crypto'];
 
 const timeAgo = (dateStr: string, lang: string) => {
   const now = Date.now();
@@ -65,9 +68,9 @@ const ArticleImage = ({ src, title }: { src: string; title: string }) => {
   );
 };
 
-async function fetchAllNews(): Promise<Article[]> {
+async function fetchAllNews(lang: 'fr' | 'en'): Promise<Article[]> {
   try {
-    const res = await fetch('/api/news');
+    const res = await fetch(`/api/news?lang=${lang}`);
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data.articles) ? data.articles : [];
@@ -85,8 +88,9 @@ const ClientNews = () => {
 
   const fetchNews = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
+    else setLoading(true);
     try {
-      const all = await fetchAllNews();
+      const all = await fetchAllNews(lang);
       setArticles(all);
     } catch (e) {
       console.error('Failed to fetch news', e);
@@ -97,10 +101,12 @@ const ClientNews = () => {
   };
 
   useEffect(() => {
+    setFilter('all');
     fetchNews();
     const interval = setInterval(() => fetchNews(), 10 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
   const filtered = filter === 'all' ? articles : articles.filter(a => a.category === filter);
 
@@ -137,7 +143,7 @@ const ClientNews = () => {
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-1">
-        {ALL_CATEGORIES_KEYS.map(key => {
+        {(lang === 'en' ? EN_CATEGORIES : FR_CATEGORIES).map(key => {
           const label = key === 'all' ? (lang === 'en' ? 'All' : 'Tous') : key;
           return (
             <button
