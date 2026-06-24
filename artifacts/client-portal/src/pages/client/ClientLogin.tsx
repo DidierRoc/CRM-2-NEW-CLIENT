@@ -207,7 +207,7 @@ const ClientLogin = () => {
 
             {/* Logo */}
             <div className="anim-fadeup-1 mb-10">
-              <MapleLogo className="h-14 w-auto" />
+              <MapleLogo className="h-20 w-auto" />
             </div>
 
             {/* Language switcher — top right of left panel */}
@@ -310,7 +310,7 @@ const ClientLogin = () => {
 
           {/* Mobile logo */}
           <div className="lg:hidden relative z-10 mb-8">
-            <MapleLogo className="h-12 w-auto mx-auto" />
+            <MapleLogo className="h-16 w-auto mx-auto" />
           </div>
 
           {/* Card */}
