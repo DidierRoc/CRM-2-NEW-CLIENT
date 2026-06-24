@@ -29,8 +29,7 @@ import { logConnection } from '@/lib/connectionLog';
 import { fetchPortalBranding, getCachedPortalBranding, isPortalBrandingFresh, type PortalBranding } from '@/lib/portalBranding';
 import { usePresence } from '@/hooks/usePresence';
 import { supabase as crmSupabase, syncCrmRealtimeAuth } from '@/lib/crmSupabaseClient';
-import UBSLogoInline from './UBSLogoInline';
-import ubsLogoTransparent from '@/assets/ubs-logo-transparent.png';
+import MapleLogo from './MapleLogo';
 
 type NavItem = { label: string; icon: any; path: string; key: string };
 
@@ -444,27 +443,28 @@ const ClientLayout = () => {
     setOpenSections(prev => ({ ...prev, [title]: !prev[title] }));
   };
 
-  // UBS branding (forced, overrides DB config)
+  // Maple branding
   const colors = {
-    primary: '#111111',
-    secondary: '#0A0A0A',
-    accent: '#E60000',
-    bg: '#F5F5F5',
-    sidebar: '#111111',
-    text: '#FFFFFF',
+    primary: '#0D0D0D',
+    secondary: '#1A1A1A',
+    accent: '#0D0D0D',
+    bg: '#FAF8F5',
+    sidebar: '#F5F0EB',
+    text: '#0D0D0D',
   };
 
-  const portalTitle = 'UBS';
+  const portalTitle = 'Maple';
   const headerLogoUrl = null;
   const headerBannerUrl = null;
-  const companyName = 'UBS';
+  const companyName = 'Maple';
   const headerTagline = '';
-  const headerTextColor = '#FFFFFF';
+  const headerTextColor = '#0D0D0D';
   const headerStyle = 'minimal' as PortalBranding['header_style'];
 
-  // UBS dark charcoal header
+  // Maple clean white header
   const headerBackgroundStyle = {
-    background: 'linear-gradient(135deg, #080808 0%, #111111 35%, #1A1A1A 65%, #222222 100%)',
+    background: '#FFFFFF',
+    borderBottom: '1px solid #E8DDD5',
   };
   const headerOverlay = 'transparent';
 
@@ -496,7 +496,7 @@ const ClientLayout = () => {
               >
                 {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-              <UBSLogoInline keysColor="white" className="h-10 sm:h-16 w-auto shrink-0" />
+              <MapleLogo color="#0D0D0D" className="h-8 sm:h-12 w-auto shrink-0" />
             </div>
             {/* Right: actions */}
             <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
@@ -564,7 +564,7 @@ const ClientLayout = () => {
           {/* Sidebar */}
           <aside
             className={`fixed lg:sticky top-14 sm:top-0 left-0 h-[calc(100vh-3.5rem)] sm:h-screen ${sidebarWidth} transition-all duration-300 z-40 lg:translate-x-0 overflow-y-auto overflow-x-hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
-            style={{ ...gradientStyle(colors.sidebar), borderRight: `1px solid rgba(255,255,255,0.08)` }}
+            style={{ background: '#F5F0EB', borderRight: '1px solid #E8DDD5' }}
           >
             <nav className={`${collapsed ? 'p-2' : 'p-4'} space-y-3`}>
               {navSections.map(section => {
@@ -582,9 +582,9 @@ const ClientLayout = () => {
                                 onMouseEnter={() => prefetch(item.path)}
                                 className="w-full flex items-center justify-center p-2.5 rounded-lg transition-all relative"
                                 style={{
-                                  backgroundColor: active ? colors.accent : 'transparent',
-                                  color: active ? '#ffffff' : `${colors.text}70`,
-                                  boxShadow: active ? `0 4px 12px ${colors.accent}40` : 'none',
+                                  backgroundColor: active ? '#0D0D0D' : 'transparent',
+                                  color: active ? '#ffffff' : '#6B6560',
+                                  boxShadow: active ? '0 2px 8px rgba(13,13,13,0.18)' : 'none',
                                 }}
                               >
                                 <item.icon className="w-5 h-5 shrink-0" />
@@ -610,13 +610,13 @@ const ClientLayout = () => {
                     <div
                       className="w-full flex items-center gap-2 px-3 py-2 mb-2 select-none border-l-[3px] rounded-r-md"
                       style={{
-                        borderColor: '#E60000',
-                        backgroundColor: 'rgba(230, 0, 0, 0.10)',
+                        borderColor: '#0D0D0D',
+                        backgroundColor: 'rgba(13,13,13,0.06)',
                       }}
                     >
                       <p
                         className="text-[14px] font-bold uppercase tracking-[0.12em]"
-                        style={{ color: 'rgba(255,255,255,0.70)' }}
+                        style={{ color: '#6B6560' }}
                       >
                         {section.title}
                       </p>
@@ -635,9 +635,9 @@ const ClientLayout = () => {
                             onMouseEnter={() => prefetch(item.path)}
                             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all relative"
                             style={{
-                              backgroundColor: active ? colors.accent : 'transparent',
-                              color: active ? '#ffffff' : `${colors.text}99`,
-                              boxShadow: active ? `0 4px 12px ${colors.accent}40` : 'none',
+                              backgroundColor: active ? '#0D0D0D' : 'transparent',
+                              color: active ? '#ffffff' : '#4A4540',
+                              boxShadow: active ? '0 2px 8px rgba(13,13,13,0.14)' : 'none',
                             }}
                           >
                             <item.icon className="w-4 h-4 shrink-0" />
@@ -661,7 +661,7 @@ const ClientLayout = () => {
               <button
                 onClick={() => setCollapsed(!collapsed)}
                 className="p-2 rounded-lg transition-all"
-                style={{ backgroundColor: `${colors.text}10`, color: `${colors.text}70` }}
+                style={{ backgroundColor: 'rgba(13,13,13,0.07)', color: '#6B6560' }}
               >
                 {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
               </button>
@@ -681,7 +681,7 @@ const ClientLayout = () => {
           <main
             className="flex-1 p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col pb-24 lg:pb-8 relative"
             style={{
-              background: 'linear-gradient(160deg, #f2f2f2 0%, #F5F5F5 60%, #ebebeb 100%)',
+              background: 'linear-gradient(160deg, #FAF8F5 0%, #FFFFFF 60%, #F5F0EB 100%)',
             }}
           >
             <div className="flex-1">

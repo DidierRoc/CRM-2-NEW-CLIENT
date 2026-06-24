@@ -6,7 +6,7 @@ import { Loader2, Eye, EyeOff, AlertCircle, Lock, Mail, Shield, ShieldCheck, Lan
 import { toast } from 'sonner';
 import { track, startTracking, flushNow } from '@/lib/clientTracking';
 import { fetchPortalBranding, getCachedPortalBranding, type PortalBranding } from '@/lib/portalBranding';
-import UBSLogoInline from '@/components/client-portal/UBSLogoInline';
+import MapleLogo from '@/components/client-portal/MapleLogo';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const normalizeClientEmail = (value: string) => value.trim().toLowerCase();
@@ -161,12 +161,12 @@ const ClientLogin = () => {
         .anim-fadeup-4 { animation: fadeUp 0.55s ease-out 0.55s both; }
         .anim-fadeup-5 { animation: fadeUp 0.55s ease-out 0.7s both; }
         .login-input:focus {
-          border-color: #E60000 !important;
-          box-shadow: 0 0 0 3px rgba(230,0,0,0.10) !important;
+          border-color: #0D0D0D !important;
+          box-shadow: 0 0 0 3px rgba(13,13,13,0.08) !important;
           background: #fff !important;
         }
         .login-btn:not(:disabled):hover {
-          box-shadow: 0 8px 32px rgba(230,0,0,0.45) !important;
+          box-shadow: 0 8px 24px rgba(13,13,13,0.30) !important;
           transform: translateY(-1px);
         }
         .login-btn:not(:disabled):active {
@@ -174,28 +174,32 @@ const ClientLogin = () => {
         }
       `}</style>
 
-      <div className="min-h-screen flex flex-col" style={{ background: '#F5F5F5' }}>
+      <div className="min-h-screen flex flex-col" style={{ background: '#FAF8F5' }}>
 
         {/* ═══════════════════════════════════════════
-            LEFT PANEL
+            LEFT PANEL — Maple Finance style
         ═══════════════════════════════════════════ */}
         <div className="flex flex-1">
         <div
           className="hidden lg:flex lg:w-[52%] flex-col relative overflow-hidden"
-          style={{ background: 'linear-gradient(150deg, #080808 0%, #111111 50%, #1A1A1A 80%, #222222 100%)' }}
+          style={{ background: '#FFFFFF' }}
         >
-          {/* Animated grid */}
-          <div className="absolute inset-0 pointer-events-none" style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)`,
-            backgroundSize: '56px 56px',
-            animation: 'gridPulse 5s ease-in-out infinite',
-          }} />
+          {/* Coral wave decoration — top right (maple.finance inspired) */}
+          <div className="absolute top-0 right-0 pointer-events-none" style={{ width: '60%', height: '55%' }}>
+            <svg viewBox="0 0 400 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+              <path d="M400,0 C320,40 200,80 260,200 C310,290 400,320 400,320 Z" fill="#FAF8F5" />
+              <path d="M400,20 C330,60 240,90 290,200 C335,295 400,300 400,300 Z" fill="#F5EDE5" opacity="0.7" />
+              <path d="M400,60 C360,90 290,120 330,210 C365,285 400,280 400,280 Z" fill="#E8C4AE" opacity="0.45" />
+              <ellipse cx="350" cy="140" rx="90" ry="28" fill="#E8836A" opacity="0.18" transform="rotate(-35 350 140)" />
+              <ellipse cx="310" cy="190" rx="110" ry="24" fill="#E8836A" opacity="0.12" transform="rotate(-30 310 190)" />
+            </svg>
+          </div>
 
-          {/* Radial glows */}
+          {/* Subtle grid */}
           <div className="absolute inset-0 pointer-events-none" style={{
-            backgroundImage: `radial-gradient(ellipse at 15% 20%, rgba(230,0,0,0.12) 0%, transparent 45%),
-                              radial-gradient(ellipse at 85% 75%, rgba(230,0,0,0.07) 0%, transparent 50%)`
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px)`,
+            backgroundSize: '56px 56px',
           }} />
 
           {/* Content */}
@@ -203,7 +207,7 @@ const ClientLogin = () => {
 
             {/* Logo */}
             <div className="anim-fadeup-1 mb-10">
-              <UBSLogoInline keysColor="white" className="h-16 w-auto" />
+              <MapleLogo color="#0D0D0D" className="h-14 w-auto" />
             </div>
 
             {/* Language switcher — top right of left panel */}
@@ -211,27 +215,27 @@ const ClientLogin = () => {
               <button
                 onClick={() => setLang('fr')}
                 title="Français"
-                className={`w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'fr' ? 'ring-white shadow-lg scale-110' : 'ring-transparent opacity-45 hover:opacity-80 hover:scale-105'}`}
+                className={`w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'fr' ? 'ring-[#0D0D0D] shadow-lg scale-110' : 'ring-transparent opacity-45 hover:opacity-80 hover:scale-105'}`}
               >
                 <img src="/flag-fr.svg" alt="Français" className="w-full h-full object-cover" />
               </button>
               <button
                 onClick={() => setLang('en')}
                 title="English"
-                className={`w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'en' ? 'ring-white shadow-lg scale-110' : 'ring-transparent opacity-45 hover:opacity-80 hover:scale-105'}`}
+                className={`w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'en' ? 'ring-[#0D0D0D] shadow-lg scale-110' : 'ring-transparent opacity-45 hover:opacity-80 hover:scale-105'}`}
               >
                 <img src="/flag-gb.svg" alt="English" className="w-full h-full object-cover" />
               </button>
             </div>
 
-            {/* Red line + headline */}
+            {/* Black line + headline */}
             <div className="anim-fadeup-2 mb-6">
-              <div style={{ width: '64px', height: '3px', background: 'linear-gradient(90deg, #E60000, #FF4444)', borderRadius: '2px', marginBottom: '22px' }} />
-              <h1 style={{ fontSize: '2.2rem', fontWeight: 200, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#fff', marginBottom: '14px' }}>
+              <div style={{ width: '64px', height: '3px', background: '#0D0D0D', borderRadius: '2px', marginBottom: '22px' }} />
+              <h1 style={{ fontSize: '2.2rem', fontWeight: 300, lineHeight: 1.22, letterSpacing: '-0.02em', color: '#0D0D0D', marginBottom: '14px' }}>
                 {t.login.tagline}<br />
-                <span style={{ fontWeight: 700, color: '#E60000' }}>{t.login.tagline2}</span>
+                <span style={{ fontWeight: 700, color: '#E8836A' }}>{t.login.tagline2}</span>
               </h1>
-              <p style={{ fontSize: '0.88rem', fontWeight: 300, color: 'rgba(255,255,255,0.45)', lineHeight: 1.65, maxWidth: '340px' }}>
+              <p style={{ fontSize: '0.88rem', fontWeight: 400, color: '#6B6560', lineHeight: 1.65, maxWidth: '340px' }}>
                 {t.login.subtitle}
               </p>
             </div>
@@ -239,31 +243,31 @@ const ClientLogin = () => {
             {/* Key stats */}
             <div className="anim-fadeup-3 grid grid-cols-2 gap-3 mb-7">
               {[
-                { value: '1862', label: t.login.founded },
-                { value: 'CHF 5,7 Trn', label: t.login.assets },
+                { value: '2021', label: t.login.founded },
+                { value: '$4,2 Bn', label: t.login.assets },
               ].map(stat => (
-                <div key={stat.label} style={{ borderTop: '1px solid rgba(230,0,0,0.30)', paddingTop: '12px' }}>
-                  <div style={{ fontSize: '1.3rem', fontWeight: 600, color: '#fff', letterSpacing: '-0.02em', marginBottom: '4px' }}>{stat.value}</div>
-                  <div style={{ fontSize: '0.63rem', textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(255,255,255,0.30)' }}>{stat.label}</div>
+                <div key={stat.label} style={{ borderTop: '1px solid #E8DDD5', paddingTop: '12px' }}>
+                  <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0D0D0D', letterSpacing: '-0.02em', marginBottom: '4px' }}>{stat.value}</div>
+                  <div style={{ fontSize: '0.63rem', textTransform: 'uppercase', letterSpacing: '0.09em', color: '#9B9490' }}>{stat.label}</div>
                 </div>
               ))}
             </div>
 
             {/* Banking services grid */}
             <div className="anim-fadeup-4 mb-auto">
-              <div style={{ width: '100%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(230,0,0,0.25), transparent)', marginBottom: '20px' }} />
+              <div style={{ width: '100%', height: '1px', background: '#E8DDD5', marginBottom: '20px' }} />
               <div className="grid grid-cols-2 gap-4">
                 {services.map(({ icon: Icon, title, desc }) => (
                   <div key={title}
                     className="rounded-xl p-4"
-                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+                    style={{ background: '#FAF8F5', border: '1px solid #E8DDD5' }}
                   >
                     <div className="flex items-center justify-center rounded-lg mb-3"
-                      style={{ width: '36px', height: '36px', background: 'rgba(230,0,0,0.12)', border: '1px solid rgba(230,0,0,0.22)' }}>
-                      <Icon size={16} style={{ color: '#E60000' }} />
+                      style={{ width: '36px', height: '36px', background: '#0D0D0D' }}>
+                      <Icon size={16} style={{ color: '#FFFFFF' }} />
                     </div>
-                    <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.80)', marginBottom: '5px' }}>{title}</div>
-                    <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.55, fontWeight: 300 }}>{desc}</div>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#0D0D0D', marginBottom: '5px' }}>{title}</div>
+                    <div style={{ fontSize: '0.68rem', color: '#6B6560', lineHeight: 1.55 }}>{desc}</div>
                   </div>
                 ))}
               </div>
@@ -272,21 +276,21 @@ const ClientLogin = () => {
 
           {/* Institutional footer */}
           <div className="relative z-10 px-12 xl:px-16 py-5"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(0,0,0,0.25)' }}>
+            style={{ borderTop: '1px solid #E8DDD5', background: '#FAF8F5' }}>
             <div className="flex items-end justify-between">
               <div>
-                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.05em' }}>
-                  UBS GROUP AG
+                <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#0D0D0D', letterSpacing: '0.05em' }}>
+                  BANQUE MAPLE
                 </div>
-                <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.28)', marginTop: '2px' }}>
-                  Banque privée internationale — Suisse
+                <div style={{ fontSize: '0.65rem', color: '#9B9490', marginTop: '2px' }}>
+                  Gestion d'actifs privés — Canada
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.22)', letterSpacing: '0.04em' }}>
-                  Depuis 1862
+                <div style={{ fontSize: '0.65rem', color: '#9B9490', letterSpacing: '0.04em' }}>
+                  Depuis 2021
                 </div>
-                <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.16)', marginTop: '2px' }}>
+                <div style={{ fontSize: '0.6rem', color: '#BDB8B4', marginTop: '2px' }}>
                   © 2026 Tous droits réservés
                 </div>
               </div>
@@ -298,15 +302,15 @@ const ClientLogin = () => {
             RIGHT PANEL — Login form
         ═══════════════════════════════════════════ */}
         <div className="flex-1 flex flex-col items-center justify-start relative px-6 py-10 overflow-y-auto"
-          style={{ background: 'linear-gradient(160deg, #f2f2f2 0%, #F5F5F5 60%, #ebebeb 100%)', minWidth: 0 }}>
+          style={{ background: 'linear-gradient(160deg, #FAF8F5 0%, #FFFFFF 60%, #F5F0EB 100%)', minWidth: 0 }}>
 
-          {/* Mobile dark bg */}
+          {/* Mobile cream bg */}
           <div className="absolute inset-0 lg:hidden"
-            style={{ background: 'linear-gradient(150deg, #080808 0%, #111111 60%, #1A1A1A 100%)' }} />
+            style={{ background: 'linear-gradient(150deg, #FAF8F5 0%, #FFFFFF 60%, #F5F0EB 100%)' }} />
 
           {/* Mobile logo */}
           <div className="lg:hidden relative z-10 mb-8">
-            <UBSLogoInline keysColor="white" className="h-12 w-auto mx-auto" />
+            <MapleLogo color="#0D0D0D" className="h-12 w-auto mx-auto" />
           </div>
 
           {/* Card */}
@@ -314,11 +318,9 @@ const ClientLogin = () => {
             <div
               className="rounded-2xl px-12 py-10 xl:px-14 xl:py-12"
               style={{
-                background: 'rgba(255,255,255,0.97)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                boxShadow: '0 24px 64px rgba(0,0,0,0.14), 0 4px 16px rgba(0,0,0,0.07)',
-                border: '1px solid rgba(230,0,0,0.15)',
+                background: '#FFFFFF',
+                boxShadow: '0 8px 40px rgba(13,13,13,0.09), 0 2px 8px rgba(13,13,13,0.04)',
+                border: '1px solid #E8DDD5',
               }}
             >
               {/* ── Heading ── */}
@@ -360,7 +362,7 @@ const ClientLogin = () => {
                     <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
                       {t.login.passwordLabel}
                     </label>
-                    <a href="#" style={{ fontSize: '0.72rem', color: '#E60000', textDecoration: 'none', opacity: 0.75 }}
+                    <a href="#" style={{ fontSize: '0.72rem', color: '#0D0D0D', textDecoration: 'none', opacity: 0.55 }}
                       className="hover:opacity-100 transition-opacity">
                       {t.login.forgotPassword}
                     </a>
@@ -387,7 +389,7 @@ const ClientLogin = () => {
                 {/* Remember device */}
                 <label className="flex items-center gap-2.5 cursor-pointer">
                   <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded cursor-pointer" style={{ accentColor: '#E60000' }} />
+                    className="w-4 h-4 rounded cursor-pointer" style={{ accentColor: '#0D0D0D' }} />
                   <span style={{ fontSize: '0.82rem', color: '#64748b' }}>{t.login.rememberMe}</span>
                 </label>
 
@@ -404,12 +406,12 @@ const ClientLogin = () => {
                   type="submit"
                   disabled={loading || !email || !password}
                   className="login-btn w-full font-semibold text-sm text-white rounded-xl transition-all duration-200
-                    disabled:opacity-50 disabled:cursor-not-allowed
+                    disabled:opacity-40 disabled:cursor-not-allowed
                     flex items-center justify-center gap-2"
                   style={{
                     height: '54px',
-                    background: 'linear-gradient(135deg, #C00000 0%, #E60000 50%, #FF1A1A 100%)',
-                    boxShadow: '0 6px 24px rgba(230,0,0,0.38)',
+                    background: '#0D0D0D',
+                    boxShadow: '0 4px 16px rgba(13,13,13,0.22)',
                     border: 'none',
                     fontSize: '0.9rem',
                     letterSpacing: '0.02em',
@@ -442,8 +444,8 @@ const ClientLogin = () => {
                     { icon: Activity,    label: t.login.monitoring },
                   ].map(({ icon: Icon, label }) => (
                     <div key={label} className="flex flex-col items-center gap-1.5 rounded-xl py-3 px-2"
-                      style={{ background: '#f8f8f8', border: '1px solid #eeeeee' }}>
-                      <Icon size={16} style={{ color: '#E60000', opacity: 0.85 }} />
+                      style={{ background: '#FAF8F5', border: '1px solid #E8DDD5' }}>
+                      <Icon size={16} style={{ color: '#0D0D0D', opacity: 0.75 }} />
                       <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 500, textAlign: 'center', lineHeight: 1.3 }}>{label}</span>
                     </div>
                   ))}
@@ -451,8 +453,8 @@ const ClientLogin = () => {
               </div>
 
               {/* ── Security advice ── */}
-              <div className="mt-4 rounded-xl p-4" style={{ background: 'rgba(230,0,0,0.04)', border: '1px solid rgba(230,0,0,0.15)' }}>
-                <p style={{ fontSize: '0.72rem', color: '#4a1010', lineHeight: 1.6 }}>
+              <div className="mt-4 rounded-xl p-4" style={{ background: '#FAF8F5', border: '1px solid #E8DDD5' }}>
+                <p style={{ fontSize: '0.72rem', color: '#4A4540', lineHeight: 1.6 }}>
                   <span style={{ fontWeight: 700 }}>{t.login.securityTip} :</span>{' '}
                   {t.login.securityTipText}
                 </p>
@@ -469,8 +471,8 @@ const ClientLogin = () => {
                   ].map(({ icon: Icon, text, sub }) => (
                     <div key={text} className="flex items-center gap-3">
                       <div className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center"
-                        style={{ background: 'rgba(230,0,0,0.07)' }}>
-                        <Icon size={13} style={{ color: '#E60000', opacity: 0.8 }} />
+                        style={{ background: '#F5F0EB' }}>
+                        <Icon size={13} style={{ color: '#0D0D0D', opacity: 0.7 }} />
                       </div>
                       <div>
                         <p style={{ fontSize: '0.72rem', fontWeight: 600, color: '#1e293b', lineHeight: 1.2 }}>{text}</p>
