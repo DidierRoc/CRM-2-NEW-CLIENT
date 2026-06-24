@@ -3,9 +3,11 @@ import { Calculator } from 'lucide-react';
 import GeneralSimulator from '@/components/products/GeneralSimulator';
 import { useClientProducts, useClientProfile } from '@/hooks/useClientData';
 import { ClientRowsSkeleton } from '@/components/client-portal/ClientPageFallback';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ClientSimulator = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
+  const { lang } = useLanguage();
   const leadId = clientAccount?.lead_id;
   const { data: productsData, isLoading: loadingProducts } = useClientProducts(leadId);
   const { data: profileData } = useClientProfile(leadId);
@@ -27,8 +29,8 @@ const ClientSimulator = () => {
           <Calculator className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Simulateur de rendement</h1>
-          <p className="text-sm text-slate-500">Estimez les performances de vos investissements</p>
+          <h1 className="text-xl font-bold text-slate-800">{lang === 'en' ? 'Return simulator' : 'Simulateur de rendement'}</h1>
+          <p className="text-sm text-slate-500">{lang === 'en' ? 'Estimate the performance of your investments' : 'Estimez les performances de vos investissements'}</p>
         </div>
       </div>
 

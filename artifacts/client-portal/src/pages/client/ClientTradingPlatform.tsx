@@ -15,9 +15,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ClientTradingPlatform = () => {
   const navigate = useNavigate();
+  const { lang } = useLanguage();
   const { user: crmUser, authReady } = useCrm();
   const [portfolio, setPortfolio] = useState<any>(null);
   const [localPortfolio, setLocalPortfolio] = useState<any>(undefined);
@@ -47,7 +49,6 @@ const ClientTradingPlatform = () => {
     load();
   }, [authReady, crmUser, navigate]);
 
-  // Let the WebSocket market-data layer initialize without blocking the terminal UI.
   useEffect(() => {
     if (!portfolio) return;
     let cancelled = false;
@@ -69,9 +70,9 @@ const ClientTradingPlatform = () => {
       <div className="h-screen flex items-center justify-center bg-[#1b1b2f]">
         <div className="text-center">
           <BarChart3 className="w-16 h-16 mx-auto mb-4 text-[#4a90d9]/40" />
-          <p className="text-[#8a8fa3]">Trading non disponible</p>
+          <p className="text-[#8a8fa3]">{lang === 'en' ? 'Trading not available' : 'Trading non disponible'}</p>
           <button onClick={() => navigate('/client/dashboard')} className="mt-4 underline text-sm text-[#4a90d9]">
-            Retour à l'espace client
+            {lang === 'en' ? 'Back to client portal' : "Retour à l'espace client"}
           </button>
         </div>
       </div>
@@ -87,7 +88,7 @@ const ClientTradingPlatform = () => {
             className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium text-[#8a8fa3] hover:text-[#c5c8d6] hover:bg-[#3a3a52] transition-colors"
           >
             <ArrowLeft className="w-3 h-3" />
-            Espace Client
+            {lang === 'en' ? 'Client Portal' : 'Espace Client'}
           </button>
           <div className="h-4 w-px bg-[#3a3a52]" />
           <div className="flex items-center gap-1.5">
@@ -111,24 +112,31 @@ const ClientTradingPlatform = () => {
                 <AlertTriangle className="w-5 h-5 text-amber-400" />
               </div>
               <AlertDialogTitle className="text-[#e2e4ea] text-lg">
-                Quitter la plateforme de trading ?
+                {lang === 'en' ? 'Leave the trading platform?' : 'Quitter la plateforme de trading ?'}
               </AlertDialogTitle>
             </div>
             <AlertDialogDescription className="text-[#8a8fa3] text-sm leading-relaxed">
-              Vous êtes sur le point de quitter la plateforme de trading pour revenir à votre espace client.
+              {lang === 'en'
+                ? 'You are about to leave the trading platform and return to your client portal.'
+                : 'Vous êtes sur le point de quitter la plateforme de trading pour revenir à votre espace client.'}
               <br /><br />
-              <span className="text-amber-400/90 font-medium">⚠ Attention :</span> Les positions ouvertes resteront actives. Assurez-vous d'avoir vérifié vos ordres en cours avant de quitter.
+              <span className="text-amber-400/90 font-medium">
+                {lang === 'en' ? '⚠ Warning:' : '⚠ Attention :'}
+              </span>{' '}
+              {lang === 'en'
+                ? 'Open positions will remain active. Make sure you have checked your pending orders before leaving.'
+                : "Les positions ouvertes resteront actives. Assurez-vous d'avoir vérifié vos ordres en cours avant de quitter."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 mt-2">
             <AlertDialogCancel className="bg-[#3a3a52] border-[#4a4a62] text-[#c5c8d6] hover:bg-[#4a4a62] hover:text-[#e2e4ea]">
-              Rester sur la plateforme
+              {lang === 'en' ? 'Stay on platform' : 'Rester sur la plateforme'}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => navigate('/client/dashboard')}
               className="bg-amber-600 hover:bg-amber-700 text-white font-medium"
             >
-              Confirmer et quitter
+              {lang === 'en' ? 'Confirm and leave' : 'Confirmer et quitter'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

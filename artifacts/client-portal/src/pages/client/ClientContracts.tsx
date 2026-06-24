@@ -347,9 +347,9 @@ const ClientContracts = () => {
         type: 'virement',
         url: urlData.publicUrl || path,
       });
-      toast.success('Preuve de virement envoyée avec succès ! Un conseiller validera votre versement sous 48h.');
+      toast.success(lang === 'en' ? 'Transfer proof sent successfully! An advisor will validate your payment within 48h.' : 'Preuve de virement envoyée avec succès ! Un conseiller validera votre versement sous 48h.');
     } catch (err) {
-      toast.error("Erreur lors de l'envoi du fichier");
+      toast.error(lang === 'en' ? 'Error sending the file' : "Erreur lors de l'envoi du fichier");
     } finally {
       setUploading(null);
       setUploadSubId(null);
@@ -663,7 +663,7 @@ const ClientContracts = () => {
                         onClick={() => navigate(`/client/products/${product?.id}`)}
                         className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#111111] text-white text-xs font-semibold hover:bg-[#cc0000] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5"
                       >
-                        <PenLine className="w-3.5 h-3.5" /> Signer le contrat
+                        <PenLine className="w-3.5 h-3.5" /> {lang === 'en' ? 'Sign the contract' : 'Signer le contrat'}
                       </button>
                     )}
                     {contract && (
@@ -672,7 +672,7 @@ const ClientContracts = () => {
                           onClick={() => handleViewContract(sub)}
                           className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card text-xs font-semibold text-foreground hover:bg-muted/60 hover:border-[#E60000]/30 transition-all duration-200"
                         >
-                          <Eye className="w-3.5 h-3.5 text-[#E60000]" /> Consulter le contrat
+                          <Eye className="w-3.5 h-3.5 text-[#E60000]" /> {lang === 'en' ? 'View contract' : 'Consulter le contrat'}
                         </button>
                         <button
                           onClick={() => handleDownloadPdf(sub)}
@@ -680,7 +680,7 @@ const ClientContracts = () => {
                           className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card text-xs font-semibold text-foreground hover:bg-muted/60 transition-all duration-200 disabled:opacity-60"
                         >
                           {downloadingId === contract.id ? (
-                            <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Préparation…</>
+                            <><Loader2 className="w-3.5 h-3.5 animate-spin" /> {lang === 'en' ? 'Preparing…' : 'Préparation…'}</>
                           ) : (
                             <><Download className="w-3.5 h-3.5 text-emerald-600" /> {lang === 'en' ? 'Download PDF' : 'Télécharger PDF'}</>
                           )}
@@ -693,7 +693,7 @@ const ClientContracts = () => {
                         className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 ml-auto"
                       >
                         <BarChart3 className="w-3.5 h-3.5" />
-                        Voir les détails
+                        {lang === 'en' ? 'View details' : 'Voir les détails'}
                         <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
                       </button>
                     )}
@@ -702,15 +702,15 @@ const ClientContracts = () => {
                   {/* Expanded details panel */}
                   {isExpanded && contract && (
                     <div className="mt-4 rounded-xl border border-border/60 bg-muted/30 p-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                      <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Informations du contrat</h4>
+                      <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">{lang === 'en' ? 'Contract details' : 'Informations du contrat'}</h4>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         {[
-                          { label: 'Référence', value: contract.reference || contractRef },
-                          { label: 'Montant', value: contract.amount ? `${Number(contract.amount).toLocaleString('fr-FR')} €` : '—' },
-                          { label: 'Durée', value: contract.duration_months ? `${contract.duration_months} mois` : '—' },
-                          { label: 'Taux annuel', value: contract.interest_rate ? `${contract.interest_rate}%` : '—' },
-                          { label: 'Signé le', value: contract.signed_at ? new Date(contract.signed_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : '—' },
-                          { label: 'Rendement prévu', value: (contract.interest_rate && contract.amount && contract.duration_months) ? `${((Number(contract.amount) * Number(contract.interest_rate) / 100 * Number(contract.duration_months) / 12)).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €` : '—' },
+                          { label: lang === 'en' ? 'Reference' : 'Référence', value: contract.reference || contractRef },
+                          { label: lang === 'en' ? 'Amount' : 'Montant', value: contract.amount ? `${Number(contract.amount).toLocaleString('fr-FR')} €` : '—' },
+                          { label: lang === 'en' ? 'Duration' : 'Durée', value: contract.duration_months ? `${contract.duration_months} ${lang === 'en' ? 'months' : 'mois'}` : '—' },
+                          { label: lang === 'en' ? 'Annual rate' : 'Taux annuel', value: contract.interest_rate ? `${contract.interest_rate}%` : '—' },
+                          { label: lang === 'en' ? 'Signed on' : 'Signé le', value: contract.signed_at ? new Date(contract.signed_at).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : '—' },
+                          { label: lang === 'en' ? 'Expected return' : 'Rendement prévu', value: (contract.interest_rate && contract.amount && contract.duration_months) ? `${((Number(contract.amount) * Number(contract.interest_rate) / 100 * Number(contract.duration_months) / 12)).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €` : '—' },
                         ].map((item, i) => (
                           <div key={i} className="bg-card rounded-lg border border-border/50 p-3">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">{item.label}</p>
@@ -763,12 +763,12 @@ const ClientContracts = () => {
               {/* Key info grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {[
-                  { label: 'Montant investi', value: resolvedAmount > 0 ? `${resolvedAmount.toLocaleString('fr-FR')} €` : '—', icon: <Wallet className="w-4 h-4 text-[#E60000]" /> },
-                  { label: 'Durée', value: resolvedDuration > 0 ? `${resolvedDuration} mois` : '—', icon: <Calendar className="w-4 h-4 text-violet-600" /> },
-                  { label: 'Taux annuel', value: resolvedRate > 0 ? `${resolvedRate}%` : '—', icon: <TrendingUp className="w-4 h-4 text-emerald-600" /> },
-                  { label: 'Signé le', value: viewContract.signed_at ? new Date(viewContract.signed_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : '—', icon: <CheckCircle className="w-4 h-4 text-emerald-600" /> },
-                  { label: 'Rendement prévu', value: rendement, icon: <BarChart3 className="w-4 h-4 text-amber-600" /> },
-                  { label: 'Référence', value: viewContract.reference || '—', icon: <FileText className="w-4 h-4 text-slate-500" /> },
+                  { label: lang === 'en' ? 'Invested amount' : 'Montant investi', value: resolvedAmount > 0 ? `${resolvedAmount.toLocaleString('fr-FR')} €` : '—', icon: <Wallet className="w-4 h-4 text-[#E60000]" /> },
+                  { label: lang === 'en' ? 'Duration' : 'Durée', value: resolvedDuration > 0 ? `${resolvedDuration} ${lang === 'en' ? 'months' : 'mois'}` : '—', icon: <Calendar className="w-4 h-4 text-violet-600" /> },
+                  { label: lang === 'en' ? 'Annual rate' : 'Taux annuel', value: resolvedRate > 0 ? `${resolvedRate}%` : '—', icon: <TrendingUp className="w-4 h-4 text-emerald-600" /> },
+                  { label: lang === 'en' ? 'Signed on' : 'Signé le', value: viewContract.signed_at ? new Date(viewContract.signed_at).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : '—', icon: <CheckCircle className="w-4 h-4 text-emerald-600" /> },
+                  { label: lang === 'en' ? 'Expected return' : 'Rendement prévu', value: rendement, icon: <BarChart3 className="w-4 h-4 text-amber-600" /> },
+                  { label: lang === 'en' ? 'Reference' : 'Référence', value: viewContract.reference || '—', icon: <FileText className="w-4 h-4 text-slate-500" /> },
                 ].map((item, i) => (
                   <div key={i} className="rounded-xl border border-border/60 bg-muted/30 p-3 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-card flex items-center justify-center shrink-0 border border-border/50">{item.icon}</div>
@@ -785,7 +785,7 @@ const ClientContracts = () => {
                 <div className="px-4 py-3 bg-muted/40 border-b border-border/50 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-xs font-semibold text-foreground">Document contractuel</span>
+                    <span className="text-xs font-semibold text-foreground">{lang === 'en' ? 'Contract document' : 'Document contractuel'}</span>
                   </div>
                   {viewContract._sub && (
                     <button
@@ -805,11 +805,11 @@ const ClientContracts = () => {
                   {loadingContractView ? (
                     <div className="flex items-center justify-center py-12 text-muted-foreground gap-3">
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      <span className="text-sm">Chargement du document…</span>
+                      <span className="text-sm">{lang === 'en' ? 'Loading document…' : 'Chargement du document…'}</span>
                     </div>
                   ) : viewContractHtml ? (
                     <ContractHtmlFrame
-                      title="Contrat signé"
+                      title={lang === 'en' ? 'Signed contract' : 'Contrat signé'}
                       html={viewContractHtml}
                       signatureData={viewContract.signature_data || null}
                       signedAt={viewContract.signed_at || null}

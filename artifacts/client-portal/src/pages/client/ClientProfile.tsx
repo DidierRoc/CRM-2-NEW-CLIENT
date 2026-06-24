@@ -614,14 +614,14 @@ const ClientProfile = () => {
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-white/60 text-sm font-medium mb-0.5">Bonjour,</p>
-            <h1 className="text-2xl font-bold text-white truncate">{fullName || 'Mon compte'}</h1>
-            <p className="text-white/50 text-sm mt-0.5">Consultez et mettez à jour vos informations personnelles en toute sécurité.</p>
+            <p className="text-white/60 text-sm font-medium mb-0.5">{lang === 'en' ? 'Hello,' : 'Bonjour,'}</p>
+            <h1 className="text-2xl font-bold text-white truncate">{fullName || (lang === 'en' ? 'My account' : 'Mon compte')}</h1>
+            <p className="text-white/50 text-sm mt-0.5">{lang === 'en' ? 'View and update your personal information securely.' : 'Consultez et mettez à jour vos informations personnelles en toute sécurité.'}</p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <div className="flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/30 rounded-full px-3 py-1.5">
               <BadgeCheck className="w-4 h-4 text-emerald-400" />
-              <span className="text-emerald-300 text-xs font-semibold">Identité vérifiée</span>
+              <span className="text-emerald-300 text-xs font-semibold">{lang === 'en' ? 'Verified identity' : 'Identité vérifiée'}</span>
             </div>
           </div>
         </div>
@@ -630,19 +630,19 @@ const ClientProfile = () => {
       {/* ── PROFILE SUMMARY CARD ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-          <p className="text-xs text-slate-400 font-medium mb-1">Titulaire</p>
+          <p className="text-xs text-slate-400 font-medium mb-1">{lang === 'en' ? 'Account holder' : 'Titulaire'}</p>
           <p className="text-sm font-bold text-[#111111] truncate">{fullName || '—'}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-          <p className="text-xs text-slate-400 font-medium mb-1">Référence client</p>
+          <p className="text-xs text-slate-400 font-medium mb-1">{lang === 'en' ? 'Client reference' : 'Référence client'}</p>
           <p className="text-sm font-bold text-[#111111] font-mono">{clientRef}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-          <p className="text-xs text-slate-400 font-medium mb-1">Comptes bancaires</p>
-          <p className="text-sm font-bold text-[#111111]">{bankAccounts.length} enregistré{bankAccounts.length !== 1 ? 's' : ''}</p>
+          <p className="text-xs text-slate-400 font-medium mb-1">{lang === 'en' ? 'Bank accounts' : 'Comptes bancaires'}</p>
+          <p className="text-sm font-bold text-[#111111]">{bankAccounts.length} {lang === 'en' ? `registered` : `enregistré${bankAccounts.length !== 1 ? 's' : ''}`}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-          <p className="text-xs text-slate-400 font-medium mb-1">Profil complété</p>
+          <p className="text-xs text-slate-400 font-medium mb-1">{lang === 'en' ? 'Profile completed' : 'Profil complété'}</p>
           <div className="flex items-center gap-2">
             <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div
@@ -686,65 +686,65 @@ const ClientProfile = () => {
           <div className="p-6 sm:p-8">
             <SectionTitle>{lang === 'en' ? 'Identity' : 'Identité'}</SectionTitle>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-              <FieldWrapper icon={UserCircle} label="Civilité">
+              <FieldWrapper icon={UserCircle} label={lang === 'en' ? 'Title' : 'Civilité'}>
                 <Select value={lead.civilite || ''} onValueChange={val => handleChange('civilite', val)}>
                   <SelectTrigger className={inputClass + ' mt-0'}>
-                    <SelectValue placeholder="Sélectionner" />
+                    <SelectValue placeholder={lang === 'en' ? 'Select' : 'Sélectionner'} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Monsieur">Monsieur</SelectItem>
-                    <SelectItem value="Madame">Madame</SelectItem>
+                    <SelectItem value="Monsieur">{lang === 'en' ? 'Mr.' : 'Monsieur'}</SelectItem>
+                    <SelectItem value="Madame">{lang === 'en' ? 'Ms.' : 'Madame'}</SelectItem>
                   </SelectContent>
                 </Select>
               </FieldWrapper>
-              <FieldWrapper icon={UserCircle} label="Prénom">
-                <input className={inputClass} type="text" value={lead.prenom || ''} onChange={e => handleChange('prenom', e.target.value)} placeholder="Votre prénom" />
+              <FieldWrapper icon={UserCircle} label={lang === 'en' ? 'First name' : 'Prénom'}>
+                <input className={inputClass} type="text" value={lead.prenom || ''} onChange={e => handleChange('prenom', e.target.value)} placeholder={lang === 'en' ? 'Your first name' : 'Votre prénom'} />
               </FieldWrapper>
-              <FieldWrapper icon={UserCircle} label="Nom de famille">
-                <input className={inputClass} type="text" value={lead.nom || ''} onChange={e => handleChange('nom', e.target.value)} placeholder="Votre nom" />
+              <FieldWrapper icon={UserCircle} label={lang === 'en' ? 'Last name' : 'Nom de famille'}>
+                <input className={inputClass} type="text" value={lead.nom || ''} onChange={e => handleChange('nom', e.target.value)} placeholder={lang === 'en' ? 'Your last name' : 'Votre nom'} />
               </FieldWrapper>
             </div>
 
-            <SectionTitle>Coordonnées</SectionTitle>
+            <SectionTitle>{lang === 'en' ? 'Contact details' : 'Coordonnées'}</SectionTitle>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-              <FieldWrapper icon={Mail} label="Adresse e-mail">
+              <FieldWrapper icon={Mail} label={lang === 'en' ? 'Email address' : 'Adresse e-mail'}>
                 <input className={inputClass} type="email" value={lead.email || ''} onChange={e => handleChange('email', e.target.value)} placeholder="votre@email.com" />
               </FieldWrapper>
-              <FieldWrapper icon={Phone} label="Téléphone">
-                <input className={inputClass} type="tel" value={lead.telephone || ''} onChange={e => handleChange('telephone', e.target.value)} placeholder="+33 6 XX XX XX XX" />
+              <FieldWrapper icon={Phone} label={lang === 'en' ? 'Phone' : 'Téléphone'}>
+                <input className={inputClass} type="tel" value={lead.telephone || ''} onChange={e => handleChange('telephone', e.target.value)} placeholder="+1 514 XXX-XXXX" />
               </FieldWrapper>
             </div>
 
-            <SectionTitle>Adresse</SectionTitle>
+            <SectionTitle>{lang === 'en' ? 'Address' : 'Adresse'}</SectionTitle>
             <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 mb-8">
               <div className="sm:col-span-4">
-                <FieldWrapper icon={MapPin} label="Adresse">
+                <FieldWrapper icon={MapPin} label={lang === 'en' ? 'Address' : 'Adresse'}>
                   <AddressAutocomplete
                     value={lead.adresse || ''}
                     onSelect={handleAddressSelect}
-                    placeholder="Tapez votre adresse..."
+                    placeholder={lang === 'en' ? 'Type your address...' : 'Tapez votre adresse...'}
                   />
                 </FieldWrapper>
               </div>
               <div className="sm:col-span-2">
-                <FieldWrapper label="Code postal">
-                  <input className={inputClass} type="text" value={lead.code_postal || ''} onChange={e => handleChange('code_postal', e.target.value)} placeholder="75001" />
+                <FieldWrapper label={lang === 'en' ? 'Postal code' : 'Code postal'}>
+                  <input className={inputClass} type="text" value={lead.code_postal || ''} onChange={e => handleChange('code_postal', e.target.value)} placeholder={lang === 'en' ? 'H3A 1A1' : '75001'} />
                 </FieldWrapper>
               </div>
               <div className="sm:col-span-3">
-                <FieldWrapper label="Ville">
-                  <input className={inputClass} type="text" value={lead.ville || ''} onChange={e => handleChange('ville', e.target.value)} placeholder="Paris" />
+                <FieldWrapper label={lang === 'en' ? 'City' : 'Ville'}>
+                  <input className={inputClass} type="text" value={lead.ville || ''} onChange={e => handleChange('ville', e.target.value)} placeholder={lang === 'en' ? 'Montreal' : 'Paris'} />
                 </FieldWrapper>
               </div>
             </div>
 
-            <SectionTitle>Informations complémentaires</SectionTitle>
+            <SectionTitle>{lang === 'en' ? 'Additional information' : 'Informations complémentaires'}</SectionTitle>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-              <FieldWrapper icon={Globe} label="Nationalité">
+              <FieldWrapper icon={Globe} label={lang === 'en' ? 'Nationality' : 'Nationalité'}>
                 <NationaliteAutocomplete
                   value={lead.nationalite || ''}
                   onChange={val => handleChange('nationalite', val)}
-                  placeholder="Ex : Française"
+                  placeholder={lang === 'en' ? 'E.g.: Canadian' : 'Ex : Française'}
                 />
               </FieldWrapper>
             </div>
@@ -753,7 +753,7 @@ const ClientProfile = () => {
               <div className="flex items-start gap-2.5 flex-1 bg-slate-50 rounded-xl px-4 py-3">
                 <Lock className="w-4 h-4 text-[#E60000] mt-0.5 shrink-0" />
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Vos données personnelles sont protégées et chiffrées conformément aux normes de sécurité bancaire en vigueur.
+                  {lang === 'en' ? 'Your personal data is protected and encrypted in accordance with current banking security standards.' : 'Vos données personnelles sont protégées et chiffrées conformément aux normes de sécurité bancaire en vigueur.'}
                 </p>
               </div>
               <button
@@ -774,9 +774,9 @@ const ClientProfile = () => {
             <SectionTitle>{lang === 'en' ? 'Change password' : 'Modifier le mot de passe'}</SectionTitle>
             <div className="max-w-md space-y-4">
               {[
-                { label: 'Mot de passe actuel', val: currentPwd, set: setCurrentPwd, show: showCurrentPwd, setShow: setShowCurrentPwd },
-                { label: 'Nouveau mot de passe', val: newPwd, set: setNewPwd, show: showPwd, setShow: setShowPwd, hint: 'Minimum 8 caractères' },
-                { label: 'Confirmer le nouveau mot de passe', val: confirmPwd, set: setConfirmPwd, show: showConfirmPwd, setShow: setShowConfirmPwd },
+                { label: lang === 'en' ? 'Current password' : 'Mot de passe actuel', val: currentPwd, set: setCurrentPwd, show: showCurrentPwd, setShow: setShowCurrentPwd },
+                { label: lang === 'en' ? 'New password' : 'Nouveau mot de passe', val: newPwd, set: setNewPwd, show: showPwd, setShow: setShowPwd, hint: lang === 'en' ? 'Minimum 8 characters' : 'Minimum 8 caractères' },
+                { label: lang === 'en' ? 'Confirm new password' : 'Confirmer le nouveau mot de passe', val: confirmPwd, set: setConfirmPwd, show: showConfirmPwd, setShow: setShowConfirmPwd },
               ].map(({ label, val, set, show, setShow, hint }) => (
                 <FieldWrapper key={label} icon={Lock} label={label}>
                   <div className="relative">
@@ -803,13 +803,13 @@ const ClientProfile = () => {
                 className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold shadow-md hover:bg-[#cc0000] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5"
               >
                 {changingPwd ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-                Changer le mot de passe
+                {lang === 'en' ? 'Change password' : 'Changer le mot de passe'}
               </button>
             </div>
             <div className="mt-8 flex items-start gap-2.5 bg-slate-50 rounded-xl px-4 py-3 max-w-md">
               <Lock className="w-4 h-4 text-[#E60000] mt-0.5 shrink-0" />
               <p className="text-xs text-slate-500 leading-relaxed">
-                Vos données personnelles sont protégées et chiffrées conformément aux normes de sécurité bancaire en vigueur.
+                {lang === 'en' ? 'Your personal data is protected and encrypted in accordance with current banking security standards.' : 'Vos données personnelles sont protégées et chiffrées conformément aux normes de sécurité bancaire en vigueur.'}
               </p>
             </div>
           </div>
@@ -822,9 +822,9 @@ const ClientProfile = () => {
             {/* Header */}
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-lg font-bold text-[#111111] mb-1">Mes comptes bancaires</h2>
+                <h2 className="text-lg font-bold text-[#111111] mb-1">{lang === 'en' ? 'My bank accounts' : 'Mes comptes bancaires'}</h2>
                 <p className="text-sm text-slate-500">
-                  Gérez les comptes utilisés pour vos versements et remboursements en toute sécurité.
+                  {lang === 'en' ? 'Manage the accounts used for your deposits and withdrawals securely.' : 'Gérez les comptes utilisés pour vos versements et remboursements en toute sécurité.'}
                 </p>
               </div>
               <button
@@ -843,15 +843,15 @@ const ClientProfile = () => {
                 <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
                   <Landmark className="w-8 h-8 text-slate-400" />
                 </div>
-                <p className="text-sm font-semibold text-slate-600 mb-2">Aucun compte bancaire enregistré</p>
+                <p className="text-sm font-semibold text-slate-600 mb-2">{lang === 'en' ? 'No bank account registered' : 'Aucun compte bancaire enregistré'}</p>
                 <p className="text-xs text-slate-400 max-w-xs leading-relaxed">
-                  Ajoutez votre RIB afin de faciliter vos futurs versements et remboursements.
+                  {lang === 'en' ? 'Add your bank account to facilitate future deposits and withdrawals.' : 'Ajoutez votre RIB afin de faciliter vos futurs versements et remboursements.'}
                 </p>
                 <button
                   onClick={() => { setShowBankModal(true); setEditingBankId(null); setBankFile(null); setBankForm({ titulaire: '', iban: '', bic: '', nom_banque: '' }); }}
                   className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] transition-all"
                 >
-                  <Plus className="w-4 h-4" />Ajouter mon RIB
+                  <Plus className="w-4 h-4" />{lang === 'en' ? 'Add bank account' : 'Ajouter mon RIB'}
                 </button>
               </div>
             )}
@@ -882,7 +882,7 @@ const ClientProfile = () => {
                               </span>
                             ) : (
                               <span className="flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <CheckCircle2 className="w-3 h-3" />Vérifié
+                                <CheckCircle2 className="w-3 h-3" />{lang === 'en' ? 'Verified' : 'Vérifié'}
                               </span>
                             )}
                           </div>
@@ -896,7 +896,7 @@ const ClientProfile = () => {
                           {isBankPending(ba) && (
                             <p className="text-[11px] text-amber-600 mt-1.5 flex items-center gap-1">
                               <Clock className="w-3 h-3 shrink-0" />
-                              Validation en cours — délai estimé 12 à 24h
+                              {lang === 'en' ? 'Validation in progress — estimated 12 to 24h' : 'Validation en cours — délai estimé 12 à 24h'}
                             </p>
                           )}
                         </div>
@@ -963,15 +963,15 @@ const ClientProfile = () => {
                 {/* Section — Informations du compte */}
                 <div>
                   <p className="text-xs font-bold text-[#111111] uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <CreditCard className="w-3.5 h-3.5" />Informations du compte
+                    <CreditCard className="w-3.5 h-3.5" />{lang === 'en' ? 'Account information' : 'Informations du compte'}
                   </p>
                   <div className="space-y-3">
-                    <FieldWrapper icon={UserCircle} label="Nom du titulaire">
+                    <FieldWrapper icon={UserCircle} label={lang === 'en' ? 'Account holder name' : 'Nom du titulaire'}>
                       <input
                         className={inputClass}
                         value={bankForm.titulaire}
                         onChange={e => setBankForm(p => ({ ...p, titulaire: e.target.value }))}
-                        placeholder="Prénom Nom (tel qu'indiqué sur votre RIB)"
+                        placeholder={lang === 'en' ? 'First Last (as shown on your bank statement)' : "Prénom Nom (tel qu'indiqué sur votre RIB)"}
                       />
                     </FieldWrapper>
                     <FieldWrapper icon={CreditCard} label="IBAN">
@@ -979,7 +979,7 @@ const ClientProfile = () => {
                         className={inputClass + ' font-mono tracking-wider'}
                         value={bankForm.iban}
                         onChange={e => setBankForm(p => ({ ...p, iban: e.target.value }))}
-                        placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX"
+                        placeholder="CA XX XXXX XXXX XXXX XXXX XX"
                       />
                     </FieldWrapper>
                     <FieldWrapper label="BIC / SWIFT">
@@ -987,15 +987,15 @@ const ClientProfile = () => {
                         className={inputClass + ' font-mono'}
                         value={bankForm.bic}
                         onChange={e => setBankForm(p => ({ ...p, bic: e.target.value }))}
-                        placeholder="BNPAFRPP"
+                        placeholder="ROYCCAT2"
                       />
                     </FieldWrapper>
-                    <FieldWrapper icon={Landmark} label="Nom de la banque">
+                    <FieldWrapper icon={Landmark} label={lang === 'en' ? 'Bank name' : 'Nom de la banque'}>
                       <input
                         className={inputClass}
                         value={bankForm.nom_banque}
                         onChange={e => setBankForm(p => ({ ...p, nom_banque: e.target.value }))}
-                        placeholder="BNP Paribas, Crédit Agricole, CIC..."
+                        placeholder={lang === 'en' ? 'RBC, TD, BMO, Scotiabank...' : 'BNP Paribas, Crédit Agricole, CIC...'}
                       />
                     </FieldWrapper>
                   </div>
@@ -1004,7 +1004,7 @@ const ClientProfile = () => {
                 {/* Section — Justificatif bancaire */}
                 <div>
                   <p className="text-xs font-bold text-[#111111] uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <FileText className="w-3.5 h-3.5" />Justificatif bancaire
+                    <FileText className="w-3.5 h-3.5" />{lang === 'en' ? 'Bank proof of account' : 'Justificatif bancaire'}
                   </p>
 
                   {!bankFile ? (
@@ -1019,13 +1019,13 @@ const ClientProfile = () => {
                         <UploadCloud className={`w-6 h-6 transition-colors ${bankDragOver ? 'text-[#E60000]' : 'text-slate-400'}`} />
                       </div>
                       <p className="text-sm font-semibold text-slate-700 mb-1">
-                        {bankDragOver ? 'Déposez le fichier ici' : 'Glissez-déposez votre RIB ici'}
+                        {bankDragOver ? (lang === 'en' ? 'Drop the file here' : 'Déposez le fichier ici') : (lang === 'en' ? 'Drag & drop your bank statement here' : 'Glissez-déposez votre RIB ici')}
                       </p>
-                      <p className="text-xs text-slate-400 mb-3">ou</p>
+                      <p className="text-xs text-slate-400 mb-3">{lang === 'en' ? 'or' : 'ou'}</p>
                       <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#111111] text-white text-xs font-semibold hover:bg-[#cc0000] transition-colors">
-                        <Plus className="w-3.5 h-3.5" />Sélectionner un fichier
+                        <Plus className="w-3.5 h-3.5" />{lang === 'en' ? 'Select a file' : 'Sélectionner un fichier'}
                       </span>
-                      <p className="text-xs text-slate-400 mt-3">PDF, JPG, JPEG, PNG — max 10 Mo</p>
+                      <p className="text-xs text-slate-400 mt-3">PDF, JPG, JPEG, PNG — {lang === 'en' ? 'max 10 MB' : 'max 10 Mo'}</p>
                       <input
                         ref={bankFileInputRef}
                         type="file"
@@ -1057,7 +1057,7 @@ const ClientProfile = () => {
                 <div className="flex items-start gap-3 bg-[#111111]/4 border border-[#111111]/10 rounded-2xl px-4 py-3.5">
                   <ShieldCheck className="w-4 h-4 text-[#E60000] mt-0.5 shrink-0" />
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    Pour votre sécurité, votre RIB sera vérifié par nos équipes avant son utilisation pour vos opérations bancaires. Les documents transmis sont protégés et chiffrés.
+                    {lang === 'en' ? 'For your security, your bank document will be verified by our teams before being used for your banking operations. Documents transmitted are protected and encrypted.' : 'Pour votre sécurité, votre RIB sera vérifié par nos équipes avant son utilisation pour vos opérations bancaires. Les documents transmis sont protégés et chiffrés.'}
                   </p>
                 </div>
 
@@ -1069,7 +1069,7 @@ const ClientProfile = () => {
                   onClick={() => { setShowBankModal(false); setEditingBankId(null); }}
                   className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-all"
                 >
-                  Annuler
+                  {lang === 'en' ? 'Cancel' : 'Annuler'}
                 </button>
                 <button
                   onClick={handleAddBank}
@@ -1094,64 +1094,64 @@ const ClientProfile = () => {
                 onClick={() => setShowBenefForm(!showBenefForm)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-[#111111] hover:bg-slate-50 transition-all -mt-5"
               >
-                <Plus className="w-4 h-4" />Ajouter
+                <Plus className="w-4 h-4" />{lang === 'en' ? 'Add' : 'Ajouter'}
               </button>
             </div>
             <p className="text-sm text-slate-500 mb-5">
-              Désignez les personnes ou entités qui recevront les fonds issus de vos placements.
+              {lang === 'en' ? 'Designate the persons or entities who will receive the funds from your investments.' : 'Désignez les personnes ou entités qui recevront les fonds issus de vos placements.'}
             </p>
 
             {totalParts > 0 && (
               <div className={`flex items-center gap-2 text-sm font-medium px-4 py-2.5 rounded-xl mb-4 ${totalParts === 100 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : totalParts > 100 ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
                 {totalParts === 100 ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-                Total des parts : {totalParts}% {totalParts === 100 ? '— Répartition complète' : totalParts > 100 ? '— Dépasse 100%' : `— ${100 - totalParts}% restants à attribuer`}
+                {lang === 'en' ? `Total shares: ${totalParts}% ${totalParts === 100 ? '— Allocation complete' : totalParts > 100 ? '— Exceeds 100%' : `— ${100 - totalParts}% remaining to allocate`}` : `Total des parts : ${totalParts}% ${totalParts === 100 ? '— Répartition complète' : totalParts > 100 ? '— Dépasse 100%' : `— ${100 - totalParts}% restants à attribuer`}`}
               </div>
             )}
 
             {showBenefForm && (
               <div className="border border-[#E60000]/20 rounded-2xl p-5 mb-5 bg-slate-50 space-y-4">
                 <div className="flex gap-2">
-                  <button onClick={() => setBenefForm(p => ({ ...p, type: 'personne' }))} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${benefForm.type === 'personne' ? 'bg-[#111111] text-white' : 'border border-slate-200 text-slate-600 hover:bg-white'}`}>Personne physique</button>
-                  <button onClick={() => setBenefForm(p => ({ ...p, type: 'entite' }))} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${benefForm.type === 'entite' ? 'bg-[#111111] text-white' : 'border border-slate-200 text-slate-600 hover:bg-white'}`}>Entité</button>
+                  <button onClick={() => setBenefForm(p => ({ ...p, type: 'personne' }))} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${benefForm.type === 'personne' ? 'bg-[#111111] text-white' : 'border border-slate-200 text-slate-600 hover:bg-white'}`}>{lang === 'en' ? 'Individual' : 'Personne physique'}</button>
+                  <button onClick={() => setBenefForm(p => ({ ...p, type: 'entite' }))} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${benefForm.type === 'entite' ? 'bg-[#111111] text-white' : 'border border-slate-200 text-slate-600 hover:bg-white'}`}>{lang === 'en' ? 'Entity' : 'Entité'}</button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {benefForm.type === 'personne' ? (
                     <>
-                      <FieldWrapper label="Civilité">
+                      <FieldWrapper label={lang === 'en' ? 'Title' : 'Civilité'}>
                         <Select value={benefForm.civilite} onValueChange={v => setBenefForm(p => ({ ...p, civilite: v }))}>
-                          <SelectTrigger className={inputClass}><SelectValue placeholder="Sélectionner" /></SelectTrigger>
-                          <SelectContent><SelectItem value="Monsieur">Monsieur</SelectItem><SelectItem value="Madame">Madame</SelectItem></SelectContent>
+                          <SelectTrigger className={inputClass}><SelectValue placeholder={lang === 'en' ? 'Select' : 'Sélectionner'} /></SelectTrigger>
+                          <SelectContent><SelectItem value="Monsieur">{lang === 'en' ? 'Mr.' : 'Monsieur'}</SelectItem><SelectItem value="Madame">{lang === 'en' ? 'Ms.' : 'Madame'}</SelectItem></SelectContent>
                         </Select>
                       </FieldWrapper>
-                      <FieldWrapper label="Nom"><input className={inputClass} value={benefForm.nom} onChange={e => setBenefForm(p => ({ ...p, nom: e.target.value }))} /></FieldWrapper>
-                      <FieldWrapper label="Prénom"><input className={inputClass} value={benefForm.prenom} onChange={e => setBenefForm(p => ({ ...p, prenom: e.target.value }))} /></FieldWrapper>
-                      <FieldWrapper label="Date de naissance"><input className={inputClass} type="date" value={benefForm.date_naissance} onChange={e => setBenefForm(p => ({ ...p, date_naissance: e.target.value }))} /></FieldWrapper>
-                      <FieldWrapper label="Lien de parenté"><input className={inputClass} value={benefForm.lien_parente} onChange={e => setBenefForm(p => ({ ...p, lien_parente: e.target.value }))} placeholder="Conjoint, enfant..." /></FieldWrapper>
-                      <FieldWrapper label="Téléphone"><input className={inputClass} value={benefForm.telephone} onChange={e => setBenefForm(p => ({ ...p, telephone: e.target.value }))} /></FieldWrapper>
+                      <FieldWrapper label={lang === 'en' ? 'Last name' : 'Nom'}><input className={inputClass} value={benefForm.nom} onChange={e => setBenefForm(p => ({ ...p, nom: e.target.value }))} /></FieldWrapper>
+                      <FieldWrapper label={lang === 'en' ? 'First name' : 'Prénom'}><input className={inputClass} value={benefForm.prenom} onChange={e => setBenefForm(p => ({ ...p, prenom: e.target.value }))} /></FieldWrapper>
+                      <FieldWrapper label={lang === 'en' ? 'Date of birth' : 'Date de naissance'}><input className={inputClass} type="date" value={benefForm.date_naissance} onChange={e => setBenefForm(p => ({ ...p, date_naissance: e.target.value }))} /></FieldWrapper>
+                      <FieldWrapper label={lang === 'en' ? 'Relationship' : 'Lien de parenté'}><input className={inputClass} value={benefForm.lien_parente} onChange={e => setBenefForm(p => ({ ...p, lien_parente: e.target.value }))} placeholder={lang === 'en' ? 'Spouse, child...' : 'Conjoint, enfant...'} /></FieldWrapper>
+                      <FieldWrapper label={lang === 'en' ? 'Phone' : 'Téléphone'}><input className={inputClass} value={benefForm.telephone} onChange={e => setBenefForm(p => ({ ...p, telephone: e.target.value }))} /></FieldWrapper>
                       <FieldWrapper label="Email"><input className={inputClass} type="email" value={benefForm.email} onChange={e => setBenefForm(p => ({ ...p, email: e.target.value }))} /></FieldWrapper>
                     </>
                   ) : (
                     <>
-                      <FieldWrapper label="Raison sociale"><input className={inputClass} value={benefForm.raison_sociale} onChange={e => setBenefForm(p => ({ ...p, raison_sociale: e.target.value, nom: e.target.value }))} /></FieldWrapper>
+                      <FieldWrapper label={lang === 'en' ? 'Company name' : 'Raison sociale'}><input className={inputClass} value={benefForm.raison_sociale} onChange={e => setBenefForm(p => ({ ...p, raison_sociale: e.target.value, nom: e.target.value }))} /></FieldWrapper>
                       <FieldWrapper label="SIRET"><input className={inputClass} value={benefForm.siret} onChange={e => setBenefForm(p => ({ ...p, siret: e.target.value }))} /></FieldWrapper>
                       <FieldWrapper label="Email"><input className={inputClass} type="email" value={benefForm.email} onChange={e => setBenefForm(p => ({ ...p, email: e.target.value }))} /></FieldWrapper>
-                      <FieldWrapper label="Téléphone"><input className={inputClass} value={benefForm.telephone} onChange={e => setBenefForm(p => ({ ...p, telephone: e.target.value }))} /></FieldWrapper>
+                      <FieldWrapper label={lang === 'en' ? 'Phone' : 'Téléphone'}><input className={inputClass} value={benefForm.telephone} onChange={e => setBenefForm(p => ({ ...p, telephone: e.target.value }))} /></FieldWrapper>
                     </>
                   )}
-                  <FieldWrapper label="Adresse"><input className={inputClass} value={benefForm.adresse} onChange={e => setBenefForm(p => ({ ...p, adresse: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Code postal"><input className={inputClass} value={benefForm.code_postal} onChange={e => setBenefForm(p => ({ ...p, code_postal: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Ville"><input className={inputClass} value={benefForm.ville} onChange={e => setBenefForm(p => ({ ...p, ville: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Pays"><input className={inputClass} value={benefForm.pays} onChange={e => setBenefForm(p => ({ ...p, pays: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Part (%)"><input className={inputClass} type="number" min={0} max={100} value={benefForm.part_pourcentage} onChange={e => setBenefForm(p => ({ ...p, part_pourcentage: Number(e.target.value) }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Address' : 'Adresse'}><input className={inputClass} value={benefForm.adresse} onChange={e => setBenefForm(p => ({ ...p, adresse: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Postal code' : 'Code postal'}><input className={inputClass} value={benefForm.code_postal} onChange={e => setBenefForm(p => ({ ...p, code_postal: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'City' : 'Ville'}><input className={inputClass} value={benefForm.ville} onChange={e => setBenefForm(p => ({ ...p, ville: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Country' : 'Pays'}><input className={inputClass} value={benefForm.pays} onChange={e => setBenefForm(p => ({ ...p, pays: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Share (%)' : 'Part (%)'}><input className={inputClass} type="number" min={0} max={100} value={benefForm.part_pourcentage} onChange={e => setBenefForm(p => ({ ...p, part_pourcentage: Number(e.target.value) }))} /></FieldWrapper>
                 </div>
                 <div className="flex gap-2 justify-end">
-                  <button onClick={() => setShowBenefForm(false)} className="px-4 py-2 rounded-xl text-sm text-slate-600 hover:bg-slate-100 transition-all">Annuler</button>
+                  <button onClick={() => setShowBenefForm(false)} className="px-4 py-2 rounded-xl text-sm text-slate-600 hover:bg-slate-100 transition-all">{lang === 'en' ? 'Cancel' : 'Annuler'}</button>
                   <button
                     onClick={handleAddBenef}
                     disabled={savingBenef}
                     className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] disabled:opacity-40 transition-all"
                   >
-                    {savingBenef ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}Enregistrer
+                    {savingBenef ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}{lang === 'en' ? 'Save' : 'Enregistrer'}
                   </button>
                 </div>
               </div>
@@ -1160,7 +1160,7 @@ const ClientProfile = () => {
             {beneficiaries.length === 0 && !showBenefForm && (
               <div className="text-center py-12 text-slate-400">
                 <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                <p className="text-sm">Aucun bénéficiaire désigné</p>
+                <p className="text-sm">{lang === 'en' ? 'No designated beneficiary' : 'Aucun bénéficiaire désigné'}</p>
               </div>
             )}
             <div className="space-y-3">
@@ -1173,10 +1173,10 @@ const ClientProfile = () => {
                     <div>
                       <p className="font-semibold text-slate-800">
                         {b.type === 'entite' ? b.raison_sociale : `${b.civilite || ''} ${b.prenom || ''} ${b.nom || ''}`.trim()}
-                        <span className="ml-2 text-xs font-normal bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{b.type === 'entite' ? 'Entité' : 'Personne physique'}</span>
+                        <span className="ml-2 text-xs font-normal bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{b.type === 'entite' ? (lang === 'en' ? 'Entity' : 'Entité') : (lang === 'en' ? 'Individual' : 'Personne physique')}</span>
                       </p>
                       <p className="text-sm text-slate-500">
-                        {b.lien_parente ? `${b.lien_parente} — ` : ''}Part : <strong className="text-[#111111]">{b.part_pourcentage}%</strong>
+                        {b.lien_parente ? `${b.lien_parente} — ` : ''}{lang === 'en' ? 'Share:' : 'Part :'} <strong className="text-[#111111]">{b.part_pourcentage}%</strong>
                       </p>
                       {b.email && <p className="text-xs text-slate-400">{b.email}</p>}
                     </div>
@@ -1194,55 +1194,55 @@ const ClientProfile = () => {
         {activeTab === 'legal' && (
           <div className="p-6 sm:p-8">
             <div className="flex items-center justify-between mb-2">
-              <SectionTitle>Personne morale</SectionTitle>
+              <SectionTitle>{lang === 'en' ? 'Legal entity' : 'Personne morale'}</SectionTitle>
               <button
                 onClick={() => setShowLegalForm(!showLegalForm)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-[#111111] hover:bg-slate-50 transition-all -mt-5"
               >
-                <Plus className="w-4 h-4" />Ajouter
+                <Plus className="w-4 h-4" />{lang === 'en' ? 'Add' : 'Ajouter'}
               </button>
             </div>
             <p className="text-sm text-slate-500 mb-5">
-              Renseignez les informations de votre société ou structure juridique.
+              {lang === 'en' ? 'Enter the information for your company or legal structure.' : 'Renseignez les informations de votre société ou structure juridique.'}
             </p>
 
             {showLegalForm && (
               <div className="border border-[#E60000]/20 rounded-2xl p-5 mb-5 bg-slate-50 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FieldWrapper label="Raison sociale"><input className={inputClass} value={legalForm.raison_sociale} onChange={e => setLegalForm(p => ({ ...p, raison_sociale: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Forme juridique">
+                  <FieldWrapper label={lang === 'en' ? 'Company name' : 'Raison sociale'}><input className={inputClass} value={legalForm.raison_sociale} onChange={e => setLegalForm(p => ({ ...p, raison_sociale: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Legal form' : 'Forme juridique'}>
                     <Select value={legalForm.forme_juridique} onValueChange={v => setLegalForm(p => ({ ...p, forme_juridique: v }))}>
-                      <SelectTrigger className={inputClass}><SelectValue placeholder="Sélectionner" /></SelectTrigger>
+                      <SelectTrigger className={inputClass}><SelectValue placeholder={lang === 'en' ? 'Select' : 'Sélectionner'} /></SelectTrigger>
                       <SelectContent>
-                        {['SAS', 'SARL', 'SA', 'SCI', 'EURL', 'Auto-entrepreneur', 'Association', 'Autre'].map(f => (
+                        {['SAS', 'SARL', 'SA', 'SCI', 'EURL', 'Auto-entrepreneur', 'Association', lang === 'en' ? 'Other' : 'Autre'].map(f => (
                           <SelectItem key={f} value={f}>{f}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </FieldWrapper>
                   <FieldWrapper label="SIRET"><input className={inputClass} value={legalForm.siret} onChange={e => setLegalForm(p => ({ ...p, siret: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="N° RCS"><input className={inputClass} value={legalForm.numero_rcs} onChange={e => setLegalForm(p => ({ ...p, numero_rcs: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper icon={MapPin} label="Adresse du siège"><input className={inputClass} value={legalForm.adresse_siege} onChange={e => setLegalForm(p => ({ ...p, adresse_siege: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Code postal"><input className={inputClass} value={legalForm.code_postal} onChange={e => setLegalForm(p => ({ ...p, code_postal: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Ville"><input className={inputClass} value={legalForm.ville} onChange={e => setLegalForm(p => ({ ...p, ville: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Pays"><input className={inputClass} value={legalForm.pays} onChange={e => setLegalForm(p => ({ ...p, pays: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Company No.' : 'N° RCS'}><input className={inputClass} value={legalForm.numero_rcs} onChange={e => setLegalForm(p => ({ ...p, numero_rcs: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper icon={MapPin} label={lang === 'en' ? 'Registered address' : 'Adresse du siège'}><input className={inputClass} value={legalForm.adresse_siege} onChange={e => setLegalForm(p => ({ ...p, adresse_siege: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Postal code' : 'Code postal'}><input className={inputClass} value={legalForm.code_postal} onChange={e => setLegalForm(p => ({ ...p, code_postal: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'City' : 'Ville'}><input className={inputClass} value={legalForm.ville} onChange={e => setLegalForm(p => ({ ...p, ville: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Country' : 'Pays'}><input className={inputClass} value={legalForm.pays} onChange={e => setLegalForm(p => ({ ...p, pays: e.target.value }))} /></FieldWrapper>
                   <div className="sm:col-span-2">
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest border-t border-slate-200 pt-4 mb-3">Représentant légal</p>
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest border-t border-slate-200 pt-4 mb-3">{lang === 'en' ? 'Legal representative' : 'Représentant légal'}</p>
                   </div>
-                  <FieldWrapper label="Nom"><input className={inputClass} value={legalForm.representant_nom} onChange={e => setLegalForm(p => ({ ...p, representant_nom: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Prénom"><input className={inputClass} value={legalForm.representant_prenom} onChange={e => setLegalForm(p => ({ ...p, representant_prenom: e.target.value }))} /></FieldWrapper>
-                  <FieldWrapper label="Fonction"><input className={inputClass} value={legalForm.representant_fonction} onChange={e => setLegalForm(p => ({ ...p, representant_fonction: e.target.value }))} placeholder="Gérant, Président..." /></FieldWrapper>
-                  <FieldWrapper icon={Phone} label="Téléphone"><input className={inputClass} value={legalForm.telephone} onChange={e => setLegalForm(p => ({ ...p, telephone: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Last name' : 'Nom'}><input className={inputClass} value={legalForm.representant_nom} onChange={e => setLegalForm(p => ({ ...p, representant_nom: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'First name' : 'Prénom'}><input className={inputClass} value={legalForm.representant_prenom} onChange={e => setLegalForm(p => ({ ...p, representant_prenom: e.target.value }))} /></FieldWrapper>
+                  <FieldWrapper label={lang === 'en' ? 'Title / Role' : 'Fonction'}><input className={inputClass} value={legalForm.representant_fonction} onChange={e => setLegalForm(p => ({ ...p, representant_fonction: e.target.value }))} placeholder={lang === 'en' ? 'Director, President...' : 'Gérant, Président...'} /></FieldWrapper>
+                  <FieldWrapper icon={Phone} label={lang === 'en' ? 'Phone' : 'Téléphone'}><input className={inputClass} value={legalForm.telephone} onChange={e => setLegalForm(p => ({ ...p, telephone: e.target.value }))} /></FieldWrapper>
                   <FieldWrapper icon={Mail} label="Email"><input className={inputClass} type="email" value={legalForm.email} onChange={e => setLegalForm(p => ({ ...p, email: e.target.value }))} /></FieldWrapper>
                 </div>
                 <div className="flex gap-2 justify-end">
-                  <button onClick={() => setShowLegalForm(false)} className="px-4 py-2 rounded-xl text-sm text-slate-600 hover:bg-slate-100 transition-all">Annuler</button>
+                  <button onClick={() => setShowLegalForm(false)} className="px-4 py-2 rounded-xl text-sm text-slate-600 hover:bg-slate-100 transition-all">{lang === 'en' ? 'Cancel' : 'Annuler'}</button>
                   <button
                     onClick={handleAddLegal}
                     disabled={savingLegal}
                     className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] disabled:opacity-40 transition-all"
                   >
-                    {savingLegal ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}Enregistrer
+                    {savingLegal ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}{lang === 'en' ? 'Save' : 'Enregistrer'}
                   </button>
                 </div>
               </div>
@@ -1266,8 +1266,8 @@ const ClientProfile = () => {
                         {le.raison_sociale}
                         <span className="ml-2 text-xs font-normal bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{le.forme_juridique}</span>
                       </p>
-                      <p className="text-sm text-slate-500">SIRET : {le.siret || 'N/A'} — RCS : {le.numero_rcs || 'N/A'}</p>
-                      <p className="text-xs text-slate-400">Représentant : {le.representant_prenom} {le.representant_nom} ({le.representant_fonction})</p>
+                      <p className="text-sm text-slate-500">SIRET : {le.siret || 'N/A'} — {lang === 'en' ? 'Co. No.' : 'RCS'} : {le.numero_rcs || 'N/A'}</p>
+                      <p className="text-xs text-slate-400">{lang === 'en' ? 'Representative' : 'Représentant'} : {le.representant_prenom} {le.representant_nom} ({le.representant_fonction})</p>
                     </div>
                   </div>
                   <button onClick={() => handleDeleteLegal(le.id)} className="text-red-400 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition-all">

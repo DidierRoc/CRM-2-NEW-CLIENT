@@ -15,9 +15,11 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { ClientRowsSkeleton } from '@/components/client-portal/ClientPageFallback';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ClientTrading = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
+  const { lang } = useLanguage();
   const { data: portfolioData, isLoading: loading, refetch, isFetching } = useTradingPortfolio(clientAccount?.lead_id);
   const [showConfirm, setShowConfirm] = useState(false);
   const [tradingActive, setTradingActive] = useState<boolean | null>(null);
@@ -77,9 +79,11 @@ const ClientTrading = () => {
           <Lock className="w-10 h-10 text-muted-foreground" />
         </div>
         <div className="text-center max-w-md">
-          <h2 className="text-xl font-bold text-foreground mb-2">Plateforme indisponible</h2>
+          <h2 className="text-xl font-bold text-foreground mb-2">{lang === 'en' ? 'Platform unavailable' : 'Plateforme indisponible'}</h2>
           <p className="text-sm text-muted-foreground">
-            L'accès à la plateforme de trading est actuellement désactivé par votre conseiller.
+            {lang === 'en'
+              ? 'Access to the trading platform is currently disabled by your advisor.'
+              : "L'accès à la plateforme de trading est actuellement désactivé par votre conseiller."}
           </p>
         </div>
       </div>
@@ -93,12 +97,16 @@ const ClientTrading = () => {
           <AlertCircle className="w-10 h-10 text-amber-500" />
         </div>
         <div className="text-center max-w-md">
-          <h2 className="text-xl font-bold text-foreground mb-2">Compte de trading non activé</h2>
+          <h2 className="text-xl font-bold text-foreground mb-2">{lang === 'en' ? 'Trading account not activated' : 'Compte de trading non activé'}</h2>
           <p className="text-sm text-muted-foreground mb-1">
-            Votre compte de trading n'a pas encore été configuré par votre conseiller.
+            {lang === 'en'
+              ? 'Your trading account has not yet been configured by your advisor.'
+              : "Votre compte de trading n'a pas encore été configuré par votre conseiller."}
           </p>
           <p className="text-xs text-muted-foreground/70">
-            Contactez votre conseiller pour qu'il active votre portefeuille de trading.
+            {lang === 'en'
+              ? 'Contact your advisor to activate your trading portfolio.'
+              : 'Contactez votre conseiller pour qu\'il active votre portefeuille de trading.'}
           </p>
         </div>
         <button
@@ -107,7 +115,7 @@ const ClientTrading = () => {
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium text-sm shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
-          {isFetching ? 'Vérification...' : 'Réessayer'}
+          {isFetching ? (lang === 'en' ? 'Checking...' : 'Vérification...') : (lang === 'en' ? 'Retry' : 'Réessayer')}
         </button>
       </div>
     );
@@ -157,11 +165,14 @@ const ClientTrading = () => {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4 max-w-2xl leading-[1.05]">
-            Votre plateforme de <span className="text-[hsl(var(--premium-gold))]">trading</span> professionnelle
+            {lang === 'en'
+              ? <>Your professional <span className="text-[hsl(var(--premium-gold))]">trading</span> platform</>
+              : <>Votre plateforme de <span className="text-[hsl(var(--premium-gold))]">trading</span> professionnelle</>}
           </h1>
           <p className="text-base md:text-lg text-white/70 max-w-xl mb-8 leading-relaxed">
-            Graphiques en temps réel, indicateurs techniques avancés et exécution instantanée.
-            Accédez aux marchés crypto, forex et matières premières.
+            {lang === 'en'
+              ? 'Real-time charts, advanced technical indicators and instant execution. Access crypto, forex and commodity markets.'
+              : 'Graphiques en temps réel, indicateurs techniques avancés et exécution instantanée. Accédez aux marchés crypto, forex et matières premières.'}
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -169,21 +180,21 @@ const ClientTrading = () => {
               onClick={() => setShowConfirm(true)}
               className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-[hsl(var(--premium-navy,222_47%_15%))] font-bold text-sm shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all"
             >
-              Accéder à la plateforme
+              {lang === 'en' ? 'Access the platform' : 'Accéder à la plateforme'}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <span className="text-xs text-white/50 flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5" />
-              Connexion sécurisée • Plein écran
+              {lang === 'en' ? 'Secure connection • Full screen' : 'Connexion sécurisée • Plein écran'}
             </span>
           </div>
 
           {/* Stats strip */}
           <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-white/10">
-            <HeroMetric icon={<Activity className="w-3.5 h-3.5" />} label="Marchés" value="50+" />
-            <HeroMetric icon={<LineChart className="w-3.5 h-3.5" />} label="Indicateurs" value="20+" hint="techniques" />
-            <HeroMetric icon={<Zap className="w-3.5 h-3.5" />} label="Latence" value="<100ms" hint="exécution" />
-            <HeroMetric icon={<TrendingUp className="w-3.5 h-3.5" />} label="Levier" value="x100" hint="maximum" />
+            <HeroMetric icon={<Activity className="w-3.5 h-3.5" />} label={lang === 'en' ? 'Markets' : 'Marchés'} value="50+" />
+            <HeroMetric icon={<LineChart className="w-3.5 h-3.5" />} label={lang === 'en' ? 'Indicators' : 'Indicateurs'} value="20+" hint={lang === 'en' ? 'technical' : 'techniques'} />
+            <HeroMetric icon={<Zap className="w-3.5 h-3.5" />} label={lang === 'en' ? 'Latency' : 'Latence'} value="<100ms" hint={lang === 'en' ? 'execution' : 'exécution'} />
+            <HeroMetric icon={<TrendingUp className="w-3.5 h-3.5" />} label={lang === 'en' ? 'Leverage' : 'Levier'} value="x100" hint={lang === 'en' ? 'maximum' : 'maximum'} />
           </div>
         </div>
       </div>
@@ -192,20 +203,26 @@ const ClientTrading = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
         <FeatureCard
           icon={<CandlestickChart className="w-5 h-5" />}
-          title="Graphiques temps réel"
-          description="Chandeliers japonais, lignes, zones — toutes les unités de temps de 1m à 1 mois."
+          title={lang === 'en' ? 'Real-time charts' : 'Graphiques temps réel'}
+          description={lang === 'en'
+            ? 'Candlestick, line, area — all time frames from 1m to 1 month.'
+            : 'Chandeliers japonais, lignes, zones — toutes les unités de temps de 1m à 1 mois.'}
           color="emerald"
         />
         <FeatureCard
           icon={<LineChart className="w-5 h-5" />}
-          title="Indicateurs avancés"
-          description="RSI, MACD, Bollinger, EMA, Stochastique et plus pour affiner vos analyses."
+          title={lang === 'en' ? 'Advanced indicators' : 'Indicateurs avancés'}
+          description={lang === 'en'
+            ? 'RSI, MACD, Bollinger, EMA, Stochastic and more to refine your analyses.'
+            : 'RSI, MACD, Bollinger, EMA, Stochastique et plus pour affiner vos analyses.'}
           color="gold"
         />
         <FeatureCard
           icon={<Zap className="w-5 h-5" />}
-          title="Exécution instantanée"
-          description="Ordres au marché, limites, stop-loss et take-profit avec confirmation immédiate."
+          title={lang === 'en' ? 'Instant execution' : 'Exécution instantanée'}
+          description={lang === 'en'
+            ? 'Market, limit, stop-loss and take-profit orders with immediate confirmation.'
+            : 'Ordres au marché, limites, stop-loss et take-profit avec confirmation immédiate.'}
           color="primary"
         />
       </div>
@@ -213,16 +230,17 @@ const ClientTrading = () => {
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Basculer vers la plateforme de trading</AlertDialogTitle>
+            <AlertDialogTitle>{lang === 'en' ? 'Switch to the trading platform' : 'Basculer vers la plateforme de trading'}</AlertDialogTitle>
             <AlertDialogDescription>
-              Vous allez quitter votre espace client pour accéder à la plateforme de trading en plein écran.
-              Vous pourrez revenir à votre espace client à tout moment.
+              {lang === 'en'
+                ? 'You are about to leave your client portal and access the full-screen trading platform. You can return to your client portal at any time.'
+                : 'Vous allez quitter votre espace client pour accéder à la plateforme de trading en plein écran. Vous pourrez revenir à votre espace client à tout moment.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogCancel>{lang === 'en' ? 'Cancel' : 'Annuler'}</AlertDialogCancel>
             <AlertDialogAction onClick={() => navigate('/client/trading/platform')}>
-              Confirmer
+              {lang === 'en' ? 'Confirm' : 'Confirmer'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

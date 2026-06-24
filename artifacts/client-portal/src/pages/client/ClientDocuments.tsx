@@ -9,25 +9,21 @@ import { toast } from 'sonner';
 import { useClientDocuments } from '@/hooks/useClientData';
 import { useQueryClient } from '@tanstack/react-query';
 import { ClientRowsSkeleton } from '@/components/client-portal/ClientPageFallback';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-/**
- * Récupère le contenu du fichier en tant que Blob via le Storage SDK authentifié.
- * Le crmSupabaseClient injecte le Bearer token CRM sur chaque requête (crmFetch),
- * donc le bucket privé lead-documents est accessible sans URL signée.
- */
 async function fetchDocBlob(path: string): Promise<Blob> {
   const { data, error } = await supabase.storage
     .from('lead-documents')
     .download(path);
   if (error || !data) {
-    console.error('[docs] storage.download error:', error?.message, 'path:', path);
-    throw new Error(error?.message || 'Impossible de charger le fichier');
+    throw new Error(error?.message || 'Cannot load file');
   }
   return data;
 }
 
 const ClientDocuments = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
+  const { lang } = useLanguage();
   const { data: documents = [], isLoading: loading } = useClientDocuments(clientAccount?.lead_id);
   const [uploading, setUploading] = useState(false);
   const [actionDocId, setActionDocId] = useState<string | null>(null);
@@ -38,7 +34,6 @@ const ClientDocuments = () => {
     logConnection(clientAccount?.id, 'page_view', 'Mes Documents');
   }, []);
 
-  // ── UPLOAD ────────────────────────────────────────────────────────────
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0 || !clientAccount?.lead_id) return;
@@ -64,7 +59,7 @@ const ClientDocuments = () => {
       });
       logConnection(clientAccount.id, 'document_upload', `Upload de ${files.length} document(s)`);
       queryClient.invalidateQueries({ queryKey: ['client-documents'] });
-      toast.success('Document(s) uploadé(s)');
+      toast.success(lang === 'en' ? 'Document(s) uploaded' : 'Document(s) uploadé(s)');
     } catch (err: any) {
       toast.error(err.message);
     }
@@ -72,22 +67,16 @@ const ClientDocuments = () => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // ── VIEW ──────────────────────────────────────────────────────────────
   const handleView = async (doc: any) => {
-    // window.open AVANT tout await pour préserver le geste utilisateur
-    // (les navigateurs Chrome/Safari bloquent sinon l'ouverture d'onglet)
     const win = window.open('', '_blank');
     setActionDocId(`view-${doc.id}`);
     try {
       const blob = await fetchDocBlob(doc.url);
       const objUrl = URL.createObjectURL(blob);
       if (win && !win.closed) {
-        // Rediriger l'onglet vide vers le blob (same-origin → pas de blocage)
         win.location.href = objUrl;
-        // Révoquer l'URL blob après 60 s (l'onglet aura eu le temps de charger)
         setTimeout(() => URL.revokeObjectURL(objUrl), 60_000);
       } else {
-        // Popup bloqué par l'OS → téléchargement en secours
         const a = document.createElement('a');
         a.href = objUrl;
         a.download = doc.nom;
@@ -95,17 +84,16 @@ const ClientDocuments = () => {
         a.click();
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
-        toast.info('Popup bloqué — fichier téléchargé à la place');
+        toast.info(lang === 'en' ? 'Popup blocked — file downloaded instead' : 'Popup bloqué — fichier téléchargé à la place');
       }
     } catch (err: any) {
       win?.close();
-      toast.error(err?.message || 'Erreur lors de la prévisualisation');
+      toast.error(lang === 'en' ? 'Preview error' : 'Erreur lors de la prévisualisation');
     } finally {
       setActionDocId(null);
     }
   };
 
-  // ── DOWNLOAD ──────────────────────────────────────────────────────────
   const handleDownload = async (doc: any) => {
     setActionDocId(`dl-${doc.id}`);
     try {
@@ -119,7 +107,7 @@ const ClientDocuments = () => {
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
     } catch (err: any) {
-      toast.error(err?.message || 'Erreur lors du téléchargement');
+      toast.error(lang === 'en' ? 'Download error' : 'Erreur lors du téléchargement');
     } finally {
       setActionDocId(null);
     }
@@ -129,15 +117,14 @@ const ClientDocuments = () => {
 
   return (
     <div className="max-w-4xl space-y-6">
-      {/* En-tête */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-200">
             <Upload className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-800">Mes documents</h1>
-            <p className="text-sm text-slate-500">Uploadez et gérez vos pièces justificatives</p>
+            <h1 className="text-xl font-bold text-slate-800">{lang === 'en' ? 'My documents' : 'Mes documents'}</h1>
+            <p className="text-sm text-slate-500">{lang === 'en' ? 'Upload and manage your supporting documents' : 'Uploadez et gérez vos pièces justificatives'}</p>
           </div>
         </div>
         <div>
@@ -150,17 +137,16 @@ const ClientDocuments = () => {
             {uploading
               ? <Loader2 className="w-4 h-4 animate-spin mr-1" />
               : <Upload className="w-4 h-4 mr-1" />}
-            Ajouter un document
+            {lang === 'en' ? 'Add a document' : 'Ajouter un document'}
           </Button>
         </div>
       </div>
 
-      {/* Liste */}
       {documents.length === 0 ? (
         <div className="bg-white rounded-2xl p-12 border border-slate-100 shadow-sm text-center">
           <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500">Aucun document pour le moment</p>
-          <p className="text-sm text-slate-400 mt-1">Cliquez sur "Ajouter un document" pour commencer</p>
+          <p className="text-slate-500">{lang === 'en' ? 'No documents yet' : 'Aucun document pour le moment'}</p>
+          <p className="text-sm text-slate-400 mt-1">{lang === 'en' ? 'Click "Add a document" to get started' : 'Cliquez sur "Ajouter un document" pour commencer'}</p>
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -177,7 +163,7 @@ const ClientDocuments = () => {
                   <div>
                     <p className="font-medium text-slate-700 text-sm">{doc.nom}</p>
                     <p className="text-xs text-slate-400">
-                      {new Date(doc.created_at).toLocaleDateString('fr-FR', {
+                      {new Date(doc.created_at).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', {
                         day: 'numeric', month: 'short', year: 'numeric',
                       })}
                     </p>
@@ -185,27 +171,25 @@ const ClientDocuments = () => {
                 </div>
 
                 <div className="flex items-center gap-1">
-                  {/* Voir */}
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleView(doc)}
                     disabled={actionDocId !== null}
                     className="text-slate-500 hover:text-blue-600 hover:bg-blue-50"
-                    title="Prévisualiser"
+                    title={lang === 'en' ? 'Preview' : 'Prévisualiser'}
                   >
                     {actionDocId === `view-${doc.id}`
                       ? <Loader2 className="w-4 h-4 animate-spin" />
                       : <Eye className="w-4 h-4" />}
                   </Button>
-                  {/* Télécharger */}
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDownload(doc)}
                     disabled={actionDocId !== null}
                     className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                    title="Télécharger"
+                    title={lang === 'en' ? 'Download' : 'Télécharger'}
                   >
                     {actionDocId === `dl-${doc.id}`
                       ? <Loader2 className="w-4 h-4 animate-spin" />

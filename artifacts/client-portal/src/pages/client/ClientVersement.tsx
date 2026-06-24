@@ -137,10 +137,10 @@ function UploadProof({
         type: 'virement',
         url: urlData.publicUrl || path,
       });
-      toast.success('Preuve de virement envoyée ! Votre conseiller validera sous 48h.');
+      toast.success(lang === 'en' ? 'Proof submitted! Your advisor will validate within 48h.' : 'Preuve de virement envoyée ! Votre conseiller validera sous 48h.');
       setDone(true);
     } catch {
-      toast.error("Erreur lors de l'envoi. Réessayez ou contactez votre conseiller.");
+      toast.error(lang === 'en' ? "Upload error. Please retry or contact your advisor." : "Erreur lors de l'envoi. Réessayez ou contactez votre conseiller.");
     } finally {
       setUploading(false);
       if (ref.current) ref.current.value = '';
@@ -321,7 +321,7 @@ export default function ClientVersement() {
                       </div>
                       <CopyButton
                         value={ref}
-                        label="la référence"
+                        label={lang === 'en' ? 'reference' : 'la référence'}
                         copied={copied === `ref-${sub.id}`}
                         onCopy={() => copy(ref, `ref-${sub.id}`)}
                       />
@@ -444,7 +444,7 @@ export default function ClientVersement() {
                     <div className="min-w-0">
                       <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-0.5">{label}</p>
                       <p className={`text-sm font-bold text-foreground truncate ${mono ? 'font-mono tracking-wider' : ''}`}>
-                        {display || <span className="text-muted-foreground font-normal italic">Non renseigné</span>}
+                        {display || <span className="text-muted-foreground font-normal italic">{lang === 'en' ? 'Not provided' : 'Non renseigné'}</span>}
                       </p>
                     </div>
                   </div>
@@ -470,14 +470,40 @@ export default function ClientVersement() {
             <FileText className="w-5 h-5 text-[#E60000]" />
           </div>
           <div>
-            <h2 className="font-bold text-foreground">Comment effectuer votre virement</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Suivez ces étapes pour finaliser votre investissement</p>
+            <h2 className="font-bold text-foreground">{lang === 'en' ? 'How to make your transfer' : 'Comment effectuer votre virement'}</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">{lang === 'en' ? 'Follow these steps to complete your investment' : 'Suivez ces étapes pour finaliser votre investissement'}</p>
           </div>
         </div>
 
         <div className="p-6">
           <ol className="space-y-4">
-            {[
+            {(lang === 'en' ? [
+              {
+                n: '1',
+                title: 'Log in to your bank',
+                desc: 'Access your online banking portal or visit your branch to make a bank transfer.',
+                color: 'bg-[#E60000]',
+              },
+              {
+                n: '2',
+                title: 'Enter the bank details above',
+                desc: 'Fill in the IBAN, BIC and beneficiary name exactly as shown. Use the "Copy" buttons to avoid any errors.',
+                color: 'bg-[#E60000]',
+              },
+              {
+                n: '3',
+                title: 'Include the reference in the description',
+                desc: 'This field is mandatory. Without the reference, your transfer cannot be automatically linked to your contract.',
+                color: 'bg-[#c9a84c]',
+                highlight: true,
+              },
+              {
+                n: '4',
+                title: 'Send your proof of transfer',
+                desc: 'Once the transfer is done, upload your screenshot or bank statement using the "I have made my transfer" button above. Your advisor will validate within 48h.',
+                color: 'bg-emerald-600',
+              },
+            ] : [
               {
                 n: '1',
                 title: 'Connectez-vous à votre banque',
@@ -503,7 +529,7 @@ export default function ClientVersement() {
                 desc: 'Une fois le virement effectué, uploadez votre capture d\'écran ou relevé via le bouton "J\'ai effectué mon virement" ci-dessus. Votre conseiller validera sous 48h.',
                 color: 'bg-emerald-600',
               },
-            ].map(({ n, title, desc, color, highlight }) => (
+            ]).map(({ n, title, desc, color, highlight }) => (
               <li key={n} className={`flex gap-4 ${highlight ? 'relative' : ''}`}>
                 {highlight && (
                   <div className="absolute -inset-3 rounded-xl bg-[#c9a84c]/8 dark:bg-[#c9a84c]/5 border border-[#c9a84c]/20 pointer-events-none" />
@@ -525,7 +551,9 @@ export default function ClientVersement() {
       <div className="flex items-start gap-3 rounded-2xl bg-muted/40 border border-border/50 px-5 py-4">
         <ShieldCheck className="w-4 h-4 text-[#E60000] shrink-0 mt-0.5" />
         <p className="text-xs text-muted-foreground leading-relaxed">
-          <strong className="text-foreground">Sécurité :</strong> {branding.companyName || 'Notre société'} ne vous demandera jamais vos identifiants bancaires ni de modifier les coordonnées de virement par e-mail ou SMS. En cas de doute, contactez directement votre conseiller.
+          {lang === 'en'
+            ? <><strong className="text-foreground">Security:</strong> {branding.companyName || 'Our company'} will never ask for your banking credentials or ask you to change transfer details by email or SMS. If in doubt, contact your advisor directly.</>
+            : <><strong className="text-foreground">Sécurité :</strong> {branding.companyName || 'Notre société'} ne vous demandera jamais vos identifiants bancaires ni de modifier les coordonnées de virement par e-mail ou SMS. En cas de doute, contactez directement votre conseiller.</>}
         </p>
       </div>
 
