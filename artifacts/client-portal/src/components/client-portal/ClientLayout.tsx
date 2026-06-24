@@ -506,20 +506,20 @@ const ClientLayout = () => {
             {/* Right: actions */}
             <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
               {/* Language switcher */}
-              <div className="flex items-center gap-1 mr-1">
+              <div className="flex items-center gap-1.5 mr-1">
                 <button
                   onClick={() => setLang('fr')}
                   title="Français"
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-lg transition-all duration-200 border-2 ${lang === 'fr' ? 'border-white/70 shadow-md scale-110 opacity-100' : 'border-transparent opacity-40 hover:opacity-75 hover:scale-105'}`}
+                  className={`w-8 h-8 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'fr' ? 'ring-white shadow-md scale-110' : 'ring-transparent opacity-40 hover:opacity-75 hover:scale-105'}`}
                 >
-                  🇫🇷
+                  <img src="/flag-fr.svg" alt="Français" className="w-full h-full object-cover" />
                 </button>
                 <button
                   onClick={() => setLang('en')}
                   title="English"
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-lg transition-all duration-200 border-2 ${lang === 'en' ? 'border-white/70 shadow-md scale-110 opacity-100' : 'border-transparent opacity-40 hover:opacity-75 hover:scale-105'}`}
+                  className={`w-8 h-8 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'en' ? 'ring-white shadow-md scale-110' : 'ring-transparent opacity-40 hover:opacity-75 hover:scale-105'}`}
                 >
-                  🇬🇧
+                  <img src="/flag-gb.svg" alt="English" className="w-full h-full object-cover" />
                 </button>
               </div>
               {/* Guide — desktop only */}

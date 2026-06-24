@@ -206,20 +206,20 @@ const ClientLogin = () => {
             </div>
 
             {/* Language switcher — top right of left panel */}
-            <div className="absolute top-6 right-6 flex items-center gap-1.5">
+            <div className="absolute top-6 right-6 flex items-center gap-2">
               <button
                 onClick={() => setLang('fr')}
                 title="Français"
-                className={`w-9 h-9 rounded-full flex items-center justify-center text-xl transition-all duration-200 border-2 ${lang === 'fr' ? 'border-white/80 shadow-lg scale-110 opacity-100' : 'border-transparent opacity-50 hover:opacity-80 hover:scale-105'}`}
+                className={`w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'fr' ? 'ring-white shadow-lg scale-110' : 'ring-transparent opacity-45 hover:opacity-80 hover:scale-105'}`}
               >
-                🇫🇷
+                <img src="/flag-fr.svg" alt="Français" className="w-full h-full object-cover" />
               </button>
               <button
                 onClick={() => setLang('en')}
                 title="English"
-                className={`w-9 h-9 rounded-full flex items-center justify-center text-xl transition-all duration-200 border-2 ${lang === 'en' ? 'border-white/80 shadow-lg scale-110 opacity-100' : 'border-transparent opacity-50 hover:opacity-80 hover:scale-105'}`}
+                className={`w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'en' ? 'ring-white shadow-lg scale-110' : 'ring-transparent opacity-45 hover:opacity-80 hover:scale-105'}`}
               >
-                🇬🇧
+                <img src="/flag-gb.svg" alt="English" className="w-full h-full object-cover" />
               </button>
             </div>
 
