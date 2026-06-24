@@ -111,8 +111,30 @@ const FILTERS = [
 const ClientContracts = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const leadId = clientAccount?.lead_id;
+
+  const statusLabel = (status: string) => {
+    if (lang === 'en') {
+      const enLabels: Record<string, string> = {
+        pending_signature: 'To sign',
+        signed: 'Signed',
+        pending_payment: 'Awaiting payment',
+        pending_validation: 'Under review',
+        active: 'Active',
+        closed: 'Closed',
+      };
+      return enLabels[status] || status;
+    }
+    return STATUS_CONFIG[status]?.label || status;
+  };
+
+  const FILTERS_I18N = [
+    { key: 'all', label: lang === 'en' ? 'All' : 'Tous' },
+    { key: 'active', label: lang === 'en' ? 'Active' : 'Actifs' },
+    { key: 'pending', label: lang === 'en' ? 'Pending' : 'En attente' },
+    { key: 'closed', label: lang === 'en' ? 'Closed' : 'Clôturés' },
+  ];
 
   useEffect(() => {
     logConnection(clientAccount?.id, 'page_view', 'Mes Contrats');
@@ -358,7 +380,7 @@ const ClientContracts = () => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#c9a84c]" />
-                <span className="text-[10px] text-white/60 uppercase tracking-[0.2em] font-semibold">Espace sécurisé</span>
+                <span className="text-[10px] text-white/60 uppercase tracking-[0.2em] font-semibold">{lang === 'en' ? 'Secure space' : 'Espace sécurisé'}</span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{t.contracts.title}</h1>
               <p className="text-sm text-white/60 mt-1 max-w-md">
@@ -368,7 +390,7 @@ const ClientContracts = () => {
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <div className="text-right">
-              <p className="text-[10px] text-white/50 uppercase tracking-wider">Contrats actifs</p>
+              <p className="text-[10px] text-white/50 uppercase tracking-wider">{lang === 'en' ? 'Active contracts' : 'Contrats actifs'}</p>
               <p className="text-3xl font-bold text-white tabular-nums">{activeCount}</p>
             </div>
           </div>
@@ -382,41 +404,41 @@ const ClientContracts = () => {
             {
               icon: <FileText className="w-5 h-5 text-[#E60000]" />,
               bg: 'bg-[#E60000]/10',
-              label: 'Contrats actifs',
+              label: lang === 'en' ? 'Active contracts' : 'Contrats actifs',
               value: activeCount.toString(),
-              sub: `sur ${contracts.length} au total`,
+              sub: lang === 'en' ? `out of ${contracts.length} total` : `sur ${contracts.length} au total`,
               valueColor: '',
             },
             {
               icon: <Wallet className="w-5 h-5 text-emerald-600" />,
               bg: 'bg-emerald-500/10',
-              label: 'Capital investi',
-              value: totalCapital > 0 ? `${totalCapital.toLocaleString('fr-FR')} €` : '—',
-              sub: 'versements confirmés',
+              label: lang === 'en' ? 'Invested capital' : 'Capital investi',
+              value: totalCapital > 0 ? `${totalCapital.toLocaleString(lang === 'en' ? 'en-GB' : 'fr-FR')} €` : '—',
+              sub: lang === 'en' ? 'confirmed payments' : 'versements confirmés',
               valueColor: totalCapital > 0 ? 'text-emerald-600' : '',
             },
             {
               icon: <Clock className="w-5 h-5 text-amber-600" />,
               bg: 'bg-amber-500/10',
-              label: 'En attente de paiement',
-              value: pendingPaymentAmount > 0 ? `${pendingPaymentAmount.toLocaleString('fr-FR')} €` : '—',
-              sub: 'versements à effectuer',
+              label: lang === 'en' ? 'Awaiting payment' : 'En attente de paiement',
+              value: pendingPaymentAmount > 0 ? `${pendingPaymentAmount.toLocaleString(lang === 'en' ? 'en-GB' : 'fr-FR')} €` : '—',
+              sub: lang === 'en' ? 'transfers to complete' : 'versements à effectuer',
               valueColor: pendingPaymentAmount > 0 ? 'text-amber-600' : '',
             },
             {
               icon: <Calendar className="w-5 h-5 text-violet-600" />,
               bg: 'bg-violet-500/10',
-              label: 'Dernier contrat',
-              value: lastSignedAt ? new Date(lastSignedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—',
-              sub: 'date de signature',
+              label: lang === 'en' ? 'Latest contract' : 'Dernier contrat',
+              value: lastSignedAt ? new Date(lastSignedAt).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—',
+              sub: lang === 'en' ? 'signing date' : 'date de signature',
               valueColor: '',
             },
             {
               icon: <ShieldCheck className="w-5 h-5 text-[#E60000]" />,
               bg: 'bg-[#E60000]/10',
-              label: 'Statut global',
-              value: allOk ? 'À jour' : 'Action requise',
-              sub: allOk ? 'Tous les contrats à jour' : 'Vérifiez vos contrats',
+              label: lang === 'en' ? 'Overall status' : 'Statut global',
+              value: allOk ? (lang === 'en' ? 'Up to date' : 'À jour') : (lang === 'en' ? 'Action needed' : 'Action requise'),
+              sub: allOk ? (lang === 'en' ? 'All contracts up to date' : 'Tous les contrats à jour') : (lang === 'en' ? 'Check your contracts' : 'Vérifiez vos contrats'),
               valueColor: allOk ? 'text-emerald-600' : 'text-amber-600',
             },
           ].map((card, i) => (
@@ -441,7 +463,7 @@ const ClientContracts = () => {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Rechercher un contrat..."
+              placeholder={lang === 'en' ? 'Search a contract...' : 'Rechercher un contrat...'}
               className="w-full pl-9 pr-9 py-2.5 text-sm rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-[#E60000]/25 focus:border-[#E60000]/50 transition-all"
             />
             {search && (
@@ -452,7 +474,7 @@ const ClientContracts = () => {
           </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
             <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
-            {FILTERS.map(f => (
+            {FILTERS_I18N.map(f => (
               <button
                 key={f.key}
                 onClick={() => setActiveFilter(f.key)}
@@ -475,22 +497,24 @@ const ClientContracts = () => {
           <div className="w-20 h-20 rounded-3xl bg-[#111111]/8 dark:bg-slate-800 flex items-center justify-center mx-auto mb-6">
             <FileText className="w-10 h-10 text-slate-400" />
           </div>
-          <h3 className="text-lg font-bold text-foreground mb-2">Aucun contrat disponible</h3>
+          <h3 className="text-lg font-bold text-foreground mb-2">{lang === 'en' ? 'No contracts available' : 'Aucun contrat disponible'}</h3>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed mb-6">
-            Vous ne disposez actuellement d'aucun contrat. Vos futurs contrats d'investissement apparaîtront ici dès leur validation.
+            {lang === 'en'
+              ? 'You currently have no contracts. Your future investment contracts will appear here once validated.'
+              : 'Vous ne disposez actuellement d\'aucun contrat. Vos futurs contrats d\'investissement apparaîtront ici dès leur validation.'}
           </p>
           <button
             onClick={() => navigate('/client/products')}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
           >
-            Découvrir nos placements <ArrowRight className="w-4 h-4" />
+            {lang === 'en' ? 'Discover our products' : 'Découvrir nos placements'} <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       ) : filteredContracts.length === 0 ? (
         <div className="rounded-2xl border border-border/60 bg-card p-10 text-center">
           <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">Aucun contrat ne correspond à votre recherche.</p>
-          <button onClick={() => { setSearch(''); setActiveFilter('all'); }} className="mt-3 text-xs text-[#E60000] hover:underline">Réinitialiser les filtres</button>
+          <p className="text-sm text-muted-foreground">{lang === 'en' ? 'No contract matches your search.' : 'Aucun contrat ne correspond à votre recherche.'}</p>
+          <button onClick={() => { setSearch(''); setActiveFilter('all'); }} className="mt-3 text-xs text-[#E60000] hover:underline">{lang === 'en' ? 'Reset filters' : 'Réinitialiser les filtres'}</button>
         </div>
       ) : (
         <div className="space-y-4">
@@ -527,12 +551,12 @@ const ClientContracts = () => {
                             {product?.nom || sub?.custom_name || 'Contrat'}
                           </h3>
                           {contract?.is_joint_account && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">Compte commun</span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">{lang === 'en' ? 'Joint account' : 'Compte commun'}</span>
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground font-mono">{contractRef}</p>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Souscrit le {new Date(sub.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                          {lang === 'en' ? 'Subscribed on' : 'Souscrit le'} {new Date(sub.created_at).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
                         </p>
                       </div>
                     </div>
@@ -541,7 +565,7 @@ const ClientContracts = () => {
                     <div className="flex items-center gap-3 shrink-0">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${statusConf.bg} ${statusConf.text}`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${statusConf.dot} shrink-0`} />
-                        {statusConf.label}
+                        {statusLabel(sub.status)}
                       </span>
                     </div>
                   </div>
@@ -549,10 +573,10 @@ const ClientContracts = () => {
                   {/* Stats row */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
                     {[
-                      { label: 'Capital investi', value: displayAmount > 0 ? `${displayAmount.toLocaleString('fr-FR')} €` : '—', accent: true },
-                      { label: 'Durée', value: product?.duree || (contract?.duration_months ? `${contract.duration_months} mois` : '—') },
-                      { label: 'Taux', value: product?.interets || (contract?.interest_rate ? `${contract.interest_rate}%` : '—') },
-                      { label: 'Garantie', value: product?.risque || '—' },
+                      { label: lang === 'en' ? 'Invested capital' : 'Capital investi', value: displayAmount > 0 ? `${displayAmount.toLocaleString(lang === 'en' ? 'en-GB' : 'fr-FR')} €` : '—', accent: true },
+                      { label: lang === 'en' ? 'Duration' : 'Durée', value: product?.duree || (contract?.duration_months ? `${contract.duration_months} ${lang === 'en' ? 'months' : 'mois'}` : '—') },
+                      { label: lang === 'en' ? 'Rate' : 'Taux', value: product?.interets || (contract?.interest_rate ? `${contract.interest_rate}%` : '—') },
+                      { label: lang === 'en' ? 'Guarantee' : 'Garantie', value: product?.risque || '—' },
                     ].map((stat, i) => (
                       <div key={i} className={`rounded-xl p-3 ${stat.accent ? 'bg-[#111111]/6 dark:bg-slate-800/60 border border-[#111111]/10 dark:border-slate-700' : 'bg-muted/50'}`}>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">{stat.label}</p>
@@ -571,17 +595,23 @@ const ClientContracts = () => {
                             <PartyPopper className="w-5 h-5 text-white" />
                           </div>
                           <div>
-                            <h4 className="font-bold text-base">Félicitations !</h4>
-                            <p className="text-blue-100 text-xs">Votre contrat a été signé avec succès</p>
+                            <h4 className="font-bold text-base">{lang === 'en' ? 'Congratulations!' : 'Félicitations !'}</h4>
+                            <p className="text-blue-100 text-xs">{lang === 'en' ? 'Your contract has been signed successfully' : 'Votre contrat a été signé avec succès'}</p>
                           </div>
                         </div>
                         <p className="text-sm text-blue-50 leading-relaxed">
-                          Pour finaliser votre investissement, effectuez un virement de{' '}
-                          <strong className="text-white">{sub.amount?.toLocaleString('fr-FR')} €</strong>{' '}
-                          sur le compte indiqué par votre conseiller.
+                          {lang === 'en' ? (
+                            <>To finalize your investment, make a transfer of{' '}
+                            <strong className="text-white">{sub.amount?.toLocaleString('fr-FR')} €</strong>{' '}
+                            to the account indicated by your advisor.</>
+                          ) : (
+                            <>Pour finaliser votre investissement, effectuez un virement de{' '}
+                            <strong className="text-white">{sub.amount?.toLocaleString('fr-FR')} €</strong>{' '}
+                            sur le compte indiqué par votre conseiller.</>
+                          )}
                         </p>
                         <div className="bg-white/15 rounded-lg p-3 border border-white/20 text-xs text-blue-100">
-                          Pour des raisons de <strong className="text-white">traçabilité</strong>, uploadez votre preuve de virement (capture d'écran, relevé bancaire).
+                          {lang === 'en' ? <>For <strong className="text-white">traceability</strong> purposes, upload your transfer proof (screenshot, bank statement).</> : <>Pour des raisons de <strong className="text-white">traçabilité</strong>, uploadez votre preuve de virement (capture d'écran, relevé bancaire).</>}
                         </div>
                         <Button
                           size="sm"
@@ -590,9 +620,9 @@ const ClientContracts = () => {
                           onClick={() => handleUploadProof(sub.id)}
                         >
                           {uploading === sub.id ? (
-                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Envoi en cours…</>
+                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{lang === 'en' ? 'Sending…' : 'Envoi en cours…'}</>
                           ) : (
-                            <><Upload className="w-4 h-4 mr-2" />J'ai effectué le virement</>
+                            <><Upload className="w-4 h-4 mr-2" />{lang === 'en' ? 'I made the transfer' : "J'ai effectué le virement"}</>
                           )}
                         </Button>
                       </div>
@@ -604,7 +634,8 @@ const ClientContracts = () => {
                     <div className="mt-4 flex items-center gap-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40 px-4 py-3">
                       <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
                       <p className="text-sm text-emerald-800 dark:text-emerald-400">
-                        Versement confirmé le {new Date(confirmedDeposit.confirmed_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                        {lang === 'en' ? 'Deposit confirmed on' : 'Versement confirmé le'}{' '}
+                        {new Date(confirmedDeposit.confirmed_at).toLocaleDateString(lang === 'en' ? 'en-CA' : 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
                       </p>
                     </div>
                   )}
@@ -651,7 +682,7 @@ const ClientContracts = () => {
                           {downloadingId === contract.id ? (
                             <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Préparation…</>
                           ) : (
-                            <><Download className="w-3.5 h-3.5 text-emerald-600" /> Télécharger PDF</>
+                            <><Download className="w-3.5 h-3.5 text-emerald-600" /> {lang === 'en' ? 'Download PDF' : 'Télécharger PDF'}</>
                           )}
                         </button>
                       </>
@@ -763,9 +794,9 @@ const ClientContracts = () => {
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111111] text-white text-xs font-semibold hover:bg-[#cc0000] transition-colors disabled:opacity-60"
                     >
                       {downloadingId === viewContract.id ? (
-                        <><Loader2 className="w-3.5 h-3.5 animate-spin" />Génération…</>
+                        <><Loader2 className="w-3.5 h-3.5 animate-spin" />{lang === 'en' ? 'Generating…' : 'Génération…'}</>
                       ) : (
-                        <><Download className="w-3.5 h-3.5" />Télécharger PDF</>
+                        <><Download className="w-3.5 h-3.5" />{lang === 'en' ? 'Download PDF' : 'Télécharger PDF'}</>
                       )}
                     </button>
                   )}

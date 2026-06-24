@@ -25,12 +25,19 @@ import { logConnection } from '@/lib/connectionLog';
 import { callCrmApi } from '@/lib/crmApi';
 import { supabase as crmSupabase, syncCrmRealtimeAuth } from '@/lib/crmSupabaseClient';
 
-const txLabel = (type?: string) => {
-  const t = String(type || '').trim().toLowerCase();
-  if (t === 'deposit') return 'Dépôt';
-  if (t === 'withdrawal') return 'Retrait';
-  if (t === 'bonus') return 'Bonus';
-  if (t === 'interest') return 'Intérêts';
+const txLabel = (type?: string, lang?: string) => {
+  const tt = String(type || '').trim().toLowerCase();
+  if (lang === 'en') {
+    if (tt === 'deposit') return 'Deposit';
+    if (tt === 'withdrawal') return 'Withdrawal';
+    if (tt === 'bonus') return 'Bonus';
+    if (tt === 'interest') return 'Interest';
+    return 'Transaction';
+  }
+  if (tt === 'deposit') return 'Dépôt';
+  if (tt === 'withdrawal') return 'Retrait';
+  if (tt === 'bonus') return 'Bonus';
+  if (tt === 'interest') return 'Intérêts';
   return 'Transaction';
 };
 import { ClientDashboardSkeleton } from '@/components/client-portal/ClientPageFallback';
@@ -108,7 +115,7 @@ function resolveContractDuration(
 const ClientDashboard = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const leadId = clientAccount?.lead_id;
 
   const { data: bundleData, isLoading: loadingPortfolio } = useClientDashboardBundle(leadId);
@@ -633,10 +640,10 @@ const ClientDashboard = () => {
           onDownloadStatement={handleDownloadStatement}
           rightSlot={
             <div className="grid grid-cols-2 gap-3">
-              <PremiumStatCard icon={Wallet} label="Capital investi" value={portfolio.totalInvested} variant="default" delay={0} />
-              <PremiumStatCard icon={Coins} label="Intérêts cumulés" value={portfolio.totalInterests} decimals={2} variant="success" delta={{ value: performancePct, positive: performancePct >= 0 }} delay={80} />
-              <PremiumStatCard icon={BarChart3} label="Valeur du portefeuille" value={portfolio.totalValue} decimals={2} variant="accent" delay={160} />
-              <PremiumStatCard icon={Target} label="Projection fin contrats" value={portfolio.projectedInterests} decimals={2} variant="gold" hint="intérêts totaux estimés" delay={240} />
+              <PremiumStatCard icon={Wallet} label={lang === 'en' ? 'Invested capital' : 'Capital investi'} value={portfolio.totalInvested} variant="default" delay={0} />
+              <PremiumStatCard icon={Coins} label={lang === 'en' ? 'Cumulative interest' : 'Intérêts cumulés'} value={portfolio.totalInterests} decimals={2} variant="success" delta={{ value: performancePct, positive: performancePct >= 0 }} delay={80} />
+              <PremiumStatCard icon={BarChart3} label={lang === 'en' ? 'Portfolio value' : 'Valeur du portefeuille'} value={portfolio.totalValue} decimals={2} variant="accent" delay={160} />
+              <PremiumStatCard icon={Target} label={lang === 'en' ? 'Contract end projection' : 'Projection fin contrats'} value={portfolio.projectedInterests} decimals={2} variant="gold" hint={lang === 'en' ? 'estimated total interest' : 'intérêts totaux estimés'} delay={240} />
             </div>
           }
         />
@@ -648,11 +655,13 @@ const ClientDashboard = () => {
             <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="font-semibold text-foreground">
-                {pendingPayments.length} versement{pendingPayments.length > 1 ? 's' : ''} en attente
+                {lang === 'en'
+                  ? `${pendingPayments.length} payment${pendingPayments.length > 1 ? 's' : ''} pending`
+                  : `${pendingPayments.length} versement${pendingPayments.length > 1 ? 's' : ''} en attente`}
               </p>
-              <p className="text-sm text-muted-foreground mt-0.5">Effectuez vos virements pour activer vos investissements.</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{lang === 'en' ? 'Complete your transfers to activate your investments.' : 'Effectuez vos virements pour activer vos investissements.'}</p>
               <Button variant="outline" size="sm" className="mt-2" onClick={() => navigate('/client/contracts')}>
-                Voir mes contrats
+                {lang === 'en' ? 'View my contracts' : 'Voir mes contrats'}
               </Button>
             </div>
           </div>
@@ -668,16 +677,16 @@ const ClientDashboard = () => {
                 </span>
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground font-semibold mb-1">Support & contact</p>
-                  <h2 className="text-xl font-bold text-foreground">Messagerie</h2>
+                  <h2 className="text-xl font-bold text-foreground">{lang === 'en' ? 'Messages' : 'Messagerie'}</h2>
                 </div>
               </div>
               <button onClick={() => navigate('/client/help')} className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline">
-                Ouvrir <ArrowRight className="w-3.5 h-3.5" />
+                {lang === 'en' ? 'Open' : 'Ouvrir'} <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
             <div className="p-5 pt-0">
               {recentMessages.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">Aucun nouveau message</p>
+                <p className="text-sm text-muted-foreground text-center py-8">{lang === 'en' ? 'No new messages' : 'Aucun nouveau message'}</p>
               ) : (
                 <div className="divide-y divide-border/60">
                   {recentMessages.map((msg: any) => {
@@ -690,8 +699,8 @@ const ClientDashboard = () => {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between gap-2">
-                            <p className="text-sm font-semibold text-foreground truncate">{isMe ? 'Moi' : advisorName}</p>
-                            <p className="text-[11px] text-muted-foreground shrink-0">{new Date(msg.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}</p>
+                            <p className="text-sm font-semibold text-foreground truncate">{isMe ? (lang === 'en' ? 'Me' : 'Moi') : advisorName}</p>
+                            <p className="text-[11px] text-muted-foreground shrink-0">{new Date(msg.created_at).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'short' })}</p>
                           </div>
                           <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">{msg.content}</p>
                         </div>
@@ -711,18 +720,18 @@ const ClientDashboard = () => {
                   <FileText className="w-7 h-7" strokeWidth={2.2} />
                 </span>
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground font-semibold mb-1">Gérer mes contrats</p>
-                  <h2 className="text-xl font-bold text-foreground">Mes contrats</h2>
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground font-semibold mb-1">{lang === 'en' ? 'Manage my contracts' : 'Gérer mes contrats'}</p>
+                  <h2 className="text-xl font-bold text-foreground">{lang === 'en' ? 'My contracts' : 'Mes contrats'}</h2>
                 </div>
               </div>
               <button onClick={() => navigate('/client/contracts')} className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline">
-                Tout voir <ArrowRight className="w-3.5 h-3.5" />
+                {lang === 'en' ? 'View all' : 'Tout voir'} <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
             <div className="p-5 pt-0">
               {(() => {
                 const visibleContracts = (contractsList || []).filter((sub: any) => sub?.status !== 'closed' && sub?.status !== 'cancelled');
-                if (visibleContracts.length === 0) return <p className="text-sm text-muted-foreground text-center py-8">Aucun contrat pour le moment</p>;
+                if (visibleContracts.length === 0) return <p className="text-sm text-muted-foreground text-center py-8">{lang === 'en' ? 'No contracts yet' : 'Aucun contrat pour le moment'}</p>;
                 return (
                   <div className="divide-y divide-border/60">
                     {visibleContracts.slice(0, 10).map((sub: any) => {
@@ -770,8 +779,8 @@ const ClientDashboard = () => {
                   <Briefcase className="w-4 h-4 text-violet-600" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-foreground">Mes documents</h2>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Espace documentaire</p>
+                  <h2 className="text-sm font-bold text-foreground">{lang === 'en' ? 'My documents' : 'Mes documents'}</h2>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{lang === 'en' ? 'Document space' : 'Espace documentaire'}</p>
                 </div>
               </div>
               <Badge variant="outline" className="text-[10px]">{documents.length} doc{documents.length !== 1 ? 's' : ''}</Badge>
@@ -782,7 +791,7 @@ const ClientDashboard = () => {
                   <div className="w-14 h-14 rounded-2xl bg-violet-500/8 flex items-center justify-center">
                     <Briefcase className="w-7 h-7 text-violet-300" />
                   </div>
-                  <p className="text-sm text-muted-foreground">Aucun document</p>
+                  <p className="text-sm text-muted-foreground">{lang === 'en' ? 'No documents' : 'Aucun document'}</p>
                 </div>
               ) : (
                 <div className="divide-y divide-border/50">
@@ -795,7 +804,7 @@ const ClientDashboard = () => {
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-foreground truncate">{doc.title || doc.name || doc.file_name || 'Document'}</p>
                           <p className="text-[10px] text-muted-foreground">
-                            {doc.created_at ? new Date(doc.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : ''}
+                            {doc.created_at ? new Date(doc.created_at).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : ''}
                           </p>
                         </div>
                       </div>
@@ -843,8 +852,8 @@ const ClientDashboard = () => {
                   <History className="w-4 h-4 text-amber-600" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-foreground">Historique des transactions</h2>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Relevé de compte</p>
+                  <h2 className="text-sm font-bold text-foreground">{lang === 'en' ? 'Transaction history' : 'Historique des transactions'}</h2>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{lang === 'en' ? 'Account statement' : 'Relevé de compte'}</p>
                 </div>
               </div>
               <Badge variant="outline" className="text-[10px]">{transactions.length} op.</Badge>
@@ -855,7 +864,7 @@ const ClientDashboard = () => {
                   <div className="w-14 h-14 rounded-2xl bg-amber-500/8 flex items-center justify-center">
                     <History className="w-7 h-7 text-amber-300" />
                   </div>
-                  <p className="text-sm text-muted-foreground">Aucune transaction</p>
+                  <p className="text-sm text-muted-foreground">{lang === 'en' ? 'No transactions' : 'Aucune transaction'}</p>
                 </div>
               ) : (
                 <div className="divide-y divide-border/50">
@@ -863,6 +872,7 @@ const ClientDashboard = () => {
                     const subAmountMap = new Map<string, number>(
                       (subscriptions as any[]).filter((s: any) => s?.id && Number(s?.amount) > 0).map((s: any) => [s.id, Number(s.amount)])
                     );
+                    const locale = lang === 'en' ? 'en-GB' : 'fr-FR';
                     return transactions.slice(0, 10).map((tx: any) => {
                       const isDeposit = tx.type === 'deposit';
                       const isWithdrawal = tx.type === 'withdrawal';
@@ -877,25 +887,25 @@ const ClientDashboard = () => {
                           <div className="flex items-center gap-3">
                             <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${txBg}`}>{txIcon}</div>
                             <div>
-                              <p className="text-xs font-semibold text-foreground">{txLabel(tx.type)}</p>
+                              <p className="text-xs font-semibold text-foreground">{txLabel(tx.type, lang)}</p>
                               <p className="text-[10px] text-muted-foreground">
-                                {new Date(tx.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                {new Date(tx.created_at).toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' })}
                                 {' · '}
-                                {new Date(tx.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                                {new Date(tx.created_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
                               </p>
                               <p className="text-[10px] text-muted-foreground/50 font-mono">{txRef}</p>
                             </div>
                           </div>
                           <div className="text-right">
                             <p className={`text-sm font-bold tabular-nums ${amtColor}`}>
-                              {isWithdrawal ? '-' : '+'}{displayAmt.toLocaleString('fr-FR', { minimumFractionDigits: 0 })} €
+                              {isWithdrawal ? '-' : '+'}{displayAmt.toLocaleString(locale, { minimumFractionDigits: 0 })} €
                             </p>
                             <span className={`inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
                               tx.status === 'confirmed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
                               : tx.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
                               : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
                             }`}>
-                              {tx.status === 'confirmed' ? 'Confirmé' : tx.status === 'pending' ? 'En attente' : 'Rejeté'}
+                              {tx.status === 'confirmed' ? (lang === 'en' ? 'Confirmed' : 'Confirmé') : tx.status === 'pending' ? (lang === 'en' ? 'Pending' : 'En attente') : (lang === 'en' ? 'Rejected' : 'Rejeté')}
                             </span>
                           </div>
                         </div>
@@ -922,24 +932,26 @@ const ClientDashboard = () => {
         <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
             <p className="text-white/55 text-sm font-medium mb-1 capitalize">
-              {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              Bonjour, {clientDisplayName}
+              {lang === 'en' ? 'Hello' : 'Bonjour'}, {clientDisplayName}
             </h1>
             <p className="mt-2 text-white/65 text-sm max-w-xl leading-relaxed">
-              Bienvenue dans votre espace client sécurisé. Visualisez votre solde et l'ensemble de vos placements en temps réel.
+              {lang === 'en'
+                ? 'Welcome to your secure client space. View your balance and all your investments in real time.'
+                : "Bienvenue dans votre espace client sécurisé. Visualisez votre solde et l'ensemble de vos placements en temps réel."}
             </p>
           </div>
           <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 shrink-0">
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/25 rounded-full px-3 py-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-[#E60000] animate-pulse" />
-              <span className="text-xs font-semibold text-white/90">Espace sécurisé</span>
+              <span className="text-xs font-semibold text-white/90">{lang === 'en' ? 'Secure space' : 'Espace sécurisé'}</span>
             </div>
             {portfolio.activeSubs.length > 0 && (
               <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-3 py-1.5">
                 <Star className="w-3 h-3 text-amber-300 fill-amber-300" />
-                <span className="text-xs font-semibold text-white/80">{portfolio.activeSubs.length} placement{portfolio.activeSubs.length > 1 ? 's' : ''} actif{portfolio.activeSubs.length > 1 ? 's' : ''}</span>
+                <span className="text-xs font-semibold text-white/80">{portfolio.activeSubs.length} {lang === 'en' ? (portfolio.activeSubs.length > 1 ? 'active investments' : 'active investment') : `placement${portfolio.activeSubs.length > 1 ? 's' : ''} actif${portfolio.activeSubs.length > 1 ? 's' : ''}`}</span>
               </div>
             )}
           </div>
@@ -953,7 +965,7 @@ const ClientDashboard = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-[#E60000]/4 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">Capital investi</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">{lang === 'en' ? 'Invested capital' : 'Capital investi'}</p>
               <div className="w-11 h-11 rounded-xl bg-[#E60000]/10 flex items-center justify-center">
                 <Wallet className="w-5 h-5 text-[#E60000]" />
               </div>
@@ -969,7 +981,7 @@ const ClientDashboard = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/4 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">Valorisation actuelle</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">{lang === 'en' ? 'Current value' : 'Valorisation actuelle'}</p>
               <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-emerald-600" />
               </div>
@@ -985,7 +997,7 @@ const ClientDashboard = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-amber-500/4 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">Intérêts cumulés</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">{lang === 'en' ? 'Cumulated interest' : 'Intérêts cumulés'}</p>
               <div className="w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center">
                 <Coins className="w-5 h-5 text-amber-600" />
               </div>
@@ -1001,7 +1013,7 @@ const ClientDashboard = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-violet-500/4 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">Fonds disponibles</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">{lang === 'en' ? 'Available funds' : 'Fonds disponibles'}</p>
               <div className="w-11 h-11 rounded-xl bg-violet-500/10 flex items-center justify-center">
                 <Banknote className="w-5 h-5 text-violet-600" />
               </div>
@@ -1017,32 +1029,32 @@ const ClientDashboard = () => {
       <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900/60 dark:via-slate-900/40 dark:to-slate-900/60 px-5 py-4">
         <div className="flex items-center gap-2 mb-3">
           <Zap className="w-3.5 h-3.5 text-[#E60000]" />
-          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">Actions rapides</p>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">{lang === 'en' ? 'Quick actions' : 'Actions rapides'}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate('/client/versement')}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#E60000] text-white text-sm font-semibold hover:bg-[#cc0000] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
           >
-            <CreditCard className="w-4 h-4" /> Effectuer un versement
+            <CreditCard className="w-4 h-4" /> {lang === 'en' ? 'Make a deposit' : 'Effectuer un versement'}
           </button>
           <button
             onClick={() => navigate('/client/contracts')}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-border text-foreground text-sm font-semibold hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
           >
-            <FileText className="w-4 h-4 text-[#E60000]" /> Consulter mes contrats
+            <FileText className="w-4 h-4 text-[#E60000]" /> {lang === 'en' ? 'View my contracts' : 'Consulter mes contrats'}
           </button>
           <button
             onClick={() => navigate('/client/help')}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-border text-foreground text-sm font-semibold hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
           >
-            <MessageCircle className="w-4 h-4 text-[#E60000]" /> Contacter mon conseiller
+            <MessageCircle className="w-4 h-4 text-[#E60000]" /> {lang === 'en' ? 'Contact my advisor' : 'Contacter mon conseiller'}
           </button>
           <button
             onClick={() => navigate('/client/help')}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-border text-foreground text-sm font-semibold hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
           >
-            <CalendarDays className="w-4 h-4 text-[#E60000]" /> Prendre rendez-vous
+            <CalendarDays className="w-4 h-4 text-[#E60000]" /> {lang === 'en' ? 'Book an appointment' : 'Prendre rendez-vous'}
           </button>
         </div>
       </div>
@@ -1060,10 +1072,12 @@ const ClientDashboard = () => {
               </div>
               <div>
                 <p className="font-bold text-amber-900 dark:text-amber-200 text-base">
-                  {pendingPayments.length} versement{pendingPayments.length > 1 ? 's' : ''} en attente
+                  {pendingPayments.length} {lang === 'en' ? (pendingPayments.length > 1 ? 'pending payments' : 'pending payment') : `versement${pendingPayments.length > 1 ? 's' : ''} en attente`}
                 </p>
                 <p className="text-sm text-amber-700 dark:text-amber-400 mt-0.5">
-                  Effectuez vos virements bancaires pour activer vos investissements et commencer à générer des intérêts.
+                  {lang === 'en'
+                    ? 'Complete your bank transfers to activate your investments and start earning interest.'
+                    : 'Effectuez vos virements bancaires pour activer vos investissements et commencer à générer des intérêts.'}
                 </p>
               </div>
             </div>
@@ -1071,7 +1085,7 @@ const ClientDashboard = () => {
               onClick={() => navigate('/client/contracts')}
               className="shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 text-white text-sm font-semibold hover:bg-amber-700 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 whitespace-nowrap"
             >
-              <ArrowRight className="w-4 h-4" /> Voir mes contrats
+              <ArrowRight className="w-4 h-4" /> {lang === 'en' ? 'View contracts' : 'Voir mes contrats'}
             </button>
           </div>
         </div>
@@ -1088,12 +1102,12 @@ const ClientDashboard = () => {
                 <MessageCircle className="w-4 h-4 text-[#E60000]" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-foreground">Messagerie</h2>
+                <h2 className="text-sm font-bold text-foreground">{lang === 'en' ? 'Messages' : 'Messagerie'}</h2>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Support &amp; contact</p>
               </div>
             </div>
             <button onClick={() => navigate('/client/help')} className="flex items-center gap-1 text-xs font-semibold text-[#E60000] hover:underline">
-              Ouvrir <ChevronRight className="w-3.5 h-3.5" />
+              {lang === 'en' ? 'Open' : 'Ouvrir'} <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="flex-1 p-5">
@@ -1103,16 +1117,16 @@ const ClientDashboard = () => {
                   <MessageCircle className="w-8 h-8 text-[#E60000]/30" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-foreground mb-1">Aucun nouveau message</p>
+                  <p className="text-sm font-semibold text-foreground mb-1">{lang === 'en' ? 'No new messages' : 'Aucun nouveau message'}</p>
                   <p className="text-xs text-muted-foreground max-w-[220px] leading-relaxed">
-                    Les échanges avec votre conseiller apparaîtront ici.
+                    {lang === 'en' ? 'Your exchanges with your advisor will appear here.' : 'Les échanges avec votre conseiller apparaîtront ici.'}
                   </p>
                 </div>
                 <button
                   onClick={() => navigate('/client/help')}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#E60000]/25 text-[#E60000] text-xs font-semibold hover:bg-[#E60000]/5 transition-colors"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" /> Écrire à mon conseiller
+                  <MessageCircle className="w-3.5 h-3.5" /> {lang === 'en' ? 'Write to my advisor' : 'Écrire à mon conseiller'}
                 </button>
               </div>
             ) : (
@@ -1131,9 +1145,9 @@ const ClientDashboard = () => {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <p className="text-sm font-semibold text-foreground truncate">{isMe ? 'Moi' : advisorName}</p>
+                          <p className="text-sm font-semibold text-foreground truncate">{isMe ? (lang === 'en' ? 'Me' : 'Moi') : advisorName}</p>
                           <p className="text-[10px] text-muted-foreground shrink-0">
-                            {new Date(msg.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
+                            {new Date(msg.created_at).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'short' })}
                           </p>
                         </div>
                         <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{msg.content}</p>
@@ -1154,12 +1168,12 @@ const ClientDashboard = () => {
                 <FileText className="w-4 h-4 text-[#111111] dark:text-slate-300" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-foreground">Mes contrats</h2>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Gérer mes contrats</p>
+                <h2 className="text-sm font-bold text-foreground">{lang === 'en' ? 'My contracts' : 'Mes contrats'}</h2>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{lang === 'en' ? 'Manage contracts' : 'Gérer mes contrats'}</p>
               </div>
             </div>
             <button onClick={() => navigate('/client/contracts')} className="flex items-center gap-1 text-xs font-semibold text-[#E60000] hover:underline">
-              Tout voir <ChevronRight className="w-3.5 h-3.5" />
+              {lang === 'en' ? 'View all' : 'Tout voir'} <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="flex-1 p-5">
@@ -1173,16 +1187,16 @@ const ClientDashboard = () => {
                     <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                       <FileText className="w-8 h-8 text-slate-300 dark:text-slate-600" />
                     </div>
-                    <p className="text-sm text-muted-foreground">Aucun contrat pour le moment</p>
+                    <p className="text-sm text-muted-foreground">{lang === 'en' ? 'No contracts yet' : 'Aucun contrat pour le moment'}</p>
                   </div>
                 );
               }
               const statusBadge = (status: string) => {
-                if (status === 'active') return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">Actif</span>;
-                if (status === 'pending_payment') return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">En attente</span>;
-                if (status === 'pending_signature') return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400">À signer</span>;
-                if (status === 'pending_validation') return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">En validation</span>;
-                return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">Clôturé</span>;
+                if (status === 'active') return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">{lang === 'en' ? 'Active' : 'Actif'}</span>;
+                if (status === 'pending_payment') return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">{lang === 'en' ? 'Pending' : 'En attente'}</span>;
+                if (status === 'pending_signature') return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400">{lang === 'en' ? 'To sign' : 'À signer'}</span>;
+                if (status === 'pending_validation') return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">{lang === 'en' ? 'In review' : 'En validation'}</span>;
+                return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">{lang === 'en' ? 'Closed' : 'Clôturé'}</span>;
               };
               return (
                 <div className="divide-y divide-border/50">
@@ -1193,8 +1207,8 @@ const ClientDashboard = () => {
                     const product = sub?.products;
                     const signedAt = contract?.signed_at || sub?.signed_at;
                     const dateLabel = signedAt
-                      ? new Date(signedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
-                      : sub?.created_at ? new Date(sub.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+                      ? new Date(signedAt).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+                      : sub?.created_at ? new Date(sub.created_at).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
                     return (
                       <div key={sub.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
                         <div className="w-9 h-9 rounded-xl bg-[#111111]/8 dark:bg-slate-700 flex items-center justify-center shrink-0">
@@ -1213,7 +1227,7 @@ const ClientDashboard = () => {
                             onClick={() => handleViewContract(sub)}
                             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground hover:bg-muted/60 transition-colors"
                           >
-                            <Eye className="w-3.5 h-3.5" /> Consulter
+                            <Eye className="w-3.5 h-3.5" /> {lang === 'en' ? 'View' : 'Consulter'}
                           </button>
                           <button
                             type="button"
@@ -1248,8 +1262,8 @@ const ClientDashboard = () => {
                 <Briefcase className="w-4 h-4 text-violet-600" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-foreground">Mes documents</h2>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Espace documentaire</p>
+                <h2 className="text-sm font-bold text-foreground">{lang === 'en' ? 'My documents' : 'Mes documents'}</h2>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{lang === 'en' ? 'Document space' : 'Espace documentaire'}</p>
               </div>
             </div>
             <Badge variant="outline" className="text-[10px]">{documents.length} doc{documents.length !== 1 ? "s" : ""}</Badge>
@@ -1260,7 +1274,7 @@ const ClientDashboard = () => {
                 <div className="w-14 h-14 rounded-2xl bg-violet-500/8 flex items-center justify-center">
                   <Briefcase className="w-7 h-7 text-violet-300" />
                 </div>
-                <p className="text-sm text-muted-foreground">Aucun document</p>
+                <p className="text-sm text-muted-foreground">{lang === 'en' ? 'No documents' : 'Aucun document'}</p>
               </div>
             ) : (
               <div className="divide-y divide-border/50">
@@ -1323,8 +1337,8 @@ const ClientDashboard = () => {
                 <History className="w-4 h-4 text-amber-600" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-foreground">Historique des transactions</h2>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Relevé de compte</p>
+                <h2 className="text-sm font-bold text-foreground">{lang === 'en' ? 'Transaction history' : 'Historique des transactions'}</h2>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{lang === 'en' ? 'Account statement' : 'Relevé de compte'}</p>
               </div>
             </div>
             <Badge variant="outline" className="text-[10px]">{transactions.length} op.</Badge>
@@ -1335,7 +1349,7 @@ const ClientDashboard = () => {
                 <div className="w-14 h-14 rounded-2xl bg-amber-500/8 flex items-center justify-center">
                   <History className="w-7 h-7 text-amber-300" />
                 </div>
-                <p className="text-sm text-muted-foreground">Aucune transaction</p>
+                <p className="text-sm text-muted-foreground">{lang === 'en' ? 'No transactions' : 'Aucune transaction'}</p>
               </div>
             ) : (
               <div className="divide-y divide-border/50">
@@ -1343,6 +1357,7 @@ const ClientDashboard = () => {
                   const subAmountMap = new Map<string, number>(
                     (subscriptions as any[]).filter((s: any) => s?.id && Number(s?.amount) > 0).map((s: any) => [s.id, Number(s.amount)])
                   );
+                  const classicLocale = lang === 'en' ? 'en-GB' : 'fr-FR';
                   return transactions.slice(0, 10).map((tx: any) => {
                     const isDeposit = tx.type === "deposit";
                     const isWithdrawal = tx.type === "withdrawal";
@@ -1357,25 +1372,25 @@ const ClientDashboard = () => {
                         <div className="flex items-center gap-3">
                           <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${txBg}`}>{txIcon}</div>
                           <div>
-                            <p className="text-xs font-semibold text-foreground">{txLabel(tx.type)}</p>
+                            <p className="text-xs font-semibold text-foreground">{txLabel(tx.type, lang)}</p>
                             <p className="text-[10px] text-muted-foreground">
-                              {new Date(tx.created_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })}
+                              {new Date(tx.created_at).toLocaleDateString(classicLocale, { day: "2-digit", month: "short", year: "numeric" })}
                               {" · "}
-                              {new Date(tx.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                              {new Date(tx.created_at).toLocaleTimeString(classicLocale, { hour: "2-digit", minute: "2-digit" })}
                             </p>
                             <p className="text-[10px] text-muted-foreground/50 font-mono">{txRef}</p>
                           </div>
                         </div>
                         <div className="text-right">
                           <p className={`text-sm font-bold tabular-nums ${amountColor}`}>
-                            {isWithdrawal ? "−" : "+"}{displayAmount.toLocaleString("fr-FR", { minimumFractionDigits: 0 })} €
+                            {isWithdrawal ? "−" : "+"}{displayAmount.toLocaleString(classicLocale, { minimumFractionDigits: 0 })} €
                           </p>
                           <span className={`inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
                             tx.status === "confirmed" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
                             : tx.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400"
                             : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400"
                           }`}>
-                            {tx.status === "confirmed" ? "Confirmé" : tx.status === "pending" ? "En attente" : "Rejeté"}
+                            {tx.status === "confirmed" ? (lang === 'en' ? 'Confirmed' : 'Confirmé') : tx.status === "pending" ? (lang === 'en' ? 'Pending' : 'En attente') : (lang === 'en' ? 'Rejected' : 'Rejeté')}
                           </span>
                         </div>
                       </div>

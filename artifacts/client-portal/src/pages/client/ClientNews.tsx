@@ -24,13 +24,21 @@ const CATEGORY_COLORS: Record<string, string> = {
   Forex:    'bg-amber-500/10 text-amber-700 border-amber-500/20',
 };
 
-const ALL_CATEGORIES = ['Tous', 'Bourse', 'Épargne', 'Finance', 'Crypto'];
+const ALL_CATEGORIES_KEYS = ['all', 'Bourse', 'Épargne', 'Finance', 'Crypto'];
 
-const timeAgo = (dateStr: string) => {
+const timeAgo = (dateStr: string, lang: string) => {
   const now = Date.now();
   const then = new Date(dateStr).getTime();
   const diff = now - then;
   const mins = Math.floor(diff / 60000);
+  if (lang === 'en') {
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins}min ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  }
   if (mins < 1) return "À l'instant";
   if (mins < 60) return `il y a ${mins}min`;
   const hours = Math.floor(mins / 60);
@@ -69,11 +77,11 @@ async function fetchAllNews(): Promise<Article[]> {
 }
 
 const ClientNews = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [filter, setFilter] = useState<string>(t.news.all);
+  const [filter, setFilter] = useState<string>('all');
 
   const fetchNews = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -94,7 +102,7 @@ const ClientNews = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const filtered = filter === 'Tous' ? articles : articles.filter(a => a.category === filter);
+  const filtered = filter === 'all' ? articles : articles.filter(a => a.category === filter);
 
   if (loading) {
     return (
@@ -129,25 +137,30 @@ const ClientNews = () => {
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-1">
-        {ALL_CATEGORIES.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setFilter(cat)}
-            className={`px-4 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-              filter === cat
-                ? 'bg-primary text-primary-foreground shadow'
-                : 'bg-muted text-muted-foreground hover:bg-muted/80'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+        {ALL_CATEGORIES_KEYS.map(key => {
+          const label = key === 'all' ? (lang === 'en' ? 'All' : 'Tous') : key;
+          return (
+            <button
+              key={key}
+              onClick={() => setFilter(key)}
+              className={`px-4 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                filter === key
+                  ? 'bg-primary text-primary-foreground shadow'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
 
       <p className="text-sm text-muted-foreground">
-        {filtered.length} article{filtered.length > 1 ? 's' : ''} disponible{filtered.length > 1 ? 's' : ''}
+        {lang === 'en'
+          ? `${filtered.length} article${filtered.length > 1 ? 's' : ''} available`
+          : `${filtered.length} article${filtered.length > 1 ? 's' : ''} disponible${filtered.length > 1 ? 's' : ''}`}
         {filtered.length === 0 && articles.length === 0 && (
-          <span className="ml-2 text-amber-600">— chargement des flux en cours…</span>
+          <span className="ml-2 text-amber-600">{lang === 'en' ? '— loading feeds…' : '— chargement des flux en cours…'}</span>
         )}
       </p>
 
@@ -155,7 +168,7 @@ const ClientNews = () => {
         {filtered.length === 0 ? (
           <Card className="border">
             <CardContent className="py-8 text-center text-muted-foreground">
-              Aucun article disponible pour cette catégorie.
+              {lang === 'en' ? 'No articles available for this category.' : 'Aucun article disponible pour cette catégorie.'}
             </CardContent>
           </Card>
         ) : (
@@ -193,7 +206,7 @@ const ClientNews = () => {
                         {article.pubDate && (
                           <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                             <Clock className="w-3 h-3" />
-                            {timeAgo(article.pubDate)}
+                            {timeAgo(article.pubDate, lang)}
                           </span>
                         )}
                       </div>

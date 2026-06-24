@@ -250,9 +250,17 @@ const AddressAutocomplete = ({
 // ═══════════════════════════════════════════════════
 //  MAIN COMPONENT
 // ═══════════════════════════════════════════════════
+const TAB_LABELS: Record<string, { label: string; short: string; labelEn: string; shortEn: string }> = {
+  personal:      { label: 'Informations personnelles', short: 'Infos',        labelEn: 'Personal information', shortEn: 'Info' },
+  security:      { label: 'Sécurité',                  short: 'Sécurité',    labelEn: 'Security',             shortEn: 'Security' },
+  bank:          { label: 'Comptes bancaires',          short: 'Banque',       labelEn: 'Bank accounts',         shortEn: 'Bank' },
+  beneficiaries: { label: 'Bénéficiaires',             short: 'Bénéficiaires', labelEn: 'Beneficiaries',        shortEn: 'Beneficiaries' },
+  legal:         { label: 'Personne morale',            short: 'Morale',       labelEn: 'Legal entity',          shortEn: 'Legal' },
+};
+
 const ClientProfile = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<TabId>('personal');
   const [lead, setLead] = useState<any>(null);
@@ -663,8 +671,8 @@ const ClientProfile = () => {
               }`}
             >
               <Icon className="w-4 h-4" />
-              <span className="hidden sm:inline">{tab.label}</span>
-              <span className="sm:hidden">{tab.short}</span>
+              <span className="hidden sm:inline">{lang === 'en' ? (TAB_LABELS[tab.id]?.labelEn ?? tab.label) : tab.label}</span>
+              <span className="sm:hidden">{lang === 'en' ? (TAB_LABELS[tab.id]?.shortEn ?? tab.short) : tab.short}</span>
             </button>
           );
         })}
@@ -676,7 +684,7 @@ const ClientProfile = () => {
         {/* PERSONAL INFO */}
         {activeTab === 'personal' && (
           <div className="p-6 sm:p-8">
-            <SectionTitle>Identité</SectionTitle>
+            <SectionTitle>{lang === 'en' ? 'Identity' : 'Identité'}</SectionTitle>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               <FieldWrapper icon={UserCircle} label="Civilité">
                 <Select value={lead.civilite || ''} onValueChange={val => handleChange('civilite', val)}>
@@ -754,7 +762,7 @@ const ClientProfile = () => {
                 className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold shadow-md hover:bg-[#cc0000] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg shrink-0"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                Enregistrer les modifications
+                {lang === 'en' ? 'Save changes' : 'Enregistrer les modifications'}
               </button>
             </div>
           </div>
@@ -763,7 +771,7 @@ const ClientProfile = () => {
         {/* SECURITY */}
         {activeTab === 'security' && (
           <div className="p-6 sm:p-8">
-            <SectionTitle>Modifier le mot de passe</SectionTitle>
+            <SectionTitle>{lang === 'en' ? 'Change password' : 'Modifier le mot de passe'}</SectionTitle>
             <div className="max-w-md space-y-4">
               {[
                 { label: 'Mot de passe actuel', val: currentPwd, set: setCurrentPwd, show: showCurrentPwd, setShow: setShowCurrentPwd },
@@ -824,8 +832,8 @@ const ClientProfile = () => {
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold shadow-md hover:bg-[#cc0000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg shrink-0 ml-4"
               >
                 <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline">Ajouter un compte</span>
-                <span className="sm:hidden">Ajouter</span>
+                <span className="hidden sm:inline">{lang === 'en' ? 'Add account' : 'Ajouter un compte'}</span>
+                <span className="sm:hidden">{lang === 'en' ? 'Add' : 'Ajouter'}</span>
               </button>
             </div>
 
@@ -870,7 +878,7 @@ const ClientProfile = () => {
                             {/* Status badge */}
                             {isBankPending(ba) ? (
                               <span className="flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-                                <Clock className="w-3 h-3" />En attente de validation
+                                <Clock className="w-3 h-3" />{lang === 'en' ? 'Pending validation' : 'En attente de validation'}
                               </span>
                             ) : (
                               <span className="flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -939,7 +947,7 @@ const ClientProfile = () => {
               {/* Modal header */}
               <div className="sticky top-0 bg-white rounded-t-3xl border-b border-slate-100 px-6 pt-6 pb-4 flex items-start justify-between z-10">
                 <div>
-                  <h3 className="text-lg font-bold text-[#111111]">{editingBankId ? 'Modifier le compte bancaire' : 'Ajouter un compte bancaire'}</h3>
+                  <h3 className="text-lg font-bold text-[#111111]">{editingBankId ? (lang === 'en' ? 'Edit bank account' : 'Modifier le compte bancaire') : (lang === 'en' ? 'Add bank account' : 'Ajouter un compte bancaire')}</h3>
                   <p className="text-xs text-slate-500 mt-0.5">{editingBankId ? 'Modifiez les informations de votre RIB' : 'Saisissez les informations de votre RIB'}</p>
                 </div>
                 <button
@@ -1069,7 +1077,7 @@ const ClientProfile = () => {
                   className="flex-[2] flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#111111] to-[#cc0000] text-white text-sm font-semibold shadow-lg hover:shadow-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5"
                 >
                   {savingBank ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                  {editingBankId ? 'Enregistrer les modifications' : 'Enregistrer le compte bancaire'}
+                  {editingBankId ? (lang === 'en' ? 'Save changes' : 'Enregistrer les modifications') : (lang === 'en' ? 'Save bank account' : 'Enregistrer le compte bancaire')}
                 </button>
               </div>
 
@@ -1081,7 +1089,7 @@ const ClientProfile = () => {
         {activeTab === 'beneficiaries' && (
           <div className="p-6 sm:p-8">
             <div className="flex items-center justify-between mb-2">
-              <SectionTitle>Bénéficiaires désignés</SectionTitle>
+              <SectionTitle>{lang === 'en' ? 'Designated beneficiaries' : 'Bénéficiaires désignés'}</SectionTitle>
               <button
                 onClick={() => setShowBenefForm(!showBenefForm)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-[#111111] hover:bg-slate-50 transition-all -mt-5"
@@ -1243,7 +1251,7 @@ const ClientProfile = () => {
             {legalEntities.length === 0 && !showLegalForm && (
               <div className="text-center py-12 text-slate-400">
                 <Building2 className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                <p className="text-sm">Aucune personne morale enregistrée</p>
+                <p className="text-sm">{lang === 'en' ? 'No legal entity registered' : 'Aucune personne morale enregistrée'}</p>
               </div>
             )}
             <div className="space-y-3">

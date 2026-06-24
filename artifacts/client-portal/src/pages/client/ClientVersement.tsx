@@ -94,6 +94,7 @@ function useBankSettings(companyName: string) {
 function CopyButton({
   value, label, copied, onCopy,
 }: { value: string; label: string; copied: boolean; onCopy: () => void }) {
+  const { lang } = useLanguage();
   return (
     <button
       onClick={onCopy}
@@ -105,7 +106,7 @@ function CopyButton({
       }`}
     >
       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-      {copied ? 'Copié !' : `Copier ${label}`}
+      {copied ? (lang === 'en' ? 'Copied!' : 'Copié !') : (lang === 'en' ? `Copy ${label}` : `Copier ${label}`)}
     </button>
   );
 }
@@ -115,6 +116,7 @@ function CopyButton({
 function UploadProof({
   subId, leadId, subName,
 }: { subId: string; leadId: string; subName: string }) {
+  const { lang } = useLanguage();
   const [uploading, setUploading] = useState(false);
   const [done, setDone] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
@@ -149,7 +151,7 @@ function UploadProof({
     return (
       <div className="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40 rounded-xl px-4 py-3">
         <CheckCircle className="w-4 h-4 shrink-0" />
-        Preuve envoyée — votre conseiller va valider votre versement.
+        {lang === 'en' ? 'Proof submitted — your advisor will validate your payment.' : 'Preuve envoyée — votre conseiller va valider votre versement.'}
       </div>
     );
   }
@@ -163,9 +165,9 @@ function UploadProof({
         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] disabled:opacity-60 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
       >
         {uploading ? (
-          <><Loader2 className="w-4 h-4 animate-spin" />Envoi en cours…</>
+          <><Loader2 className="w-4 h-4 animate-spin" />{lang === 'en' ? 'Uploading…' : 'Envoi en cours…'}</>
         ) : (
-          <><Upload className="w-4 h-4" />J'ai effectué mon virement</>
+          <><Upload className="w-4 h-4" />{lang === 'en' ? 'I have made my transfer' : "J'ai effectué mon virement"}</>
         )}
       </button>
     </>
@@ -177,7 +179,7 @@ function UploadProof({
 export default function ClientVersement() {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const leadId = clientAccount?.lead_id;
   const { copied, copy } = useCopyToClipboard();
   const { branding } = useCompanySignature();
@@ -207,7 +209,7 @@ export default function ClientVersement() {
           onClick={() => navigate(-1)}
           className="relative inline-flex items-center gap-1.5 text-white/60 hover:text-white text-xs font-medium mb-5 transition-colors duration-200"
         >
-          <ArrowLeft className="w-3.5 h-3.5" /> Retour
+          <ArrowLeft className="w-3.5 h-3.5" /> {lang === 'en' ? 'Back' : 'Retour'}
         </button>
 
         <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
@@ -217,13 +219,15 @@ export default function ClientVersement() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <ShieldCheck className="w-3.5 h-3.5 text-[#c9a84c]" />
-              <span className="text-[10px] text-white/60 uppercase tracking-[0.2em] font-semibold">Espace sécurisé</span>
+              <span className="text-[10px] text-white/60 uppercase tracking-[0.2em] font-semibold">{lang === 'en' ? 'Secure space' : 'Espace sécurisé'}</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-              Effectuer un versement
+              {lang === 'en' ? 'Make a payment' : 'Effectuer un versement'}
             </h1>
             <p className="text-sm text-white/60 mt-1">
-              Transférez vos fonds sur le compte indiqué ci-dessous pour activer votre investissement.
+              {lang === 'en'
+                ? 'Transfer your funds to the account shown below to activate your investment.'
+                : 'Transférez vos fonds sur le compte indiqué ci-dessous pour activer votre investissement.'}
             </p>
           </div>
         </div>
@@ -235,15 +239,17 @@ export default function ClientVersement() {
           <div className="w-16 h-16 rounded-3xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-emerald-600" />
           </div>
-          <h3 className="text-lg font-bold text-foreground mb-2">Aucun versement en attente</h3>
+          <h3 className="text-lg font-bold text-foreground mb-2">{lang === 'en' ? 'No pending payments' : 'Aucun versement en attente'}</h3>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed mb-5">
-            Tous vos contrats sont à jour. Si vous souhaitez souscrire à un nouveau placement, découvrez nos produits disponibles.
+            {lang === 'en'
+              ? 'All your contracts are up to date. If you wish to subscribe to a new investment, discover our available products.'
+              : 'Tous vos contrats sont à jour. Si vous souhaitez souscrire à un nouveau placement, découvrez nos produits disponibles.'}
           </p>
           <button
             onClick={() => navigate('/client/products')}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
           >
-            Découvrir nos placements <ChevronRight className="w-4 h-4" />
+            {lang === 'en' ? 'Discover our products' : 'Découvrir nos placements'} <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -254,7 +260,11 @@ export default function ClientVersement() {
           <div className="flex items-center gap-2 px-1">
             <Clock className="w-4 h-4 text-amber-500" />
             <h2 className="text-sm font-bold text-foreground uppercase tracking-[0.12em]">
-              {isLoading ? 'Versements en attente' : `${pendingPaymentSubs.length} versement${pendingPaymentSubs.length > 1 ? 's' : ''} en attente`}
+              {isLoading
+                ? (lang === 'en' ? 'Pending payments' : 'Versements en attente')
+                : lang === 'en'
+                  ? `${pendingPaymentSubs.length} payment${pendingPaymentSubs.length > 1 ? 's' : ''} pending`
+                  : `${pendingPaymentSubs.length} versement${pendingPaymentSubs.length > 1 ? 's' : ''} en attente`}
             </h2>
           </div>
 
@@ -283,18 +293,18 @@ export default function ClientVersement() {
                         <h3 className="font-bold text-foreground">{productName}</h3>
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-200 text-amber-800 dark:bg-amber-900/60 dark:text-amber-400 uppercase tracking-wider">
                           <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                          En attente de versement
+                          {lang === 'en' ? 'Awaiting payment' : 'En attente de versement'}
                         </span>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Contrat signé le {new Date(contract?.signed_at || sub.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                        {lang === 'en' ? 'Contract signed on' : 'Contrat signé le'} {new Date(contract?.signed_at || sub.created_at).toLocaleDateString(lang === 'en' ? 'en-GB' : 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
                       </p>
                     </div>
                     <div className="text-right shrink-0">
                       <p className="text-2xl font-bold text-foreground tabular-nums">
                         {amount.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} €
                       </p>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">à virer</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{lang === 'en' ? 'to transfer' : 'à virer'}</p>
                     </div>
                   </div>
 
@@ -303,7 +313,7 @@ export default function ClientVersement() {
                     <div className="flex items-center justify-between gap-3 flex-wrap">
                       <div>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-[0.18em] font-semibold mb-1">
-                          Référence à indiquer dans le motif du virement
+                          {lang === 'en' ? 'Reference to include in the transfer description' : 'Référence à indiquer dans le motif du virement'}
                         </p>
                         <p className="font-mono font-bold text-lg text-[#111111] dark:text-white tracking-widest">
                           {ref}
@@ -319,7 +329,9 @@ export default function ClientVersement() {
                     <div className="flex items-start gap-2 mt-3 pt-3 border-t border-border/40">
                       <Info className="w-3.5 h-3.5 text-[#E60000] shrink-0 mt-0.5" />
                       <p className="text-[11px] text-muted-foreground leading-relaxed">
-                        Cette référence est <strong className="text-foreground">obligatoire</strong> dans le champ "Motif / Communication" de votre virement afin que nous puissions identifier votre paiement et activer votre investissement rapidement.
+                        {lang === 'en'
+                          ? <span>This reference is <strong className="text-foreground">mandatory</strong> in the "Purpose / Communication" field of your transfer so we can identify your payment and activate your investment quickly.</span>
+                          : <span>Cette référence est <strong className="text-foreground">obligatoire</strong> dans le champ "Motif / Communication" de votre virement afin que nous puissions identifier votre paiement et activer votre investissement rapidement.</span>}
                       </p>
                     </div>
                   </div>
@@ -344,9 +356,9 @@ export default function ClientVersement() {
             <Landmark className="w-5 h-5 text-[#111111] dark:text-slate-300" />
           </div>
           <div>
-            <h2 className="font-bold text-foreground">Coordonnées bancaires</h2>
+            <h2 className="font-bold text-foreground">{lang === 'en' ? 'Bank details' : 'Coordonnées bancaires'}</h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Effectuez votre virement sur ce compte
+              {lang === 'en' ? 'Transfer your funds to this account' : 'Effectuez votre virement sur ce compte'}
             </p>
           </div>
         </div>
@@ -363,15 +375,17 @@ export default function ClientVersement() {
             <div className="flex items-start gap-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 p-4">
               <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-foreground">Coordonnées non encore configurées</p>
+                <p className="text-sm font-semibold text-foreground">{lang === 'en' ? 'Bank details not yet configured' : 'Coordonnées non encore configurées'}</p>
                 <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-                  Les coordonnées bancaires n'ont pas encore été renseignées par votre conseiller. Contactez-le directement pour obtenir les informations de virement.
+                  {lang === 'en'
+                    ? 'The bank details have not yet been entered by your advisor. Contact them directly for transfer information.'
+                    : "Les coordonnées bancaires n'ont pas encore été renseignées par votre conseiller. Contactez-le directement pour obtenir les informations de virement."}
                 </p>
                 <button
                   onClick={() => navigate('/client/help')}
                   className="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold text-[#E60000] hover:underline"
                 >
-                  Contacter mon conseiller <ChevronRight className="w-3 h-3" />
+                  {lang === 'en' ? 'Contact my advisor' : 'Contacter mon conseiller'} <ChevronRight className="w-3 h-3" />
                 </button>
               </div>
             </div>
@@ -380,7 +394,7 @@ export default function ClientVersement() {
               {[
                 {
                   key: 'beneficiary',
-                  label: 'Bénéficiaire',
+                  label: lang === 'en' ? 'Beneficiary' : 'Bénéficiaire',
                   value: bank?.beneficiary || branding.companyName,
                   display: bank?.beneficiary || branding.companyName,
                   mono: false,
@@ -404,7 +418,7 @@ export default function ClientVersement() {
                 },
                 ...(bank?.bankName ? [{
                   key: 'bankName',
-                  label: 'Banque',
+                  label: lang === 'en' ? 'Bank' : 'Banque',
                   value: bank.bankName,
                   display: bank.bankName,
                   mono: false,
@@ -412,7 +426,7 @@ export default function ClientVersement() {
                 }] : []),
                 ...(bank?.bankAddress ? [{
                   key: 'bankAddress',
-                  label: 'Adresse de la banque',
+                  label: lang === 'en' ? 'Bank address' : 'Adresse de la banque',
                   value: bank.bankAddress,
                   display: bank.bankAddress,
                   mono: false,
