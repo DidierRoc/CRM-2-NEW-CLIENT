@@ -16,6 +16,7 @@ import {
 import { toast } from 'sonner';
 import { track } from '@/lib/clientTracking';
 import { logConnection } from '@/lib/connectionLog';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ContractSource {
   id: string;
@@ -46,20 +47,18 @@ interface Props {
   onSuccess: () => void;
 }
 
-// Process steps shown on the landing screen
-const PROCESS_STEPS = [
-  { num: 1, label: 'Demande envoyée', desc: 'Votre demande est transmise', icon: Send },
-  { num: 2, label: 'Vérification', desc: 'Contrôle KYC / AML', icon: ShieldCheck },
-  { num: 3, label: 'Validation bancaire', desc: 'Autorisation de virement', icon: Landmark },
-  { num: 4, label: 'Virement en cours', desc: 'Transfert initié', icon: ArrowRight },
-  { num: 5, label: 'Fonds crédités', desc: 'Disponibles sur votre compte', icon: CheckCircle2 },
+const getProcessSteps = (lang: string) => [
+  { num: 1, label: lang === 'en' ? 'Request sent' : 'Demande envoyée', desc: lang === 'en' ? 'Your request is transmitted' : 'Votre demande est transmise', icon: Send },
+  { num: 2, label: lang === 'en' ? 'Verification' : 'Vérification', desc: 'KYC / AML', icon: ShieldCheck },
+  { num: 3, label: lang === 'en' ? 'Bank approval' : 'Validation bancaire', desc: lang === 'en' ? 'Transfer authorization' : 'Autorisation de virement', icon: Landmark },
+  { num: 4, label: lang === 'en' ? 'Transfer in progress' : 'Virement en cours', desc: lang === 'en' ? 'Transfer initiated' : 'Transfert initié', icon: ArrowRight },
+  { num: 5, label: lang === 'en' ? 'Funds credited' : 'Fonds crédités', desc: lang === 'en' ? 'Available in your account' : 'Disponibles sur votre compte', icon: CheckCircle2 },
 ];
 
-// Form steps
-const FORM_STEPS = [
-  { title: 'Montant & Source', icon: Wallet },
-  { title: 'Compte bancaire', icon: CreditCard },
-  { title: 'Confirmation', icon: ShieldCheck },
+const getFormSteps = (lang: string) => [
+  { title: lang === 'en' ? 'Amount & Source' : 'Montant & Source', icon: Wallet },
+  { title: lang === 'en' ? 'Bank account' : 'Compte bancaire', icon: CreditCard },
+  { title: lang === 'en' ? 'Confirmation' : 'Confirmation', icon: ShieldCheck },
 ];
 
 interface UnifiedSource {
@@ -82,7 +81,7 @@ const maskIban = (iban: string) => {
   return `•••• •••• •••• ${clean.slice(-4)}`;
 };
 
-const getEstimatedDate = () => {
+const getEstimatedDate = (lang: string) => {
   const d = new Date();
   let businessDays = 0;
   while (businessDays < 3) {
@@ -90,10 +89,13 @@ const getEstimatedDate = () => {
     const day = d.getDay();
     if (day !== 0 && day !== 6) businessDays++;
   }
-  return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  return d.toLocaleDateString(lang === 'en' ? 'en-CA' : 'fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 };
 
 const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSource, bankAccounts, portfolioId, onSuccess }: Props) => {
+  const { lang } = useLanguage();
+  const PROCESS_STEPS = getProcessSteps(lang);
+  const FORM_STEPS = getFormSteps(lang);
   const [showForm, setShowForm] = useState(false);
   const [formStep, setFormStep] = useState(0);
   const [selectedKey, setSelectedKey] = useState('');
@@ -115,7 +117,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
       key: `trading-${tradingSource.id}`,
       type: 'trading' as const,
       id: tradingSource.id,
-      label: 'Portefeuille Trading',
+      label: lang === 'en' ? 'Trading Portfolio' : 'Portefeuille Trading',
       available: tradingSource.withdrawable,
     }] : []),
   ];
@@ -143,7 +145,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
         bankAccountId,
         reason: reason || null,
       });
-      toast.success('Demande de retrait envoyée avec succès');
+      toast.success(lang === 'en' ? 'Withdrawal request sent successfully' : 'Demande de retrait envoyée avec succès');
       logConnection(clientAccountId, 'withdrawal_request', `Montant : ${parsedAmount} €`);
       setShowForm(false);
       setFormStep(0);
@@ -153,7 +155,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
       setReason('');
       onSuccess();
     } catch (err: any) {
-      toast.error(err.message || 'Erreur lors de la demande de retrait');
+      toast.error(err.message || (lang === 'en' ? 'Error submitting withdrawal request' : 'Erreur lors de la demande de retrait'));
     }
     setSubmitting(false);
   };
@@ -166,8 +168,8 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
         <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-3">
           <AlertCircle className="w-6 h-6 text-muted-foreground/40" />
         </div>
-        <p className="font-semibold text-foreground">Aucun investissement actif</p>
-        <p className="text-sm text-muted-foreground mt-1">Vous n'avez pas de fonds disponibles pour effectuer un retrait.</p>
+        <p className="font-semibold text-foreground">{lang === 'en' ? 'No active investment' : 'Aucun investissement actif'}</p>
+        <p className="text-sm text-muted-foreground mt-1">{lang === 'en' ? 'You have no available funds to make a withdrawal.' : "Vous n'avez pas de fonds disponibles pour effectuer un retrait."}</p>
       </div>
     );
   }
@@ -183,15 +185,15 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
               <Wallet className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="font-bold text-foreground text-base">Nouvelle demande de retrait</h2>
-              <p className="text-sm text-muted-foreground">Traitement sous 1 à 3 jours ouvrés</p>
+              <h2 className="font-bold text-foreground text-base">{lang === 'en' ? 'New withdrawal request' : 'Nouvelle demande de retrait'}</h2>
+              <p className="text-sm text-muted-foreground">{lang === 'en' ? 'Processing within 1 to 3 business days' : 'Traitement sous 1 à 3 jours ouvrés'}</p>
             </div>
           </div>
         </div>
 
         {/* 5-step process */}
         <div className="px-6 sm:px-8 py-8">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-6">Comment ça fonctionne</p>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-6">{lang === 'en' ? 'How it works' : 'Comment ça fonctionne'}</p>
           <div className="flex items-start gap-0 overflow-x-auto pb-2">
             {PROCESS_STEPS.map((step, i) => {
               const Icon = step.icon;
@@ -219,9 +221,15 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
         <div className="mx-6 sm:mx-8 mb-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-border/60 p-4 flex items-start gap-3">
           <Clock className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
           <div className="text-sm text-muted-foreground">
-            <span className="font-semibold text-foreground">Délais habituels :</span>{' '}
-            Les demandes reçues avant 12h00 sont traitées le jour même. Le virement est généralement crédité sous{' '}
-            <span className="font-semibold text-foreground">1 à 3 jours ouvrés</span> après validation.
+            {lang === 'en' ? (
+              <><span className="font-semibold text-foreground">Usual delays:</span>{' '}
+              Requests received before 12:00 are processed the same day. The transfer is generally credited within{' '}
+              <span className="font-semibold text-foreground">1 to 3 business days</span> after validation.</>
+            ) : (
+              <><span className="font-semibold text-foreground">Délais habituels :</span>{' '}
+              Les demandes reçues avant 12h00 sont traitées le jour même. Le virement est généralement crédité sous{' '}
+              <span className="font-semibold text-foreground">1 à 3 jours ouvrés</span> après validation.</>
+            )}
           </div>
         </div>
 
@@ -234,7 +242,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
             style={{ background: '#111111' }}
           >
             <Wallet className="w-4 h-4 mr-2" />
-            Effectuer un retrait
+            {lang === 'en' ? 'Make a withdrawal' : 'Effectuer un retrait'}
           </Button>
         </div>
       </div>
@@ -279,15 +287,15 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
           {formStep === 0 && (
             <div className="p-6 space-y-5">
               <div className="space-y-1">
-                <h3 className="font-bold text-foreground">Montant & Source</h3>
-                <p className="text-sm text-muted-foreground">Sélectionnez le placement source et le montant souhaité.</p>
+                <h3 className="font-bold text-foreground">{lang === 'en' ? 'Amount & Source' : 'Montant & Source'}</h3>
+                <p className="text-sm text-muted-foreground">{lang === 'en' ? 'Select the source investment and the desired amount.' : 'Sélectionnez le placement source et le montant souhaité.'}</p>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-semibold">Placement source</Label>
+                <Label className="text-sm font-semibold">{lang === 'en' ? 'Source investment' : 'Placement source'}</Label>
                 <Select value={selectedKey} onValueChange={(v) => { setSelectedKey(v); setAmount(''); }}>
                   <SelectTrigger className="h-11 rounded-xl">
-                    <SelectValue placeholder="Choisir un placement" />
+                    <SelectValue placeholder={lang === 'en' ? 'Choose an investment' : 'Choisir un placement'} />
                   </SelectTrigger>
                   <SelectContent>
                     {allSources.map(s => (
@@ -295,7 +303,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
                         <div className="flex items-center justify-between gap-4">
                           <span>{s.label}</span>
                           <span className="text-muted-foreground font-medium">
-                            {s.available.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € dispo.
+                            {s.available.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € {lang === 'en' ? 'avail.' : 'dispo.'}
                           </span>
                         </div>
                       </SelectItem>
@@ -306,7 +314,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
 
               {selected && (
                 <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 p-4 flex items-center justify-between">
-                  <span className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">Solde disponible</span>
+                  <span className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">{lang === 'en' ? 'Available balance' : 'Solde disponible'}</span>
                   <span className="text-lg font-black text-emerald-700 dark:text-emerald-300 tabular-nums">
                     {maxAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
                   </span>
@@ -314,7 +322,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
               )}
 
               <div className="space-y-2">
-                <Label className="text-sm font-semibold">Montant du retrait (€)</Label>
+                <Label className="text-sm font-semibold">{lang === 'en' ? 'Withdrawal amount (€)' : 'Montant du retrait (€)'}</Label>
                 <div className="relative">
                   <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -327,24 +335,24 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
                 </div>
                 {maxAmount > 0 && (
                   <button type="button" className="text-xs text-primary hover:underline font-medium" onClick={() => setAmount(maxAmount.toFixed(2))}>
-                    Retirer le montant maximum ({maxAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €)
+                    {lang === 'en' ? `Withdraw maximum amount (${maxAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €)` : `Retirer le montant maximum (${maxAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €)`}
                   </button>
                 )}
                 {parsedAmount > maxAmount && maxAmount > 0 && (
                   <p className="text-xs text-destructive flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" />
-                    Le montant dépasse le solde disponible.
+                    {lang === 'en' ? 'The amount exceeds the available balance.' : 'Le montant dépasse le solde disponible.'}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <Label className="text-sm font-semibold">
-                  Motif du retrait <span className="text-muted-foreground font-normal">(optionnel)</span>
+                  {lang === 'en' ? 'Withdrawal reason' : 'Motif du retrait'} <span className="text-muted-foreground font-normal">({lang === 'en' ? 'optional' : 'optionnel'})</span>
                 </Label>
                 <Textarea
                   value={reason} onChange={(e) => setReason(e.target.value)}
-                  placeholder="Ex : Achat immobilier, dépenses personnelles…"
+                  placeholder={lang === 'en' ? 'E.g.: Real estate purchase, personal expenses…' : 'Ex : Achat immobilier, dépenses personnelles…'}
                   rows={2}
                   className="rounded-xl resize-none"
                 />
@@ -356,15 +364,15 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
           {formStep === 1 && (
             <div className="p-6 space-y-5">
               <div className="space-y-1">
-                <h3 className="font-bold text-foreground">Compte bancaire de réception</h3>
-                <p className="text-sm text-muted-foreground">Sélectionnez le compte sur lequel virer les fonds.</p>
+                <h3 className="font-bold text-foreground">{lang === 'en' ? 'Receiving bank account' : 'Compte bancaire de réception'}</h3>
+                <p className="text-sm text-muted-foreground">{lang === 'en' ? 'Select the account to transfer the funds to.' : 'Sélectionnez le compte sur lequel virer les fonds.'}</p>
               </div>
 
               {bankAccounts.length === 0 ? (
                 <div className="rounded-xl bg-destructive/5 border border-destructive/20 p-4 flex items-start gap-3">
                   <AlertCircle className="w-4 h-4 text-destructive mt-0.5" />
                   <p className="text-sm text-destructive">
-                    Aucun compte bancaire enregistré. Veuillez en ajouter un dans votre profil avant d'effectuer un retrait.
+                    {lang === 'en' ? 'No bank account registered. Please add one in your profile before making a withdrawal.' : "Aucun compte bancaire enregistré. Veuillez en ajouter un dans votre profil avant d'effectuer un retrait."}
                   </p>
                 </div>
               ) : (
@@ -402,14 +410,14 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
 
               {/* Summary */}
               <div className="rounded-xl bg-muted/40 border border-border/60 p-4 space-y-2">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Récapitulatif</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'en' ? 'Summary' : 'Récapitulatif'}</p>
                 <div className="space-y-1.5 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Placement</span>
+                    <span className="text-muted-foreground">{lang === 'en' ? 'Investment' : 'Placement'}</span>
                     <span className="font-medium text-foreground">{selected?.label ?? '—'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Montant demandé</span>
+                    <span className="text-muted-foreground">{lang === 'en' ? 'Requested amount' : 'Montant demandé'}</span>
                     <span className="font-bold text-foreground tabular-nums">
                       {parsedAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
                     </span>
@@ -423,30 +431,30 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
           {formStep === 2 && (
             <div className="p-6 space-y-5">
               <div className="space-y-1">
-                <h3 className="font-bold text-foreground">Vérification de votre demande</h3>
-                <p className="text-sm text-muted-foreground">Vérifiez les informations avant de soumettre.</p>
+                <h3 className="font-bold text-foreground">{lang === 'en' ? 'Review your request' : 'Vérification de votre demande'}</h3>
+                <p className="text-sm text-muted-foreground">{lang === 'en' ? 'Check the information before submitting.' : 'Vérifiez les informations avant de soumettre.'}</p>
               </div>
 
               {/* Amount breakdown */}
               <div className="rounded-2xl overflow-hidden border border-border/60">
                 <div className="bg-muted/40 px-5 py-3 flex items-center gap-2">
                   <FileText className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-semibold text-foreground">Détail de l'opération</span>
+                  <span className="text-sm font-semibold text-foreground">{lang === 'en' ? 'Operation details' : "Détail de l'opération"}</span>
                 </div>
                 <div className="p-5 space-y-3 text-sm bg-card">
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Montant demandé</span>
+                    <span className="text-muted-foreground">{lang === 'en' ? 'Requested amount' : 'Montant demandé'}</span>
                     <span className="font-bold text-foreground tabular-nums">
                       {parsedAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Frais de virement</span>
+                    <span className="text-muted-foreground">{lang === 'en' ? 'Transfer fees' : 'Frais de virement'}</span>
                     <span className="font-semibold text-emerald-600">0,00 €</span>
                   </div>
                   <div className="h-px bg-border" />
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-foreground">Montant effectivement viré</span>
+                    <span className="font-semibold text-foreground">{lang === 'en' ? 'Amount effectively transferred' : 'Montant effectivement viré'}</span>
                     <span className="text-xl font-black text-foreground tabular-nums">
                       {parsedAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
                     </span>
@@ -457,7 +465,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
               {/* Destination account */}
               {selectedBank && (
                 <div className="rounded-xl border border-border/60 bg-card p-4">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">IBAN destinataire</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">{lang === 'en' ? 'RECIPIENT IBAN' : 'IBAN destinataire'}</p>
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
                       <Building2 className="w-5 h-5 text-muted-foreground" />
@@ -468,7 +476,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
                         {formatIban(selectedBank.iban)}
                       </p>
                       {selectedBank.titulaire && (
-                        <p className="text-xs text-muted-foreground mt-0.5">Titulaire : {selectedBank.titulaire}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{lang === 'en' ? 'Account holder' : 'Titulaire'} : {selectedBank.titulaire}</p>
                       )}
                     </div>
                   </div>
@@ -479,10 +487,10 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
               <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 p-4 flex items-start gap-3">
                 <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                 <div className="text-sm">
-                  <span className="font-semibold text-blue-800 dark:text-blue-300">Date estimée de réception :</span>
-                  <span className="text-blue-700 dark:text-blue-400"> {getEstimatedDate()}</span>
+                  <span className="font-semibold text-blue-800 dark:text-blue-300">{lang === 'en' ? 'Estimated reception date:' : 'Date estimée de réception :'}</span>
+                  <span className="text-blue-700 dark:text-blue-400"> {getEstimatedDate(lang)}</span>
                   <p className="text-blue-600/80 dark:text-blue-400/70 text-xs mt-0.5">
-                    Sous réserve de validation par notre équipe de conformité.
+                    {lang === 'en' ? 'Subject to validation by our compliance team.' : 'Sous réserve de validation par notre équipe de conformité.'}
                   </p>
                 </div>
               </div>
@@ -491,15 +499,15 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-4 flex items-start gap-3">
                 <Info className="w-4 h-4 text-slate-500 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Conformément aux obligations réglementaires (KYC/AML), votre demande sera soumise à une procédure
-                  de vérification avant exécution. Des justificatifs complémentaires peuvent être requis par notre
-                  service de conformité.
+                  {lang === 'en'
+                    ? 'In accordance with regulatory requirements (KYC/AML), your request will be subject to a verification procedure before execution. Additional supporting documents may be required by our compliance department.'
+                    : 'Conformément aux obligations réglementaires (KYC/AML), votre demande sera soumise à une procédure de vérification avant exécution. Des justificatifs complémentaires peuvent être requis par notre service de conformité.'}
                 </p>
               </div>
 
               {reason && (
                 <div className="text-sm flex justify-between">
-                  <span className="text-muted-foreground">Motif déclaré</span>
+                  <span className="text-muted-foreground">{lang === 'en' ? 'Declared reason' : 'Motif déclaré'}</span>
                   <span className="font-medium text-foreground italic">{reason}</span>
                 </div>
               )}
@@ -514,7 +522,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
               className="rounded-xl"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour
+              {lang === 'en' ? 'Back' : 'Retour'}
             </Button>
 
             {formStep < 2 ? (
@@ -523,7 +531,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
                 disabled={formStep === 0 ? !canGoStep1 : !canGoStep2}
                 className="rounded-xl"
               >
-                Continuer
+                {lang === 'en' ? 'Continue' : 'Continuer'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             ) : (
@@ -534,9 +542,9 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
                 style={{ background: '#111111' }}
               >
                 {submitting ? (
-                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Traitement…</>
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{lang === 'en' ? 'Processing…' : 'Traitement…'}</>
                 ) : (
-                  <><ShieldCheck className="w-4 h-4 mr-2" />Soumettre la demande</>
+                  <><ShieldCheck className="w-4 h-4 mr-2" />{lang === 'en' ? 'Submit request' : 'Soumettre la demande'}</>
                 )}
               </Button>
             )}
@@ -550,28 +558,28 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-primary" />
-              Confirmer le retrait
+              {lang === 'en' ? 'Confirm withdrawal' : 'Confirmer le retrait'}
             </DialogTitle>
             <DialogDescription>
-              Vous êtes sur le point de soumettre une demande de retrait définitive.
+              {lang === 'en' ? 'You are about to submit a final withdrawal request.' : 'Vous êtes sur le point de soumettre une demande de retrait définitive.'}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             <div className="rounded-xl bg-muted/50 border border-border/60 p-4 space-y-2.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Montant</span>
+                <span className="text-muted-foreground">{lang === 'en' ? 'Amount' : 'Montant'}</span>
                 <span className="font-black text-foreground text-base tabular-nums">
                   {parsedAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Placement</span>
+                <span className="text-muted-foreground">{lang === 'en' ? 'Investment' : 'Placement'}</span>
                 <span className="font-medium text-foreground">{selected?.label}</span>
               </div>
               {selectedBank && (
                 <div className="flex justify-between items-start">
-                  <span className="text-muted-foreground">Vers</span>
+                  <span className="text-muted-foreground">{lang === 'en' ? 'To' : 'Vers'}</span>
                   <div className="text-right">
                     <p className="font-medium text-foreground">{selectedBank.nom_banque}</p>
                     <p className="font-mono text-xs text-muted-foreground">{maskIban(selectedBank.iban)}</p>
@@ -579,19 +587,18 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Délai estimé</span>
-                <span className="font-medium text-foreground">1 à 3 jours ouvrés</span>
+                <span className="text-muted-foreground">{lang === 'en' ? 'Estimated delay' : 'Délai estimé'}</span>
+                <span className="font-medium text-foreground">{lang === 'en' ? '1 to 3 business days' : '1 à 3 jours ouvrés'}</span>
               </div>
             </div>
 
             <p className="text-xs text-muted-foreground text-center leading-relaxed">
-              Cette action est irréversible. La demande sera transmise à votre conseiller
-              pour validation et exécution.
+              {lang === 'en' ? 'This action is irreversible. The request will be sent to your advisor for validation and execution.' : 'Cette action est irréversible. La demande sera transmise à votre conseiller pour validation et exécution.'}
             </p>
 
             <div className="flex gap-3">
               <Button variant="outline" onClick={() => setConfirmOpen(false)} className="flex-1 rounded-xl">
-                Annuler
+                {lang === 'en' ? 'Cancel' : 'Annuler'}
               </Button>
               <Button
                 onClick={handleSubmit}
@@ -600,9 +607,9 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
                 style={{ background: '#111111' }}
               >
                 {submitting ? (
-                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Envoi…</>
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{lang === 'en' ? 'Sending…' : 'Envoi…'}</>
                 ) : (
-                  <><BadgeCheck className="w-4 h-4 mr-2" />Confirmer</>
+                  <><BadgeCheck className="w-4 h-4 mr-2" />{lang === 'en' ? 'Confirm' : 'Confirmer'}</>
                 )}
               </Button>
             </div>

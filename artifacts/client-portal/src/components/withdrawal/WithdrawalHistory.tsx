@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Clock, CheckCircle2, XCircle, Banknote, FileText, Building2, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr, enCA } from 'date-fns/locale';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface WithdrawalRequest {
   id: string;
@@ -23,16 +24,11 @@ interface Props {
   requests: WithdrawalRequest[];
 }
 
-const statusConfig: Record<string, {
-  label: string;
-  icon: any;
-  pill: string;
-  pillText: string;
-  dot: string;
-  stepActive: number;
-}> = {
+const getStatusConfig = (lang: string): Record<string, {
+  label: string; icon: any; pill: string; pillText: string; dot: string; stepActive: number;
+}> => ({
   pending: {
-    label: 'En attente',
+    label: lang === 'en' ? 'Pending' : 'En attente',
     icon: Clock,
     dot: 'bg-amber-400',
     pill: 'bg-amber-50 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-800/50',
@@ -40,7 +36,7 @@ const statusConfig: Record<string, {
     stepActive: 0,
   },
   approved: {
-    label: 'Vérification',
+    label: lang === 'en' ? 'Verification' : 'Vérification',
     icon: CheckCircle2,
     dot: 'bg-blue-400',
     pill: 'bg-blue-50 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/50',
@@ -48,7 +44,7 @@ const statusConfig: Record<string, {
     stepActive: 2,
   },
   processed: {
-    label: 'Fonds crédités',
+    label: lang === 'en' ? 'Funds credited' : 'Fonds crédités',
     icon: CheckCircle2,
     dot: 'bg-emerald-500',
     pill: 'bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800/50',
@@ -56,16 +52,14 @@ const statusConfig: Record<string, {
     stepActive: 4,
   },
   rejected: {
-    label: 'Refusé',
+    label: lang === 'en' ? 'Rejected' : 'Refusé',
     icon: XCircle,
     dot: 'bg-red-400',
     pill: 'bg-red-50 border border-red-200 dark:bg-red-950/40 dark:border-red-800/50',
     pillText: 'text-red-700 dark:text-red-400',
     stepActive: -1,
   },
-};
-
-const STEPS = ['Demande', 'Vérification', 'Validation bancaire', 'Virement', 'Fonds crédités'];
+});
 
 const formatIban = (iban: string) => {
   const clean = iban.replace(/\s/g, '');
@@ -75,6 +69,12 @@ const formatIban = (iban: string) => {
 const shortRef = (id: string) => id.slice(0, 8).toUpperCase();
 
 const WithdrawalHistory = ({ requests }: Props) => {
+  const { lang } = useLanguage();
+  const statusConfig = getStatusConfig(lang);
+  const STEPS = lang === 'en'
+    ? ['Request', 'Verification', 'Bank approval', 'Transfer', 'Funds credited']
+    : ['Demande', 'Vérification', 'Validation bancaire', 'Virement', 'Fonds crédités'];
+  const dateLocale = lang === 'en' ? enCA : fr;
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   if (requests.length === 0) {
@@ -83,8 +83,8 @@ const WithdrawalHistory = ({ requests }: Props) => {
         <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
           <FileText className="w-6 h-6 text-muted-foreground/40" />
         </div>
-        <p className="font-semibold text-foreground">Aucun retrait effectué</p>
-        <p className="text-sm text-muted-foreground mt-1">Vos demandes de retrait apparaîtront ici.</p>
+        <p className="font-semibold text-foreground">{lang === 'en' ? 'No withdrawals made' : 'Aucun retrait effectué'}</p>
+        <p className="text-sm text-muted-foreground mt-1">{lang === 'en' ? 'Your withdrawal requests will appear here.' : 'Vos demandes de retrait apparaîtront ici.'}</p>
       </div>
     );
   }
@@ -93,7 +93,7 @@ const WithdrawalHistory = ({ requests }: Props) => {
     <div className="space-y-3">
       {/* Table header */}
       <div className="hidden md:grid grid-cols-[1fr_1fr_1fr_1fr_1fr_40px] gap-4 px-4 pb-2 border-b border-border/60">
-        {['Date', 'Référence', 'Montant', 'Compte bénéficiaire', 'Statut', ''].map(h => (
+        {(lang === 'en' ? ['Date', 'Reference', 'Amount', 'Beneficiary account', 'Status', ''] : ['Date', 'Référence', 'Montant', 'Compte bénéficiaire', 'Statut', '']).map(h => (
           <p key={h} className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{h}</p>
         ))}
       </div>
@@ -126,7 +126,7 @@ const WithdrawalHistory = ({ requests }: Props) => {
                         − {Number(wr.amount).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
                       </p>
                       <p className="text-[11px] text-muted-foreground">
-                        {format(new Date(wr.created_at), 'dd MMM yyyy', { locale: fr })}
+                        {format(new Date(wr.created_at), 'dd MMM yyyy', { locale: dateLocale })}
                         {' · '}
                         <span className="font-mono">{shortRef(wr.id)}</span>
                       </p>
@@ -143,7 +143,7 @@ const WithdrawalHistory = ({ requests }: Props) => {
                 {/* Desktop table row */}
                 <div className="hidden md:grid grid-cols-[1fr_1fr_1fr_1fr_1fr_40px] gap-4 items-center px-4 py-3.5">
                   <p className="text-sm text-foreground">
-                    {format(new Date(wr.created_at), 'dd MMM yyyy', { locale: fr })}
+                    {format(new Date(wr.created_at), 'dd MMM yyyy', { locale: dateLocale })}
                   </p>
                   <p className="text-sm font-mono text-muted-foreground tracking-wider">{shortRef(wr.id)}</p>
                   <p className="text-sm font-bold text-foreground tabular-nums">
@@ -175,7 +175,7 @@ const WithdrawalHistory = ({ requests }: Props) => {
                 {/* 5-step progress */}
                 {wr.status !== 'rejected' && (
                   <div className="space-y-2">
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Progression</p>
+                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'en' ? 'Progress' : 'Progression'}</p>
                     <div className="flex items-center gap-0">
                       {STEPS.map((step, i) => {
                         const active = cfg.stepActive;
@@ -210,16 +210,16 @@ const WithdrawalHistory = ({ requests }: Props) => {
                 {/* Details grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                   <div className="bg-card rounded-xl border border-border/60 p-3 space-y-1">
-                    <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Référence opération</p>
+                    <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">{lang === 'en' ? 'Transaction reference' : 'Référence opération'}</p>
                     <p className="font-mono text-foreground font-semibold tracking-wider">{wr.id.slice(0, 8).toUpperCase()}</p>
                   </div>
                   <div className="bg-card rounded-xl border border-border/60 p-3 space-y-1">
                     <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Source</p>
-                    <p className="text-foreground font-medium">{wr.source === 'trading' ? 'Compte Trading' : 'Contrat d\'investissement'}</p>
+                    <p className="text-foreground font-medium">{wr.source === 'trading' ? (lang === 'en' ? 'Trading Account' : 'Compte Trading') : (lang === 'en' ? 'Investment contract' : "Contrat d'investissement")}</p>
                   </div>
                   {bank && (
                     <div className="bg-card rounded-xl border border-border/60 p-3 space-y-1 sm:col-span-2">
-                      <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Compte bénéficiaire</p>
+                      <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">{lang === 'en' ? 'Beneficiary account' : 'Compte bénéficiaire'}</p>
                       <div className="flex items-center gap-2">
                         <Building2 className="w-4 h-4 text-muted-foreground" />
                         <span className="font-medium text-foreground">{bank.nom_banque}</span>
@@ -228,27 +228,27 @@ const WithdrawalHistory = ({ requests }: Props) => {
                         )}
                       </div>
                       {bank.titulaire && (
-                        <p className="text-muted-foreground text-xs">Titulaire : {bank.titulaire}</p>
+                        <p className="text-muted-foreground text-xs">{lang === 'en' ? 'Account holder' : 'Titulaire'} : {bank.titulaire}</p>
                       )}
                     </div>
                   )}
                   {wr.reason && (
                     <div className="bg-card rounded-xl border border-border/60 p-3 space-y-1 sm:col-span-2">
-                      <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Motif déclaré</p>
+                      <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">{lang === 'en' ? 'Declared reason' : 'Motif déclaré'}</p>
                       <p className="text-foreground">{wr.reason}</p>
                     </div>
                   )}
                   {wr.admin_note && (
                     <div className="bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800/50 p-3 space-y-1 sm:col-span-2">
-                      <p className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold uppercase tracking-wider">Note de votre conseiller</p>
+                      <p className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold uppercase tracking-wider">{lang === 'en' ? 'Note from your advisor' : 'Note de votre conseiller'}</p>
                       <p className="text-amber-800 dark:text-amber-300">{wr.admin_note}</p>
                     </div>
                   )}
                   {wr.processed_at && (
                     <div className="bg-card rounded-xl border border-border/60 p-3 space-y-1">
-                      <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Traité le</p>
+                      <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">{lang === 'en' ? 'Processed on' : 'Traité le'}</p>
                       <p className="text-foreground font-medium">
-                        {format(new Date(wr.processed_at), "dd MMMM yyyy 'à' HH:mm", { locale: fr })}
+                        {format(new Date(wr.processed_at), lang === 'en' ? "dd MMMM yyyy 'at' HH:mm" : "dd MMMM yyyy 'à' HH:mm", { locale: dateLocale })}
                       </p>
                     </div>
                   )}

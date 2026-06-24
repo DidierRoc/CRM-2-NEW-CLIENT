@@ -2,6 +2,7 @@ import { useMemo, useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useOutletContext } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLanguage } from '@/contexts/LanguageContext';
 import WithdrawalInfoBanner from '@/components/withdrawal/WithdrawalInfoBanner';
 import WithdrawalPortfolio from '@/components/withdrawal/WithdrawalPortfolio';
 import WithdrawalStepper from '@/components/withdrawal/WithdrawalStepper';
@@ -22,6 +23,7 @@ const ClientWithdrawal = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
   const leadId = clientAccount?.lead_id;
   const queryClient = useQueryClient();
+  const { lang } = useLanguage();
 
   const [bankAccounts, setBankAccounts] = useState<any[]>([]);
   const [withdrawalRequests, setWithdrawalRequests] = useState<any[]>([]);
@@ -124,10 +126,10 @@ const ClientWithdrawal = () => {
       <Tabs defaultValue="withdrawal" className="w-full">
         <TabsList className="w-full md:w-auto bg-transparent border-b rounded-none p-0 h-auto">
           <TabsTrigger value="withdrawal" className="rounded-none border-b-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 pb-2 font-semibold">
-            Retraits
+            {lang === 'en' ? 'Withdrawals' : 'Retraits'}
           </TabsTrigger>
           <TabsTrigger value="history" className="rounded-none border-b-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 pb-2 font-semibold">
-            Historique
+            {lang === 'en' ? 'History' : 'Historique'}
           </TabsTrigger>
         </TabsList>
 

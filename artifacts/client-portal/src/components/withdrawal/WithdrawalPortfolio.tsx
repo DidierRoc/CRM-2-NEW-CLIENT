@@ -1,4 +1,5 @@
 import { Globe, ArrowUpRight, Clock, TrendingUp, ShieldCheck } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ContractSource {
   id: string;
@@ -30,6 +31,7 @@ const fmt = (n: number) =>
   n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 
 const WithdrawalPortfolio = ({ contractSources, tradingSource }: Props) => {
+  const { lang } = useLanguage();
   const totalAvailable =
     contractSources.reduce((s, c) => s + c.available, 0) + (tradingSource?.withdrawable || 0);
   const totalPendingWr =
@@ -46,7 +48,7 @@ const WithdrawalPortfolio = ({ contractSources, tradingSource }: Props) => {
 
   const metrics = [
     {
-      label: 'Solde disponible',
+      label: lang === 'en' ? 'Available balance' : 'Solde disponible',
       value: totalAvailable,
       icon: ArrowUpRight,
       iconBg: 'bg-emerald-500/20',
@@ -54,7 +56,7 @@ const WithdrawalPortfolio = ({ contractSources, tradingSource }: Props) => {
       valueColor: 'text-emerald-300',
     },
     {
-      label: 'Capital investi',
+      label: lang === 'en' ? 'Invested capital' : 'Capital investi',
       value: totalInvested,
       icon: TrendingUp,
       iconBg: 'bg-blue-500/20',
@@ -62,7 +64,7 @@ const WithdrawalPortfolio = ({ contractSources, tradingSource }: Props) => {
       valueColor: 'text-blue-300',
     },
     {
-      label: 'En cours de traitement',
+      label: lang === 'en' ? 'Processing' : 'En cours de traitement',
       value: totalPendingWr,
       icon: Clock,
       iconBg: 'bg-amber-500/20',
@@ -70,7 +72,7 @@ const WithdrawalPortfolio = ({ contractSources, tradingSource }: Props) => {
       valueColor: 'text-amber-300',
     },
     {
-      label: 'Patrimoine total',
+      label: lang === 'en' ? 'Total assets' : 'Patrimoine total',
       value: totalGlobal,
       icon: Globe,
       iconBg: 'bg-[#c9a84c]/20',
@@ -90,8 +92,8 @@ const WithdrawalPortfolio = ({ contractSources, tradingSource }: Props) => {
             <Globe className="w-4 h-4 text-white/70" />
           </div>
           <div>
-            <h2 className="text-white font-bold text-base">Vue d'ensemble du compte</h2>
-            <p className="text-white/40 text-[11px]">Données calculées en temps réel</p>
+            <h2 className="text-white font-bold text-base">{lang === 'en' ? 'Account overview' : "Vue d'ensemble du compte"}</h2>
+            <p className="text-white/40 text-[11px]">{lang === 'en' ? 'Real-time data' : 'Données calculées en temps réel'}</p>
           </div>
         </div>
 
@@ -115,7 +117,7 @@ const WithdrawalPortfolio = ({ contractSources, tradingSource }: Props) => {
       <div className="bg-black/20 border-t border-white/10 px-6 sm:px-8 py-3 flex items-center gap-2">
         <ShieldCheck className="w-3.5 h-3.5 text-white/40 flex-shrink-0" />
         <span className="text-white/40 text-[11px]">
-          Vos fonds sont sécurisés · Toute demande est soumise à la procédure de conformité (KYC/AML)
+          {lang === 'en' ? 'Your funds are secured · All requests are subject to the compliance procedure (KYC/AML)' : 'Vos fonds sont sécurisés · Toute demande est soumise à la procédure de conformité (KYC/AML)'}
         </span>
       </div>
     </div>
