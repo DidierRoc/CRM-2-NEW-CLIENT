@@ -206,23 +206,20 @@ const ClientLogin = () => {
             </div>
 
             {/* Language switcher — top right of left panel */}
-            <div className="absolute top-6 right-6 flex items-center gap-0.5 rounded-lg overflow-hidden border border-white/15">
+            <div className="absolute top-6 right-6 flex items-center gap-1.5">
               <button
                 onClick={() => setLang('fr')}
-                className={`flex items-center gap-1 px-2 py-1 text-xs font-semibold transition-all ${lang === 'fr' ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10'}`}
                 title="Français"
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-xl transition-all duration-200 border-2 ${lang === 'fr' ? 'border-white/80 shadow-lg scale-110 opacity-100' : 'border-transparent opacity-50 hover:opacity-80 hover:scale-105'}`}
               >
-                <span className="text-base leading-none">🇫🇷</span>
-                <span className="text-[11px]">FR</span>
+                🇫🇷
               </button>
-              <div className="w-px h-4 bg-white/15" />
               <button
                 onClick={() => setLang('en')}
-                className={`flex items-center gap-1 px-2 py-1 text-xs font-semibold transition-all ${lang === 'en' ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10'}`}
                 title="English"
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-xl transition-all duration-200 border-2 ${lang === 'en' ? 'border-white/80 shadow-lg scale-110 opacity-100' : 'border-transparent opacity-50 hover:opacity-80 hover:scale-105'}`}
               >
-                <span className="text-base leading-none">🇬🇧</span>
-                <span className="text-[11px]">EN</span>
+                🇬🇧
               </button>
             </div>
 

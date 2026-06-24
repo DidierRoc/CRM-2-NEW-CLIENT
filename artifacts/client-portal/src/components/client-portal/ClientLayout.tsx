@@ -506,23 +506,20 @@ const ClientLayout = () => {
             {/* Right: actions */}
             <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
               {/* Language switcher */}
-              <div className="flex items-center gap-0.5 rounded-lg overflow-hidden border border-white/15 mr-1">
+              <div className="flex items-center gap-1 mr-1">
                 <button
                   onClick={() => setLang('fr')}
-                  className={`flex items-center gap-1 px-2 py-1 text-xs font-semibold transition-all ${lang === 'fr' ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10'}`}
                   title="Français"
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-lg transition-all duration-200 border-2 ${lang === 'fr' ? 'border-white/70 shadow-md scale-110 opacity-100' : 'border-transparent opacity-40 hover:opacity-75 hover:scale-105'}`}
                 >
-                  <span className="text-base leading-none">🇫🇷</span>
-                  <span className="hidden sm:inline text-[11px]">FR</span>
+                  🇫🇷
                 </button>
-                <div className="w-px h-4 bg-white/15" />
                 <button
                   onClick={() => setLang('en')}
-                  className={`flex items-center gap-1 px-2 py-1 text-xs font-semibold transition-all ${lang === 'en' ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10'}`}
                   title="English"
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-lg transition-all duration-200 border-2 ${lang === 'en' ? 'border-white/70 shadow-md scale-110 opacity-100' : 'border-transparent opacity-40 hover:opacity-75 hover:scale-105'}`}
                 >
-                  <span className="text-base leading-none">🇬🇧</span>
-                  <span className="hidden sm:inline text-[11px]">EN</span>
+                  🇬🇧
                 </button>
               </div>
               {/* Guide — desktop only */}
