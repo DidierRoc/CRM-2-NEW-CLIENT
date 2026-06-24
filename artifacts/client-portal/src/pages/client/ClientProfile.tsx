@@ -53,7 +53,7 @@ const NATIONALITES = [
 
 // ── Shared input class ──
 const inputClass =
-  'h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1a56db]/30 focus:border-[#1a56db] transition-all duration-200 w-full';
+  'h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E60000]/30 focus:border-[#E60000] transition-all duration-200 w-full';
 
 // ── Field wrapper ──
 const FieldWrapper = ({ icon: Icon, label, children }: { icon?: React.ElementType; label: string; children: React.ReactNode }) => (
@@ -68,8 +68,8 @@ const FieldWrapper = ({ icon: Icon, label, children }: { icon?: React.ElementTyp
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <div className="flex items-center gap-3 mb-5">
-    <span className="text-sm font-bold text-[#0f2347] uppercase tracking-widest">{children}</span>
-    <div className="flex-1 h-px bg-gradient-to-r from-[#0f2347]/20 to-transparent" />
+    <span className="text-sm font-bold text-[#111111] uppercase tracking-widest">{children}</span>
+    <div className="flex-1 h-px bg-gradient-to-r from-[#111111]/20 to-transparent" />
   </div>
 );
 
@@ -124,7 +124,7 @@ const NationaliteAutocomplete = ({
             <li
               key={nat}
               onMouseDown={() => handleSelect(nat)}
-              className="px-3 py-2.5 text-sm text-slate-700 cursor-pointer hover:bg-[#0f2347]/5 hover:text-[#0f2347] flex items-center gap-2"
+              className="px-3 py-2.5 text-sm text-slate-700 cursor-pointer hover:bg-[#111111]/5 hover:text-[#111111] flex items-center gap-2"
             >
               <Globe className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               {nat}
@@ -229,7 +229,7 @@ const AddressAutocomplete = ({
             <li
               key={i}
               onMouseDown={() => handleSelect(s)}
-              className="px-3 py-2.5 cursor-pointer hover:bg-[#0f2347]/5 hover:text-[#0f2347] border-b border-slate-50 last:border-0"
+              className="px-3 py-2.5 cursor-pointer hover:bg-[#111111]/5 hover:text-[#111111] border-b border-slate-50 last:border-0"
             >
               <div className="flex items-start gap-2">
                 <MapPin className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
@@ -589,14 +589,14 @@ const ClientProfile = () => {
     <div className="space-y-0">
 
       {/* ── HERO BANNER ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0a1628] via-[#0f2347] to-[#1a3a6b] p-6 sm:p-8 mb-6">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0a1628] via-[#111111] to-[#cc0000] p-6 sm:p-8 mb-6">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-white/5 blur-3xl" />
-          <div className="absolute -bottom-10 -left-10 w-60 h-60 rounded-full bg-[#1a56db]/10 blur-2xl" />
+          <div className="absolute -bottom-10 -left-10 w-60 h-60 rounded-full bg-[#E60000]/10 blur-2xl" />
         </div>
         <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
           <div className="relative shrink-0">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1a56db] to-[#0f2347] border-2 border-white/20 flex items-center justify-center shadow-xl text-xl font-bold text-white tracking-wide">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E60000] to-[#111111] border-2 border-white/20 flex items-center justify-center shadow-xl text-xl font-bold text-white tracking-wide">
               {initials || <UserCircle className="w-8 h-8 text-white/70" />}
             </div>
             <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
@@ -621,15 +621,15 @@ const ClientProfile = () => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
           <p className="text-xs text-slate-400 font-medium mb-1">Titulaire</p>
-          <p className="text-sm font-bold text-[#0f2347] truncate">{fullName || '—'}</p>
+          <p className="text-sm font-bold text-[#111111] truncate">{fullName || '—'}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
           <p className="text-xs text-slate-400 font-medium mb-1">Référence client</p>
-          <p className="text-sm font-bold text-[#0f2347] font-mono">{clientRef}</p>
+          <p className="text-sm font-bold text-[#111111] font-mono">{clientRef}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
           <p className="text-xs text-slate-400 font-medium mb-1">Comptes bancaires</p>
-          <p className="text-sm font-bold text-[#0f2347]">{bankAccounts.length} enregistré{bankAccounts.length !== 1 ? 's' : ''}</p>
+          <p className="text-sm font-bold text-[#111111]">{bankAccounts.length} enregistré{bankAccounts.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
           <p className="text-xs text-slate-400 font-medium mb-1">Profil complété</p>
@@ -637,10 +637,10 @@ const ClientProfile = () => {
             <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-700"
-                style={{ width: `${completionPct}%`, background: completionPct === 100 ? '#10b981' : '#1a56db' }}
+                style={{ width: `${completionPct}%`, background: completionPct === 100 ? '#10b981' : '#E60000' }}
               />
             </div>
-            <span className="text-sm font-bold text-[#0f2347] shrink-0">{completionPct}%</span>
+            <span className="text-sm font-bold text-[#111111] shrink-0">{completionPct}%</span>
           </div>
         </div>
       </div>
@@ -656,8 +656,8 @@ const ClientProfile = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 shrink-0 ${
                 active
-                  ? 'bg-[#0f2347] text-white shadow-md'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:border-[#0f2347]/30 hover:text-[#0f2347]'
+                  ? 'bg-[#111111] text-white shadow-md'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:border-[#111111]/30 hover:text-[#111111]'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -741,7 +741,7 @@ const ClientProfile = () => {
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-4 border-t border-slate-100">
               <div className="flex items-start gap-2.5 flex-1 bg-slate-50 rounded-xl px-4 py-3">
-                <Lock className="w-4 h-4 text-[#1a56db] mt-0.5 shrink-0" />
+                <Lock className="w-4 h-4 text-[#E60000] mt-0.5 shrink-0" />
                 <p className="text-xs text-slate-500 leading-relaxed">
                   Vos données personnelles sont protégées et chiffrées conformément aux normes de sécurité bancaire en vigueur.
                 </p>
@@ -749,7 +749,7 @@ const ClientProfile = () => {
               <button
                 onClick={handleSavePersonal}
                 disabled={!dirty || saving}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#0f2347] text-white text-sm font-semibold shadow-md hover:bg-[#1a3a6b] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg shrink-0"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold shadow-md hover:bg-[#cc0000] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg shrink-0"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 Enregistrer les modifications
@@ -790,14 +790,14 @@ const ClientProfile = () => {
               <button
                 onClick={handleChangePassword}
                 disabled={changingPwd || !newPwd}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#0f2347] text-white text-sm font-semibold shadow-md hover:bg-[#1a3a6b] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold shadow-md hover:bg-[#cc0000] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5"
               >
                 {changingPwd ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
                 Changer le mot de passe
               </button>
             </div>
             <div className="mt-8 flex items-start gap-2.5 bg-slate-50 rounded-xl px-4 py-3 max-w-md">
-              <Lock className="w-4 h-4 text-[#1a56db] mt-0.5 shrink-0" />
+              <Lock className="w-4 h-4 text-[#E60000] mt-0.5 shrink-0" />
               <p className="text-xs text-slate-500 leading-relaxed">
                 Vos données personnelles sont protégées et chiffrées conformément aux normes de sécurité bancaire en vigueur.
               </p>
@@ -812,14 +812,14 @@ const ClientProfile = () => {
             {/* Header */}
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-lg font-bold text-[#0f2347] mb-1">Mes comptes bancaires</h2>
+                <h2 className="text-lg font-bold text-[#111111] mb-1">Mes comptes bancaires</h2>
                 <p className="text-sm text-slate-500">
                   Gérez les comptes utilisés pour vos versements et remboursements en toute sécurité.
                 </p>
               </div>
               <button
                 onClick={() => { setShowBankModal(true); setEditingBankId(null); setBankFile(null); setBankForm({ titulaire: '', iban: '', bic: '', nom_banque: '' }); }}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f2347] text-white text-sm font-semibold shadow-md hover:bg-[#1a3a6b] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg shrink-0 ml-4"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold shadow-md hover:bg-[#cc0000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg shrink-0 ml-4"
               >
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Ajouter un compte</span>
@@ -839,7 +839,7 @@ const ClientProfile = () => {
                 </p>
                 <button
                   onClick={() => { setShowBankModal(true); setEditingBankId(null); setBankFile(null); setBankForm({ titulaire: '', iban: '', bic: '', nom_banque: '' }); }}
-                  className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f2347] text-white text-sm font-semibold hover:bg-[#1a3a6b] transition-all"
+                  className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] transition-all"
                 >
                   <Plus className="w-4 h-4" />Ajouter mon RIB
                 </button>
@@ -855,16 +855,16 @@ const ClientProfile = () => {
                     className="relative overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-r from-white to-slate-50/50 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-200 p-5"
                   >
                     {/* Decorative accent */}
-                    <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl bg-gradient-to-b from-[#1a56db] to-[#0f2347]" />
+                    <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl bg-gradient-to-b from-[#E60000] to-[#111111]" />
                     <div className="pl-3 flex items-start justify-between gap-4">
                       <div className="flex items-start gap-4 flex-1 min-w-0">
                         {/* Bank icon */}
-                        <div className="w-11 h-11 rounded-xl bg-[#0f2347] flex items-center justify-center shrink-0 shadow">
+                        <div className="w-11 h-11 rounded-xl bg-[#111111] flex items-center justify-center shrink-0 shadow">
                           <Landmark className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap mb-1">
-                            <p className="font-bold text-[#0f2347] text-sm">{ba.titulaire}</p>
+                            <p className="font-bold text-[#111111] text-sm">{ba.titulaire}</p>
                             {/* Status badge */}
                             {isBankPending(ba) ? (
                               <span className="flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
@@ -894,7 +894,7 @@ const ClientProfile = () => {
                       <div className="flex items-center gap-1 shrink-0">
                         <button
                           onClick={() => handleEditBank(ba)}
-                          className="text-[#1a56db] hover:text-[#0f2347] p-2 rounded-lg hover:bg-blue-50 transition-all"
+                          className="text-[#E60000] hover:text-[#111111] p-2 rounded-lg hover:bg-blue-50 transition-all"
                           title="Modifier ce compte"
                         >
                           <Pencil className="w-4 h-4" />
@@ -914,8 +914,8 @@ const ClientProfile = () => {
             )}
 
             {/* Security notice */}
-            <div className="mt-6 flex items-start gap-3 bg-[#0f2347]/3 border border-[#0f2347]/10 rounded-xl px-4 py-3">
-              <ShieldCheck className="w-4 h-4 text-[#1a56db] mt-0.5 shrink-0" />
+            <div className="mt-6 flex items-start gap-3 bg-[#111111]/3 border border-[#111111]/10 rounded-xl px-4 py-3">
+              <ShieldCheck className="w-4 h-4 text-[#E60000] mt-0.5 shrink-0" />
               <p className="text-xs text-slate-500 leading-relaxed">
                 Vos données bancaires sont protégées et chiffrées conformément aux normes de sécurité bancaire en vigueur.
               </p>
@@ -937,7 +937,7 @@ const ClientProfile = () => {
               {/* Modal header */}
               <div className="sticky top-0 bg-white rounded-t-3xl border-b border-slate-100 px-6 pt-6 pb-4 flex items-start justify-between z-10">
                 <div>
-                  <h3 className="text-lg font-bold text-[#0f2347]">{editingBankId ? 'Modifier le compte bancaire' : 'Ajouter un compte bancaire'}</h3>
+                  <h3 className="text-lg font-bold text-[#111111]">{editingBankId ? 'Modifier le compte bancaire' : 'Ajouter un compte bancaire'}</h3>
                   <p className="text-xs text-slate-500 mt-0.5">{editingBankId ? 'Modifiez les informations de votre RIB' : 'Saisissez les informations de votre RIB'}</p>
                 </div>
                 <button
@@ -952,7 +952,7 @@ const ClientProfile = () => {
 
                 {/* Section — Informations du compte */}
                 <div>
-                  <p className="text-xs font-bold text-[#0f2347] uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <p className="text-xs font-bold text-[#111111] uppercase tracking-widest mb-4 flex items-center gap-2">
                     <CreditCard className="w-3.5 h-3.5" />Informations du compte
                   </p>
                   <div className="space-y-3">
@@ -993,7 +993,7 @@ const ClientProfile = () => {
 
                 {/* Section — Justificatif bancaire */}
                 <div>
-                  <p className="text-xs font-bold text-[#0f2347] uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <p className="text-xs font-bold text-[#111111] uppercase tracking-widest mb-4 flex items-center gap-2">
                     <FileText className="w-3.5 h-3.5" />Justificatif bancaire
                   </p>
 
@@ -1003,16 +1003,16 @@ const ClientProfile = () => {
                       onDragLeave={() => setBankDragOver(false)}
                       onDrop={handleBankFileDrop}
                       onClick={() => bankFileInputRef.current?.click()}
-                      className={`border-2 border-dashed rounded-2xl p-7 text-center cursor-pointer transition-all duration-200 ${bankDragOver ? 'border-[#1a56db] bg-[#1a56db]/5 scale-[1.01]' : 'border-slate-200 hover:border-[#1a56db]/50 hover:bg-slate-50'}`}
+                      className={`border-2 border-dashed rounded-2xl p-7 text-center cursor-pointer transition-all duration-200 ${bankDragOver ? 'border-[#E60000] bg-[#E60000]/5 scale-[1.01]' : 'border-slate-200 hover:border-[#E60000]/50 hover:bg-slate-50'}`}
                     >
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3 transition-colors ${bankDragOver ? 'bg-[#1a56db]/10' : 'bg-slate-100'}`}>
-                        <UploadCloud className={`w-6 h-6 transition-colors ${bankDragOver ? 'text-[#1a56db]' : 'text-slate-400'}`} />
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3 transition-colors ${bankDragOver ? 'bg-[#E60000]/10' : 'bg-slate-100'}`}>
+                        <UploadCloud className={`w-6 h-6 transition-colors ${bankDragOver ? 'text-[#E60000]' : 'text-slate-400'}`} />
                       </div>
                       <p className="text-sm font-semibold text-slate-700 mb-1">
                         {bankDragOver ? 'Déposez le fichier ici' : 'Glissez-déposez votre RIB ici'}
                       </p>
                       <p className="text-xs text-slate-400 mb-3">ou</p>
-                      <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0f2347] text-white text-xs font-semibold hover:bg-[#1a3a6b] transition-colors">
+                      <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#111111] text-white text-xs font-semibold hover:bg-[#cc0000] transition-colors">
                         <Plus className="w-3.5 h-3.5" />Sélectionner un fichier
                       </span>
                       <p className="text-xs text-slate-400 mt-3">PDF, JPG, JPEG, PNG — max 10 Mo</p>
@@ -1044,8 +1044,8 @@ const ClientProfile = () => {
                 </div>
 
                 {/* Security notice */}
-                <div className="flex items-start gap-3 bg-[#0f2347]/4 border border-[#0f2347]/10 rounded-2xl px-4 py-3.5">
-                  <ShieldCheck className="w-4 h-4 text-[#1a56db] mt-0.5 shrink-0" />
+                <div className="flex items-start gap-3 bg-[#111111]/4 border border-[#111111]/10 rounded-2xl px-4 py-3.5">
+                  <ShieldCheck className="w-4 h-4 text-[#E60000] mt-0.5 shrink-0" />
                   <p className="text-xs text-slate-500 leading-relaxed">
                     Pour votre sécurité, votre RIB sera vérifié par nos équipes avant son utilisation pour vos opérations bancaires. Les documents transmis sont protégés et chiffrés.
                   </p>
@@ -1064,7 +1064,7 @@ const ClientProfile = () => {
                 <button
                   onClick={handleAddBank}
                   disabled={savingBank || !bankForm.iban || !bankForm.titulaire}
-                  className="flex-[2] flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#0f2347] to-[#1a3a6b] text-white text-sm font-semibold shadow-lg hover:shadow-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5"
+                  className="flex-[2] flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#111111] to-[#cc0000] text-white text-sm font-semibold shadow-lg hover:shadow-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5"
                 >
                   {savingBank ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   {editingBankId ? 'Enregistrer les modifications' : 'Enregistrer le compte bancaire'}
@@ -1082,7 +1082,7 @@ const ClientProfile = () => {
               <SectionTitle>Bénéficiaires désignés</SectionTitle>
               <button
                 onClick={() => setShowBenefForm(!showBenefForm)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-[#0f2347] hover:bg-slate-50 transition-all -mt-5"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-[#111111] hover:bg-slate-50 transition-all -mt-5"
               >
                 <Plus className="w-4 h-4" />Ajouter
               </button>
@@ -1099,10 +1099,10 @@ const ClientProfile = () => {
             )}
 
             {showBenefForm && (
-              <div className="border border-[#1a56db]/20 rounded-2xl p-5 mb-5 bg-slate-50 space-y-4">
+              <div className="border border-[#E60000]/20 rounded-2xl p-5 mb-5 bg-slate-50 space-y-4">
                 <div className="flex gap-2">
-                  <button onClick={() => setBenefForm(p => ({ ...p, type: 'personne' }))} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${benefForm.type === 'personne' ? 'bg-[#0f2347] text-white' : 'border border-slate-200 text-slate-600 hover:bg-white'}`}>Personne physique</button>
-                  <button onClick={() => setBenefForm(p => ({ ...p, type: 'entite' }))} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${benefForm.type === 'entite' ? 'bg-[#0f2347] text-white' : 'border border-slate-200 text-slate-600 hover:bg-white'}`}>Entité</button>
+                  <button onClick={() => setBenefForm(p => ({ ...p, type: 'personne' }))} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${benefForm.type === 'personne' ? 'bg-[#111111] text-white' : 'border border-slate-200 text-slate-600 hover:bg-white'}`}>Personne physique</button>
+                  <button onClick={() => setBenefForm(p => ({ ...p, type: 'entite' }))} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${benefForm.type === 'entite' ? 'bg-[#111111] text-white' : 'border border-slate-200 text-slate-600 hover:bg-white'}`}>Entité</button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {benefForm.type === 'personne' ? (
@@ -1139,7 +1139,7 @@ const ClientProfile = () => {
                   <button
                     onClick={handleAddBenef}
                     disabled={savingBenef}
-                    className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#0f2347] text-white text-sm font-semibold hover:bg-[#1a3a6b] disabled:opacity-40 transition-all"
+                    className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] disabled:opacity-40 transition-all"
                   >
                     {savingBenef ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}Enregistrer
                   </button>
@@ -1157,8 +1157,8 @@ const ClientProfile = () => {
               {beneficiaries.map(b => (
                 <div key={b.id} className="flex items-center justify-between border border-slate-100 rounded-2xl p-4 hover:border-slate-200 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#0f2347]/5 flex items-center justify-center">
-                      {b.type === 'entite' ? <Building2 className="w-5 h-5 text-[#0f2347]" /> : <Users className="w-5 h-5 text-[#0f2347]" />}
+                    <div className="w-10 h-10 rounded-xl bg-[#111111]/5 flex items-center justify-center">
+                      {b.type === 'entite' ? <Building2 className="w-5 h-5 text-[#111111]" /> : <Users className="w-5 h-5 text-[#111111]" />}
                     </div>
                     <div>
                       <p className="font-semibold text-slate-800">
@@ -1166,7 +1166,7 @@ const ClientProfile = () => {
                         <span className="ml-2 text-xs font-normal bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{b.type === 'entite' ? 'Entité' : 'Personne physique'}</span>
                       </p>
                       <p className="text-sm text-slate-500">
-                        {b.lien_parente ? `${b.lien_parente} — ` : ''}Part : <strong className="text-[#0f2347]">{b.part_pourcentage}%</strong>
+                        {b.lien_parente ? `${b.lien_parente} — ` : ''}Part : <strong className="text-[#111111]">{b.part_pourcentage}%</strong>
                       </p>
                       {b.email && <p className="text-xs text-slate-400">{b.email}</p>}
                     </div>
@@ -1187,7 +1187,7 @@ const ClientProfile = () => {
               <SectionTitle>Personne morale</SectionTitle>
               <button
                 onClick={() => setShowLegalForm(!showLegalForm)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-[#0f2347] hover:bg-slate-50 transition-all -mt-5"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-[#111111] hover:bg-slate-50 transition-all -mt-5"
               >
                 <Plus className="w-4 h-4" />Ajouter
               </button>
@@ -1197,7 +1197,7 @@ const ClientProfile = () => {
             </p>
 
             {showLegalForm && (
-              <div className="border border-[#1a56db]/20 rounded-2xl p-5 mb-5 bg-slate-50 space-y-4">
+              <div className="border border-[#E60000]/20 rounded-2xl p-5 mb-5 bg-slate-50 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FieldWrapper label="Raison sociale"><input className={inputClass} value={legalForm.raison_sociale} onChange={e => setLegalForm(p => ({ ...p, raison_sociale: e.target.value }))} /></FieldWrapper>
                   <FieldWrapper label="Forme juridique">
@@ -1230,7 +1230,7 @@ const ClientProfile = () => {
                   <button
                     onClick={handleAddLegal}
                     disabled={savingLegal}
-                    className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#0f2347] text-white text-sm font-semibold hover:bg-[#1a3a6b] disabled:opacity-40 transition-all"
+                    className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] disabled:opacity-40 transition-all"
                   >
                     {savingLegal ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}Enregistrer
                   </button>
@@ -1248,8 +1248,8 @@ const ClientProfile = () => {
               {legalEntities.map(le => (
                 <div key={le.id} className="flex items-center justify-between border border-slate-100 rounded-2xl p-4 hover:border-slate-200 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#0f2347]/5 flex items-center justify-center">
-                      <Building2 className="w-5 h-5 text-[#0f2347]" />
+                    <div className="w-10 h-10 rounded-xl bg-[#111111]/5 flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-[#111111]" />
                     </div>
                     <div>
                       <p className="font-semibold text-slate-800">

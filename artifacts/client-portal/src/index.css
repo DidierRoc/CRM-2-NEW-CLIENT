@@ -96,40 +96,40 @@
     --card-foreground: 218 21% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 218 21% 10%;
-    --primary: 218 47% 19%;
+    --primary: 0 100% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 218 21% 14%;
-    --muted: 218 20% 96%;
-    --muted-foreground: 218 10% 40%;
-    --accent: 215 55% 38%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 100% 45%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 218 20% 90%;
-    --input: 218 20% 90%;
-    --ring: 218 47% 19%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 0 100% 45%;
 
     --success: 152 65% 42%;
     --success-foreground: 0 0% 100%;
-    --premium-gold: 218 47% 19%;
+    --premium-gold: 0 100% 45%;
     --premium-emerald: 152 65% 42%;
     --premium-rose: 0 75% 60%;
 
     --hero-from: 0 0% 100%;
-    --hero-via: 218 40% 97%;
-    --hero-to: 218 47% 92%;
-    --hero-glow: 218 47% 19%;
+    --hero-via: 0 0% 97%;
+    --hero-to: 0 0% 94%;
+    --hero-glow: 0 100% 45%;
 
-    --shadow-premium: 0 20px 50px -20px hsl(218 47% 19% / 0.18);
-    --shadow-glow: 0 0 40px -10px hsl(218 47% 19% / 0.28);
-    --shadow-card-hover: 0 12px 32px -12px hsl(218 47% 19% / 0.15);
+    --shadow-premium: 0 20px 50px -20px hsl(0 0% 10% / 0.15);
+    --shadow-glow: 0 0 40px -10px hsl(0 100% 45% / 0.20);
+    --shadow-card-hover: 0 12px 32px -12px hsl(0 0% 10% / 0.12);
 
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(218 40% 97%) 55%, hsl(218 47% 92%) 100%);
-    --gradient-hero-dark: linear-gradient(135deg, hsl(218 47% 12%) 0%, hsl(218 40% 18%) 55%, hsl(215 55% 25%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(218 47% 19%), hsl(215 55% 28%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 55%, hsl(0 0% 94%) 100%);
+    --gradient-hero-dark: linear-gradient(135deg, hsl(0 0% 7%) 0%, hsl(0 0% 10%) 55%, hsl(0 0% 12%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(0 100% 45%), hsl(0 90% 38%));
     --gradient-emerald: linear-gradient(135deg, hsl(152 65% 42%), hsl(160 70% 38%));
-    --gradient-accent: linear-gradient(135deg, hsl(218 47% 19%), hsl(215 55% 30%));
+    --gradient-accent: linear-gradient(135deg, hsl(0 100% 45%), hsl(0 90% 38%));
 
 
   }

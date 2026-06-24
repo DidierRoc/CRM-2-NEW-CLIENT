@@ -82,7 +82,7 @@ const WithdrawalPortfolio = ({ contractSources, tradingSource }: Props) => {
   return (
     <div
       className="rounded-2xl overflow-hidden shadow-xl"
-      style={{ background: 'linear-gradient(135deg, #0f2347 0%, #1a3a6b 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #111111 0%, #cc0000 100%)' }}
     >
       <div className="p-6 sm:p-8">
         <div className="flex items-center gap-2 mb-6">

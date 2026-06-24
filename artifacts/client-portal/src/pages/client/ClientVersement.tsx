@@ -100,7 +100,7 @@ function CopyButton({
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed ${
         copied
           ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
-          : 'bg-[#0f2347]/8 text-[#0f2347] hover:bg-[#0f2347]/16 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
+          : 'bg-[#111111]/8 text-[#111111] hover:bg-[#111111]/16 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
       }`}
     >
       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
@@ -159,7 +159,7 @@ function UploadProof({
       <button
         onClick={() => ref.current?.click()}
         disabled={uploading}
-        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0f2347] text-white text-sm font-semibold hover:bg-[#1a3a6b] disabled:opacity-60 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
+        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] disabled:opacity-60 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
       >
         {uploading ? (
           <><Loader2 className="w-4 h-4 animate-spin" />Envoi en cours…</>
@@ -193,7 +193,7 @@ export default function ClientVersement() {
     <div className="max-w-3xl space-y-6">
 
       {/* ── Header ───────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0f2347] via-[#1a3a6b] to-[#0f2347] p-6 md:p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#111111] via-[#cc0000] to-[#111111] p-6 md:p-8 text-white shadow-xl">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-[#c9a84c]/10 blur-2xl" />
@@ -239,7 +239,7 @@ export default function ClientVersement() {
           </p>
           <button
             onClick={() => navigate('/client/products')}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0f2347] text-white text-sm font-semibold hover:bg-[#1a3a6b] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
           >
             Découvrir nos placements <ChevronRight className="w-4 h-4" />
           </button>
@@ -297,13 +297,13 @@ export default function ClientVersement() {
                   </div>
 
                   {/* Reference highlight */}
-                  <div className="mx-5 mb-4 rounded-xl bg-white dark:bg-slate-800 border border-[#0f2347]/12 dark:border-slate-700 p-4">
+                  <div className="mx-5 mb-4 rounded-xl bg-white dark:bg-slate-800 border border-[#111111]/12 dark:border-slate-700 p-4">
                     <div className="flex items-center justify-between gap-3 flex-wrap">
                       <div>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-[0.18em] font-semibold mb-1">
                           Référence à indiquer dans le motif du virement
                         </p>
-                        <p className="font-mono font-bold text-lg text-[#0f2347] dark:text-white tracking-widest">
+                        <p className="font-mono font-bold text-lg text-[#111111] dark:text-white tracking-widest">
                           {ref}
                         </p>
                       </div>
@@ -315,7 +315,7 @@ export default function ClientVersement() {
                       />
                     </div>
                     <div className="flex items-start gap-2 mt-3 pt-3 border-t border-border/40">
-                      <Info className="w-3.5 h-3.5 text-[#1a56db] shrink-0 mt-0.5" />
+                      <Info className="w-3.5 h-3.5 text-[#E60000] shrink-0 mt-0.5" />
                       <p className="text-[11px] text-muted-foreground leading-relaxed">
                         Cette référence est <strong className="text-foreground">obligatoire</strong> dans le champ "Motif / Communication" de votre virement afin que nous puissions identifier votre paiement et activer votre investissement rapidement.
                       </p>
@@ -337,9 +337,9 @@ export default function ClientVersement() {
       <div className="rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden">
 
         {/* Card header */}
-        <div className="bg-gradient-to-br from-[#0f2347]/6 to-transparent px-6 py-5 border-b border-border/60 flex items-center gap-4">
-          <div className="w-11 h-11 rounded-xl bg-[#0f2347]/10 dark:bg-slate-700 flex items-center justify-center shrink-0">
-            <Landmark className="w-5 h-5 text-[#0f2347] dark:text-slate-300" />
+        <div className="bg-gradient-to-br from-[#111111]/6 to-transparent px-6 py-5 border-b border-border/60 flex items-center gap-4">
+          <div className="w-11 h-11 rounded-xl bg-[#111111]/10 dark:bg-slate-700 flex items-center justify-center shrink-0">
+            <Landmark className="w-5 h-5 text-[#111111] dark:text-slate-300" />
           </div>
           <div>
             <h2 className="font-bold text-foreground">Coordonnées bancaires</h2>
@@ -367,7 +367,7 @@ export default function ClientVersement() {
                 </p>
                 <button
                   onClick={() => navigate('/client/help')}
-                  className="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold text-[#1a56db] hover:underline"
+                  className="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold text-[#E60000] hover:underline"
                 >
                   Contacter mon conseiller <ChevronRight className="w-3 h-3" />
                 </button>
@@ -422,8 +422,8 @@ export default function ClientVersement() {
                   className="flex items-center justify-between gap-4 rounded-xl bg-muted/40 dark:bg-slate-800/60 border border-border/50 px-4 py-3.5"
                 >
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className="w-8 h-8 rounded-lg bg-[#0f2347]/8 dark:bg-slate-700 flex items-center justify-center shrink-0">
-                      <Icon className="w-3.5 h-3.5 text-[#0f2347] dark:text-slate-400" />
+                    <div className="w-8 h-8 rounded-lg bg-[#111111]/8 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                      <Icon className="w-3.5 h-3.5 text-[#111111] dark:text-slate-400" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-0.5">{label}</p>
@@ -449,9 +449,9 @@ export default function ClientVersement() {
 
       {/* ── Step-by-step instructions ─────────────────────────── */}
       <div className="rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden">
-        <div className="bg-gradient-to-br from-[#1a56db]/6 to-transparent px-6 py-5 border-b border-border/60 flex items-center gap-4">
-          <div className="w-11 h-11 rounded-xl bg-[#1a56db]/10 dark:bg-slate-700 flex items-center justify-center shrink-0">
-            <FileText className="w-5 h-5 text-[#1a56db]" />
+        <div className="bg-gradient-to-br from-[#E60000]/6 to-transparent px-6 py-5 border-b border-border/60 flex items-center gap-4">
+          <div className="w-11 h-11 rounded-xl bg-[#E60000]/10 dark:bg-slate-700 flex items-center justify-center shrink-0">
+            <FileText className="w-5 h-5 text-[#E60000]" />
           </div>
           <div>
             <h2 className="font-bold text-foreground">Comment effectuer votre virement</h2>
@@ -466,13 +466,13 @@ export default function ClientVersement() {
                 n: '1',
                 title: 'Connectez-vous à votre banque',
                 desc: 'Accédez à votre espace bancaire en ligne ou rendez-vous en agence pour effectuer un virement.',
-                color: 'bg-[#1a56db]',
+                color: 'bg-[#E60000]',
               },
               {
                 n: '2',
                 title: 'Saisissez les coordonnées ci-dessus',
                 desc: 'Renseignez l\'IBAN, le BIC et le nom du bénéficiaire exactement comme indiqué. Utilisez les boutons "Copier" pour éviter toute erreur.',
-                color: 'bg-[#1a56db]',
+                color: 'bg-[#E60000]',
               },
               {
                 n: '3',
@@ -507,7 +507,7 @@ export default function ClientVersement() {
 
       {/* ── Security note ─────────────────────────────────────── */}
       <div className="flex items-start gap-3 rounded-2xl bg-muted/40 border border-border/50 px-5 py-4">
-        <ShieldCheck className="w-4 h-4 text-[#1a56db] shrink-0 mt-0.5" />
+        <ShieldCheck className="w-4 h-4 text-[#E60000] shrink-0 mt-0.5" />
         <p className="text-xs text-muted-foreground leading-relaxed">
           <strong className="text-foreground">Sécurité :</strong> {branding.companyName || 'Notre société'} ne vous demandera jamais vos identifiants bancaires ni de modifier les coordonnées de virement par e-mail ou SMS. En cas de doute, contactez directement votre conseiller.
         </p>

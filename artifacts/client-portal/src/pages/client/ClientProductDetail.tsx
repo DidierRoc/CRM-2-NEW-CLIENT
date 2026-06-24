@@ -808,7 +808,7 @@ const ClientProductDetail = () => {
       <div className="lg:sticky lg:top-6 space-y-4">
         {/* Why choose this product */}
         <div className="rounded-2xl overflow-hidden shadow-md border border-border/50">
-          <div className="px-5 py-4 flex items-center gap-2.5" style={{ background: 'linear-gradient(135deg, #0f2347 0%, #1a3a6b 100%)' }}>
+          <div className="px-5 py-4 flex items-center gap-2.5" style={{ background: 'linear-gradient(135deg, #111111 0%, #cc0000 100%)' }}>
             <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center">
               <CheckCircle className="w-3.5 h-3.5 text-white/80" />
             </div>
@@ -922,7 +922,7 @@ const ClientProductDetail = () => {
               <Button
                 onClick={() => setStep('amount')}
                 className="w-full h-12 rounded-xl font-bold text-base"
-                style={{ background: '#0f2347' }}
+                style={{ background: '#111111' }}
               >
                 Souscrire maintenant →
               </Button>

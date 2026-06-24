@@ -66,7 +66,7 @@ export class AppErrorBoundary extends Component<Props, State> {
           }}
         >
           <div style={{ fontSize: '40px', marginBottom: '16px' }}>⚠️</div>
-          <h1 style={{ fontSize: '20px', fontWeight: 700, color: '#0f2347', margin: '0 0 8px' }}>
+          <h1 style={{ fontSize: '20px', fontWeight: 700, color: '#111111', margin: '0 0 8px' }}>
             {chunkError ? 'Mise à jour disponible' : 'Une erreur est survenue'}
           </h1>
           <p style={{ fontSize: '14px', color: '#64748b', margin: '0 0 24px', lineHeight: 1.6 }}>
@@ -77,7 +77,7 @@ export class AppErrorBoundary extends Component<Props, State> {
           <button
             onClick={this.handleReload}
             style={{
-              background: '#0f2347',
+              background: '#111111',
               color: '#fff',
               border: 'none',
               borderRadius: '8px',

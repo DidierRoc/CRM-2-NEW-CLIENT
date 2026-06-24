@@ -821,7 +821,7 @@ const ClientDashboard = () => {
                               const { data: blob, error } = await crmSupabase.storage.from('lead-documents').download(doc.url);
                               if (!error && blob) { const u = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = u; a.download = filename; a.click(); URL.revokeObjectURL(u); }
                             }}
-                            className="p-1.5 rounded-lg hover:bg-muted transition-colors text-[#1a56db]" title="Télécharger">
+                            className="p-1.5 rounded-lg hover:bg-muted transition-colors text-[#E60000]" title="Télécharger">
                             <Download className="w-3.5 h-3.5" />
                           </button>
                         </div>
@@ -914,9 +914,9 @@ const ClientDashboard = () => {
     <div className="space-y-5 w-full pb-10 animate-in fade-in-0 slide-in-from-bottom-2 duration-500">
 
       {/* ── WELCOME BANNER ──────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0f2347] via-[#152d5a] to-[#0f2347] px-6 py-6 md:px-8 md:py-7 text-white shadow-xl">
-        <div aria-hidden className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#1a56db]/25 blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div aria-hidden className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-[#1a56db]/10 blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#080808] via-[#111111] to-[#0A0A0A] px-6 py-6 md:px-8 md:py-7 text-white shadow-xl">
+        <div aria-hidden className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#E60000]/20 blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div aria-hidden className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-[#E60000]/08 blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
         <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
             <p className="text-white/55 text-sm font-medium mb-1 capitalize">
@@ -930,9 +930,9 @@ const ClientDashboard = () => {
             </p>
           </div>
           <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 shrink-0">
-            <div className="flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/30 rounded-full px-3 py-1.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-300">Espace sécurisé</span>
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/25 rounded-full px-3 py-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#E60000] animate-pulse" />
+              <span className="text-xs font-semibold text-white/90">Espace sécurisé</span>
             </div>
             {portfolio.activeSubs.length > 0 && (
               <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-3 py-1.5">
@@ -948,12 +948,12 @@ const ClientDashboard = () => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {/* Capital investi */}
         <div className="group relative overflow-hidden rounded-2xl bg-card border border-border/60 p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1a56db]/4 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#E60000]/4 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
               <p className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">Capital investi</p>
-              <div className="w-11 h-11 rounded-xl bg-[#1a56db]/10 flex items-center justify-center">
-                <Wallet className="w-5 h-5 text-[#1a56db]" />
+              <div className="w-11 h-11 rounded-xl bg-[#E60000]/10 flex items-center justify-center">
+                <Wallet className="w-5 h-5 text-[#E60000]" />
               </div>
             </div>
             <p className="text-3xl font-bold text-foreground tabular-nums tracking-tight">
@@ -1014,33 +1014,33 @@ const ClientDashboard = () => {
       {/* ── QUICK ACTIONS BAR ───────────────────────────────────────── */}
       <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900/60 dark:via-slate-900/40 dark:to-slate-900/60 px-5 py-4">
         <div className="flex items-center gap-2 mb-3">
-          <Zap className="w-3.5 h-3.5 text-[#1a56db]" />
+          <Zap className="w-3.5 h-3.5 text-[#E60000]" />
           <p className="text-[10px] text-muted-foreground uppercase tracking-[0.18em] font-semibold">Actions rapides</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate('/client/versement')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0f2347] text-white text-sm font-semibold hover:bg-[#1a3a6b] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#E60000] text-white text-sm font-semibold hover:bg-[#cc0000] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
           >
             <CreditCard className="w-4 h-4" /> Effectuer un versement
           </button>
           <button
             onClick={() => navigate('/client/contracts')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-border text-foreground text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-border text-foreground text-sm font-semibold hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
           >
-            <FileText className="w-4 h-4 text-[#1a56db]" /> Consulter mes contrats
+            <FileText className="w-4 h-4 text-[#E60000]" /> Consulter mes contrats
           </button>
           <button
             onClick={() => navigate('/client/help')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-border text-foreground text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-border text-foreground text-sm font-semibold hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
           >
-            <MessageCircle className="w-4 h-4 text-[#1a56db]" /> Contacter mon conseiller
+            <MessageCircle className="w-4 h-4 text-[#E60000]" /> Contacter mon conseiller
           </button>
           <button
             onClick={() => navigate('/client/help')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-border text-foreground text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-border text-foreground text-sm font-semibold hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
           >
-            <CalendarDays className="w-4 h-4 text-[#1a56db]" /> Prendre rendez-vous
+            <CalendarDays className="w-4 h-4 text-[#E60000]" /> Prendre rendez-vous
           </button>
         </div>
       </div>
@@ -1082,23 +1082,23 @@ const ClientDashboard = () => {
         <div className="rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-300">
           <div className="px-5 py-4 flex items-center justify-between border-b border-border/50">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#1a56db]/10 flex items-center justify-center">
-                <MessageCircle className="w-4 h-4 text-[#1a56db]" />
+              <div className="w-9 h-9 rounded-xl bg-[#E60000]/10 flex items-center justify-center">
+                <MessageCircle className="w-4 h-4 text-[#E60000]" />
               </div>
               <div>
                 <h2 className="text-sm font-bold text-foreground">Messagerie</h2>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Support &amp; contact</p>
               </div>
             </div>
-            <button onClick={() => navigate('/client/help')} className="flex items-center gap-1 text-xs font-semibold text-[#1a56db] hover:underline">
+            <button onClick={() => navigate('/client/help')} className="flex items-center gap-1 text-xs font-semibold text-[#E60000] hover:underline">
               Ouvrir <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="flex-1 p-5">
             {recentMessages.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 text-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-[#1a56db]/8 flex items-center justify-center">
-                  <MessageCircle className="w-8 h-8 text-[#1a56db]/30" />
+                <div className="w-16 h-16 rounded-2xl bg-[#E60000]/8 flex items-center justify-center">
+                  <MessageCircle className="w-8 h-8 text-[#E60000]/30" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-foreground mb-1">Aucun nouveau message</p>
@@ -1108,7 +1108,7 @@ const ClientDashboard = () => {
                 </div>
                 <button
                   onClick={() => navigate('/client/help')}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1a56db]/25 text-[#1a56db] text-xs font-semibold hover:bg-[#1a56db]/5 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#E60000]/25 text-[#E60000] text-xs font-semibold hover:bg-[#E60000]/5 transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" /> Écrire à mon conseiller
                 </button>
@@ -1124,7 +1124,7 @@ const ClientDashboard = () => {
                       onClick={() => navigate('/client/help')}
                       className="w-full text-left flex items-start gap-3 py-3 first:pt-0 last:pb-0 hover:bg-muted/40 rounded-lg px-2 -mx-2 transition-colors"
                     >
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isMe ? 'bg-muted text-muted-foreground' : 'bg-[#1a56db]/10 text-[#1a56db]'}`}>
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isMe ? 'bg-muted text-muted-foreground' : 'bg-[#E60000]/10 text-[#E60000]'}`}>
                         {isMe ? <User className="w-4 h-4" /> : <MessageCircle className="w-4 h-4" />}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -1148,15 +1148,15 @@ const ClientDashboard = () => {
         <div className="rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-300">
           <div className="px-5 py-4 flex items-center justify-between border-b border-border/50">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#0f2347]/10 dark:bg-slate-700 flex items-center justify-center">
-                <FileText className="w-4 h-4 text-[#0f2347] dark:text-slate-300" />
+              <div className="w-9 h-9 rounded-xl bg-[#111111]/10 dark:bg-slate-700 flex items-center justify-center">
+                <FileText className="w-4 h-4 text-[#111111] dark:text-slate-300" />
               </div>
               <div>
                 <h2 className="text-sm font-bold text-foreground">Mes contrats</h2>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Gérer mes contrats</p>
               </div>
             </div>
-            <button onClick={() => navigate('/client/contracts')} className="flex items-center gap-1 text-xs font-semibold text-[#1a56db] hover:underline">
+            <button onClick={() => navigate('/client/contracts')} className="flex items-center gap-1 text-xs font-semibold text-[#E60000] hover:underline">
               Tout voir <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -1195,8 +1195,8 @@ const ClientDashboard = () => {
                       : sub?.created_at ? new Date(sub.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
                     return (
                       <div key={sub.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
-                        <div className="w-9 h-9 rounded-xl bg-[#0f2347]/8 dark:bg-slate-700 flex items-center justify-center shrink-0">
-                          <FileText className="w-4 h-4 text-[#0f2347] dark:text-slate-300" />
+                        <div className="w-9 h-9 rounded-xl bg-[#111111]/8 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                          <FileText className="w-4 h-4 text-[#111111] dark:text-slate-300" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-foreground truncate">{product?.nom || sub?.custom_name || 'Contrat'}</p>
@@ -1217,7 +1217,7 @@ const ClientDashboard = () => {
                             type="button"
                             onClick={() => handleDownloadContractPdf(sub)}
                             disabled={downloadingId === (getLatestClientContract(sub.client_contracts) as any)?.id}
-                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#0f2347] text-white text-xs font-semibold hover:bg-[#1a3a6b] transition-colors disabled:opacity-60"
+                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#111111] text-white text-xs font-semibold hover:bg-[#cc0000] transition-colors disabled:opacity-60"
                           >
                             {downloadingId === (getLatestClientContract(sub.client_contracts) as any)?.id
                               ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1301,7 +1301,7 @@ const ClientDashboard = () => {
                             const { data: blob, error } = await crmSupabase.storage.from("lead-documents").download(doc.url);
                             if (!error && blob) { const u = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = u; a.download = filename; a.click(); URL.revokeObjectURL(u); }
                           }}
-                          className="p-1.5 rounded-lg hover:bg-muted transition-colors text-[#1a56db]"
+                          className="p-1.5 rounded-lg hover:bg-muted transition-colors text-[#E60000]"
                           title="Télécharger"
                         ><Download className="w-3.5 h-3.5" /></button>
                       </div>
@@ -1518,8 +1518,8 @@ const ClientDashboard = () => {
         >
           <DialogHeader className="px-6 pt-6 pb-4 border-b border-border/50">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#0f2347]/10 flex items-center justify-center">
-                <FileText className="w-5 h-5 text-[#0f2347] dark:text-white" />
+              <div className="w-10 h-10 rounded-xl bg-[#111111]/10 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[#111111] dark:text-white" />
               </div>
               <div>
                 <DialogTitle className="text-base font-bold">Détail du contrat</DialogTitle>
@@ -1543,7 +1543,7 @@ const ClientDashboard = () => {
             <div className="p-6 space-y-5">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {[
-                  { label: 'Montant investi', value: resolvedAmount > 0 ? `${resolvedAmount.toLocaleString('fr-FR')} €` : '—', icon: <Wallet className="w-4 h-4 text-[#1a56db]" /> },
+                  { label: 'Montant investi', value: resolvedAmount > 0 ? `${resolvedAmount.toLocaleString('fr-FR')} €` : '—', icon: <Wallet className="w-4 h-4 text-[#E60000]" /> },
                   { label: 'Durée', value: resolvedDuration > 0 ? `${resolvedDuration} mois` : '—', icon: <Calendar className="w-4 h-4 text-violet-600" /> },
                   { label: 'Taux annuel', value: resolvedRate > 0 ? `${resolvedRate}%` : '—', icon: <TrendingUp className="w-4 h-4 text-emerald-600" /> },
                   { label: 'Signé le', value: viewContract.signed_at ? new Date(viewContract.signed_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : '—', icon: <CheckCircle className="w-4 h-4 text-emerald-600" /> },
@@ -1570,7 +1570,7 @@ const ClientDashboard = () => {
                     <button
                       onClick={() => handleDownloadContractPdf(viewContract._sub)}
                       disabled={downloadingId === viewContract.id}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0f2347] text-white text-xs font-semibold hover:bg-[#1a3a6b] transition-colors disabled:opacity-60"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111111] text-white text-xs font-semibold hover:bg-[#cc0000] transition-colors disabled:opacity-60"
                     >
                       {downloadingId === viewContract.id ? (
                         <><Loader2 className="w-3.5 h-3.5 animate-spin" />Génération…</>

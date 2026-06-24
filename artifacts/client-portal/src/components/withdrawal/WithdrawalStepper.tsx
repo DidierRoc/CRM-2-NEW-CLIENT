@@ -231,7 +231,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
             onClick={() => setShowForm(true)}
             size="lg"
             className="px-10 rounded-xl font-semibold"
-            style={{ background: '#0f2347' }}
+            style={{ background: '#111111' }}
           >
             <Wallet className="w-4 h-4 mr-2" />
             Effectuer un retrait
@@ -531,7 +531,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
                 onClick={() => setConfirmOpen(true)}
                 disabled={submitting}
                 className="rounded-xl font-semibold"
-                style={{ background: '#0f2347' }}
+                style={{ background: '#111111' }}
               >
                 {submitting ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Traitement…</>
@@ -597,7 +597,7 @@ const WithdrawalStepper = ({ leadId, clientAccountId, contractSources, tradingSo
                 onClick={handleSubmit}
                 disabled={submitting}
                 className="flex-1 rounded-xl font-semibold"
-                style={{ background: '#0f2347' }}
+                style={{ background: '#111111' }}
               >
                 {submitting ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Envoi…</>

@@ -341,7 +341,7 @@ const ClientContracts = () => {
       <input ref={fileInputRef} type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" className="hidden" onChange={handleFileSelected} />
 
       {/* ── EN-TÊTE ─────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0f2347] via-[#1a3a6b] to-[#0f2347] p-6 md:p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#111111] via-[#cc0000] to-[#111111] p-6 md:p-8 text-white shadow-xl">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-[#c9a84c]/10 blur-2xl" />
@@ -378,8 +378,8 @@ const ClientContracts = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
           {[
             {
-              icon: <FileText className="w-5 h-5 text-[#1a56db]" />,
-              bg: 'bg-[#1a56db]/10',
+              icon: <FileText className="w-5 h-5 text-[#E60000]" />,
+              bg: 'bg-[#E60000]/10',
               label: 'Contrats actifs',
               value: activeCount.toString(),
               sub: `sur ${contracts.length} au total`,
@@ -410,8 +410,8 @@ const ClientContracts = () => {
               valueColor: '',
             },
             {
-              icon: <ShieldCheck className="w-5 h-5 text-[#1a56db]" />,
-              bg: 'bg-[#1a56db]/10',
+              icon: <ShieldCheck className="w-5 h-5 text-[#E60000]" />,
+              bg: 'bg-[#E60000]/10',
               label: 'Statut global',
               value: allOk ? 'À jour' : 'Action requise',
               sub: allOk ? 'Tous les contrats à jour' : 'Vérifiez vos contrats',
@@ -440,7 +440,7 @@ const ClientContracts = () => {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Rechercher un contrat..."
-              className="w-full pl-9 pr-9 py-2.5 text-sm rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-[#1a56db]/25 focus:border-[#1a56db]/50 transition-all"
+              className="w-full pl-9 pr-9 py-2.5 text-sm rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-[#E60000]/25 focus:border-[#E60000]/50 transition-all"
             />
             {search && (
               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
@@ -456,7 +456,7 @@ const ClientContracts = () => {
                 onClick={() => setActiveFilter(f.key)}
                 className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                   activeFilter === f.key
-                    ? 'bg-[#0f2347] text-white shadow-sm'
+                    ? 'bg-[#111111] text-white shadow-sm'
                     : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
                 }`}
               >
@@ -470,7 +470,7 @@ const ClientContracts = () => {
       {/* ── ÉTAT VIDE ────────────────────────────────────────────── */}
       {contracts.length === 0 ? (
         <div className="rounded-2xl border border-border/60 bg-card p-12 md:p-16 text-center">
-          <div className="w-20 h-20 rounded-3xl bg-[#0f2347]/8 dark:bg-slate-800 flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 rounded-3xl bg-[#111111]/8 dark:bg-slate-800 flex items-center justify-center mx-auto mb-6">
             <FileText className="w-10 h-10 text-slate-400" />
           </div>
           <h3 className="text-lg font-bold text-foreground mb-2">Aucun contrat disponible</h3>
@@ -479,7 +479,7 @@ const ClientContracts = () => {
           </p>
           <button
             onClick={() => navigate('/client/products')}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0f2347] text-white text-sm font-semibold hover:bg-[#1a3a6b] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#cc0000] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
           >
             Découvrir nos placements <ArrowRight className="w-4 h-4" />
           </button>
@@ -488,7 +488,7 @@ const ClientContracts = () => {
         <div className="rounded-2xl border border-border/60 bg-card p-10 text-center">
           <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">Aucun contrat ne correspond à votre recherche.</p>
-          <button onClick={() => { setSearch(''); setActiveFilter('all'); }} className="mt-3 text-xs text-[#1a56db] hover:underline">Réinitialiser les filtres</button>
+          <button onClick={() => { setSearch(''); setActiveFilter('all'); }} className="mt-3 text-xs text-[#E60000] hover:underline">Réinitialiser les filtres</button>
         </div>
       ) : (
         <div className="space-y-4">
@@ -516,8 +516,8 @@ const ClientContracts = () => {
 
                     {/* Icon + info */}
                     <div className="flex items-start gap-4 flex-1 min-w-0">
-                      <div className="w-12 h-12 rounded-2xl bg-[#0f2347]/8 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                        <FileText className="w-6 h-6 text-[#0f2347] dark:text-slate-300" />
+                      <div className="w-12 h-12 rounded-2xl bg-[#111111]/8 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                        <FileText className="w-6 h-6 text-[#111111] dark:text-slate-300" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -552,16 +552,16 @@ const ClientContracts = () => {
                       { label: 'Taux', value: product?.interets || (contract?.interest_rate ? `${contract.interest_rate}%` : '—') },
                       { label: 'Garantie', value: product?.risque || '—' },
                     ].map((stat, i) => (
-                      <div key={i} className={`rounded-xl p-3 ${stat.accent ? 'bg-[#0f2347]/6 dark:bg-slate-800/60 border border-[#0f2347]/10 dark:border-slate-700' : 'bg-muted/50'}`}>
+                      <div key={i} className={`rounded-xl p-3 ${stat.accent ? 'bg-[#111111]/6 dark:bg-slate-800/60 border border-[#111111]/10 dark:border-slate-700' : 'bg-muted/50'}`}>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">{stat.label}</p>
-                        <p className={`text-sm font-bold ${stat.accent ? 'text-[#0f2347] dark:text-white' : 'text-foreground'}`}>{stat.value}</p>
+                        <p className={`text-sm font-bold ${stat.accent ? 'text-[#111111] dark:text-white' : 'text-foreground'}`}>{stat.value}</p>
                       </div>
                     ))}
                   </div>
 
                   {/* Pending deposit banner */}
                   {sub.status === 'pending_payment' && pendingDeposit && (
-                    <div className="mt-4 relative overflow-hidden rounded-xl bg-gradient-to-br from-[#1a56db] to-[#0f2347] p-5 text-white shadow-lg">
+                    <div className="mt-4 relative overflow-hidden rounded-xl bg-gradient-to-br from-[#E60000] to-[#111111] p-5 text-white shadow-lg">
                       <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                       <div className="relative space-y-3">
                         <div className="flex items-center gap-3">
@@ -583,7 +583,7 @@ const ClientContracts = () => {
                         </div>
                         <Button
                           size="sm"
-                          className="bg-white text-[#1a56db] hover:bg-blue-50 font-semibold shadow-md border-0"
+                          className="bg-white text-[#E60000] hover:bg-blue-50 font-semibold shadow-md border-0"
                           disabled={uploading === sub.id}
                           onClick={() => handleUploadProof(sub.id)}
                         >
@@ -628,7 +628,7 @@ const ClientContracts = () => {
                     {sub.status === 'pending_signature' && (
                       <button
                         onClick={() => navigate(`/client/products/${product?.id}`)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0f2347] text-white text-xs font-semibold hover:bg-[#1a3a6b] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#111111] text-white text-xs font-semibold hover:bg-[#cc0000] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5"
                       >
                         <PenLine className="w-3.5 h-3.5" /> Signer le contrat
                       </button>
@@ -637,9 +637,9 @@ const ClientContracts = () => {
                       <>
                         <button
                           onClick={() => handleViewContract(sub)}
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card text-xs font-semibold text-foreground hover:bg-muted/60 hover:border-[#1a56db]/30 transition-all duration-200"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card text-xs font-semibold text-foreground hover:bg-muted/60 hover:border-[#E60000]/30 transition-all duration-200"
                         >
-                          <Eye className="w-3.5 h-3.5 text-[#1a56db]" /> Consulter le contrat
+                          <Eye className="w-3.5 h-3.5 text-[#E60000]" /> Consulter le contrat
                         </button>
                         <button
                           onClick={() => handleDownloadPdf(sub)}
@@ -704,8 +704,8 @@ const ClientContracts = () => {
         >
           <DialogHeader className="px-6 pt-6 pb-4 border-b border-border/50">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#0f2347]/10 flex items-center justify-center">
-                <FileText className="w-5 h-5 text-[#0f2347] dark:text-white" />
+              <div className="w-10 h-10 rounded-xl bg-[#111111]/10 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[#111111] dark:text-white" />
               </div>
               <div>
                 <DialogTitle className="text-base font-bold">Détail du contrat</DialogTitle>
@@ -730,7 +730,7 @@ const ClientContracts = () => {
               {/* Key info grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {[
-                  { label: 'Montant investi', value: resolvedAmount > 0 ? `${resolvedAmount.toLocaleString('fr-FR')} €` : '—', icon: <Wallet className="w-4 h-4 text-[#1a56db]" /> },
+                  { label: 'Montant investi', value: resolvedAmount > 0 ? `${resolvedAmount.toLocaleString('fr-FR')} €` : '—', icon: <Wallet className="w-4 h-4 text-[#E60000]" /> },
                   { label: 'Durée', value: resolvedDuration > 0 ? `${resolvedDuration} mois` : '—', icon: <Calendar className="w-4 h-4 text-violet-600" /> },
                   { label: 'Taux annuel', value: resolvedRate > 0 ? `${resolvedRate}%` : '—', icon: <TrendingUp className="w-4 h-4 text-emerald-600" /> },
                   { label: 'Signé le', value: viewContract.signed_at ? new Date(viewContract.signed_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : '—', icon: <CheckCircle className="w-4 h-4 text-emerald-600" /> },
@@ -758,7 +758,7 @@ const ClientContracts = () => {
                     <button
                       onClick={() => handleDownloadPdf(viewContract._sub)}
                       disabled={downloadingId === viewContract.id}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0f2347] text-white text-xs font-semibold hover:bg-[#1a3a6b] transition-colors disabled:opacity-60"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111111] text-white text-xs font-semibold hover:bg-[#cc0000] transition-colors disabled:opacity-60"
                     >
                       {downloadingId === viewContract.id ? (
                         <><Loader2 className="w-3.5 h-3.5 animate-spin" />Génération…</>
