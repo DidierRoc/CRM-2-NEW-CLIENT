@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { PortalBranding } from '@/lib/portalBranding';
-import luxempartLogoSrc from '@/assets/luxempart-logo.svg';
+import ubsLogoSrc from '@/assets/ubs-logo.svg';
 
 type BrandLogoSize = 'header' | 'login' | 'sidebar';
 type LogoTone = 'dark' | 'light';

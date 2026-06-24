@@ -143,7 +143,7 @@ async function downloadSchedulePdf(
   const logoUrl =
     branding?.contractLogoUrl ||
     branding?.logoUrl ||
-    '/luxempart-logo.png';          // fallback statique toujours présent
+    '/ubs-logo.png';                // fallback statique toujours présent
 
   let logoLoaded = false;
   if (logoUrl) {
@@ -163,7 +163,7 @@ async function downloadSchedulePdf(
   // Priorité : branding CRM → fallback statique "Luxempart"
   const rawName = branding?.companyName?.trim() || '';
   const PLACEHOLDER_RE = /ma\s+soci[eé]t[eé]|portail\s+investisseur|my\s+company/i;
-  const companyName = (rawName && !PLACEHOLDER_RE.test(rawName)) ? rawName : 'Luxempart';
+  const companyName = (rawName && !PLACEHOLDER_RE.test(rawName)) ? rawName : 'UBS';
   if (!logoLoaded) {
     doc.setTextColor(...WHITE);
     doc.setFont('helvetica', 'bold');

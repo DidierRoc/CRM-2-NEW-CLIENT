@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64" fill="none">
+  <!-- UBS three-key emblem (simplified heraldic keys) -->
+  <g transform="translate(2, 4)">
+    <!-- Key 1 (center) -->
+    <circle cx="28" cy="11" r="8" fill="none" stroke="#E60000" stroke-width="2.8"/>
+    <circle cx="28" cy="11" r="3.5" fill="#E60000"/>
+    <rect x="26.2" y="18" width="3.6" height="22" rx="1.2" fill="#E60000"/>
+    <rect x="29.8" y="30" width="5" height="3" rx="0.8" fill="#E60000"/>
+    <rect x="29.8" y="35.5" width="3.5" height="2.5" rx="0.8" fill="#E60000"/>
+    <!-- Key 2 (left, rotated) -->
+    <g transform="rotate(-22, 14, 28)">
+      <circle cx="14" cy="11" r="7" fill="none" stroke="#E60000" stroke-width="2.4"/>
+      <circle cx="14" cy="11" r="3" fill="#E60000"/>
+      <rect x="12.3" y="17.5" width="3.2" height="20" rx="1" fill="#E60000"/>
+      <rect x="15.5" y="28" width="4.5" height="2.6" rx="0.7" fill="#E60000"/>
+      <rect x="15.5" y="32.5" width="3" height="2.2" rx="0.7" fill="#E60000"/>
+    </g>
+    <!-- Key 3 (right, rotated) -->
+    <g transform="rotate(22, 42, 28)">
+      <circle cx="42" cy="11" r="7" fill="none" stroke="#E60000" stroke-width="2.4"/>
+      <circle cx="42" cy="11" r="3" fill="#E60000"/>
+      <rect x="40.3" y="17.5" width="3.2" height="20" rx="1" fill="#E60000"/>
+      <rect x="43.5" y="28" width="4.5" height="2.6" rx="0.7" fill="#E60000"/>
+      <rect x="43.5" y="32.5" width="3" height="2.2" rx="0.7" fill="#E60000"/>
+    </g>
+  </g>
+  <!-- UBS wordmark -->
+  <text x="68" y="46" font-family="'Arial Black', Arial, Helvetica, sans-serif" font-size="40" font-weight="900" fill="#111111" letter-spacing="-1.5">UBS</text>
+</svg>
