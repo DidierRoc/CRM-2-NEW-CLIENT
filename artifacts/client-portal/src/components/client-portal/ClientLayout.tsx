@@ -496,7 +496,7 @@ const ClientLayout = () => {
               >
                 {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-              <MapleLogo color="#0D0D0D" className="h-8 sm:h-12 w-auto shrink-0" />
+              <MapleLogo className="h-8 sm:h-12 w-auto shrink-0" />
             </div>
             {/* Right: actions */}
             <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
