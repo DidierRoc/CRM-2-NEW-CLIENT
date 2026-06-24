@@ -435,9 +435,9 @@ const ClientLayout = () => {
     primary: '#111111',
     secondary: '#0A0A0A',
     accent: '#E60000',
-    bg: '#FFFFFF',
-    sidebar: '#FFFFFF',
-    text: '#111111',
+    bg: '#F5F5F5',
+    sidebar: '#111111',
+    text: '#FFFFFF',
   };
 
   const portalTitle = 'UBS';
@@ -584,13 +584,13 @@ const ClientLayout = () => {
                     <div
                       className="w-full flex items-center gap-2 px-3 py-2 mb-2 select-none border-l-[3px] rounded-r-md"
                       style={{
-                        borderColor: '#1A2B4A',
-                        backgroundColor: 'rgba(26, 43, 74, 0.07)',
+                        borderColor: '#E60000',
+                        backgroundColor: 'rgba(230, 0, 0, 0.10)',
                       }}
                     >
                       <p
                         className="text-[14px] font-bold uppercase tracking-[0.12em]"
-                        style={{ color: '#14181F' }}
+                        style={{ color: 'rgba(255,255,255,0.70)' }}
                       >
                         {section.title}
                       </p>
@@ -655,8 +655,7 @@ const ClientLayout = () => {
           <main
             className="flex-1 p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col pb-24 lg:pb-8 relative"
             style={{
-              background:
-                'radial-gradient(1200px 600px at 0% 0%, hsl(218 45% 94%) 0%, transparent 55%), radial-gradient(900px 500px at 100% 0%, hsl(215 50% 93%) 0%, transparent 60%), linear-gradient(180deg, hsl(218 25% 95%) 0%, hsl(215 20% 92%) 100%)',
+              background: 'linear-gradient(160deg, #f2f2f2 0%, #F5F5F5 60%, #ebebeb 100%)',
             }}
           >
             <div className="flex-1">
