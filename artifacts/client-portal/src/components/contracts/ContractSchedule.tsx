@@ -160,7 +160,7 @@ async function downloadSchedulePdf(
   }
 
   // Nom affiché dans le pied de page et dans le bandeau sans logo
-  // Priorité : branding CRM → fallback statique "Luxempart"
+  // Priorité : branding CRM → fallback statique "UBS"
   const rawName = branding?.companyName?.trim() || '';
   const PLACEHOLDER_RE = /ma\s+soci[eé]t[eé]|portail\s+investisseur|my\s+company/i;
   const companyName = (rawName && !PLACEHOLDER_RE.test(rawName)) ? rawName : 'UBS';

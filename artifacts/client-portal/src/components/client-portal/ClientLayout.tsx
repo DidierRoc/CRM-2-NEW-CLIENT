@@ -430,27 +430,27 @@ const ClientLayout = () => {
     setOpenSections(prev => ({ ...prev, [title]: !prev[title] }));
   };
 
-  // Luxempart branding (forced, overrides DB config)
+  // UBS branding (forced, overrides DB config)
   const colors = {
-    primary: '#1A2B4A',
-    secondary: '#152338',
-    accent: '#2D5FA0',
+    primary: '#111111',
+    secondary: '#0A0A0A',
+    accent: '#E60000',
     bg: '#FFFFFF',
     sidebar: '#FFFFFF',
-    text: '#14181F',
+    text: '#111111',
   };
 
-  const portalTitle = 'Luxempart';
-  const headerLogoUrl = luxempartLogoWhite;
+  const portalTitle = 'UBS';
+  const headerLogoUrl = ubsLogoWhite;
   const headerBannerUrl = null;
-  const companyName = 'Luxempart';
+  const companyName = 'UBS';
   const headerTagline = '';
   const headerTextColor = '#FFFFFF';
   const headerStyle = 'minimal' as PortalBranding['header_style'];
 
-  // Luxempart dark navy header — matches corporate site
+  // UBS dark charcoal header
   const headerBackgroundStyle = {
-    background: 'linear-gradient(135deg, #080f1c 0%, #0e1d36 35%, #152338 65%, #1a2b4a 100%)',
+    background: 'linear-gradient(135deg, #080808 0%, #111111 35%, #1A1A1A 65%, #222222 100%)',
   };
   const headerOverlay = 'transparent';
 
@@ -483,8 +483,8 @@ const ClientLayout = () => {
                 {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
               <img
-                src={luxempartLogoWhite}
-                alt="Luxempart"
+                src={ubsLogoWhite}
+                alt="UBS"
                 className="h-8 sm:h-14 w-auto shrink-0"
                 style={{ filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.25))' }}
               />

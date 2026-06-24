@@ -39,7 +39,7 @@ const hasSolidExtension = (url: string) => /\.(jpe?g|avif)(\?|#|$)/i.test(url);
 
 export default function BrandLogo({ branding, size, tone = 'dark', className = '', showTextFallback = true }: BrandLogoProps) {
   const [transparent, setTransparent] = useState<boolean | null>(null);
-  const logoUrl = branding?.header_logo_url || branding?.logo_url || luxempartLogoSrc;
+  const logoUrl = branding?.header_logo_url || branding?.logo_url || ubsLogoSrc;
   const companyName = branding?.company_name || branding?.portal_title || '';
   const classes = sizeClasses[size];
 
