@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/crmSupabaseClient';
 import { callCrmApi } from '@/lib/crmApi';
@@ -110,6 +111,7 @@ const FILTERS = [
 const ClientContracts = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const leadId = clientAccount?.lead_id;
 
   useEffect(() => {
@@ -358,9 +360,9 @@ const ClientContracts = () => {
                 <ShieldCheck className="w-3.5 h-3.5 text-[#c9a84c]" />
                 <span className="text-[10px] text-white/60 uppercase tracking-[0.2em] font-semibold">Espace sécurisé</span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Mes contrats</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{t.contracts.title}</h1>
               <p className="text-sm text-white/60 mt-1 max-w-md">
-                Retrouvez l'ensemble de vos contrats et documents contractuels en toute sécurité.
+                {t.contracts.subtitle}
               </p>
             </div>
           </div>

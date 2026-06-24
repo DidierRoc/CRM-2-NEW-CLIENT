@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { track, startTracking, flushNow } from '@/lib/clientTracking';
 import { fetchPortalBranding, getCachedPortalBranding, type PortalBranding } from '@/lib/portalBranding';
 import ubsLogoWhite from '@/assets/ubs-logo-white.svg';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const normalizeClientEmail = (value: string) => value.trim().toLowerCase();
 
@@ -28,17 +29,18 @@ const friendlyMessage = (err: CrmSignInError): string => {
   return err.message || 'Erreur inconnue.';
 };
 
-/* ── Banking services ── */
-const services = [
-  { icon: Landmark,       title: 'Wealth Management',    desc: 'Stratégies personnalisées de gestion de fortune pour une clientèle privée internationale.' },
-  { icon: FileText,       title: 'Asset Management',     desc: 'Gestion d\'actifs institutionnels, produits structurés et solutions d\'investissement.' },
-  { icon: UserCheck,      title: 'Conseil dédié',         desc: 'Un conseiller personnel UBS à votre écoute pour chaque décision patrimoniale.' },
-  { icon: HeadphonesIcon, title: 'Service 24h/24',        desc: 'Accès à votre espace client et assistance disponibles à tout moment.' },
-];
 
 const ClientLogin = () => {
   const navigate = useNavigate();
   const { user: crmUser, authReady, refreshAuth } = useCrm();
+  const { lang, setLang, t } = useLanguage();
+
+  const services = [
+    { icon: Landmark,       title: t.login.svcWealth,  desc: t.login.svcWealthDesc },
+    { icon: FileText,       title: t.login.svcAsset,   desc: t.login.svcAssetDesc },
+    { icon: UserCheck,      title: t.login.svcAdvice,  desc: t.login.svcAdviceDesc },
+    { icon: HeadphonesIcon, title: t.login.svcSupport, desc: t.login.svcSupportDesc },
+  ];
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -203,23 +205,44 @@ const ClientLogin = () => {
                 style={{ filter: 'brightness(1.1) drop-shadow(0 2px 10px rgba(0,0,0,0.6))' }} />
             </div>
 
+            {/* Language switcher — top right of left panel */}
+            <div className="absolute top-6 right-6 flex items-center gap-0.5 rounded-lg overflow-hidden border border-white/15">
+              <button
+                onClick={() => setLang('fr')}
+                className={`flex items-center gap-1 px-2 py-1 text-xs font-semibold transition-all ${lang === 'fr' ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10'}`}
+                title="Français"
+              >
+                <span className="text-base leading-none">🇫🇷</span>
+                <span className="text-[11px]">FR</span>
+              </button>
+              <div className="w-px h-4 bg-white/15" />
+              <button
+                onClick={() => setLang('en')}
+                className={`flex items-center gap-1 px-2 py-1 text-xs font-semibold transition-all ${lang === 'en' ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10'}`}
+                title="English"
+              >
+                <span className="text-base leading-none">🇬🇧</span>
+                <span className="text-[11px]">EN</span>
+              </button>
+            </div>
+
             {/* Red line + headline */}
             <div className="anim-fadeup-2 mb-6">
               <div style={{ width: '64px', height: '3px', background: 'linear-gradient(90deg, #E60000, #FF4444)', borderRadius: '2px', marginBottom: '22px' }} />
               <h1 style={{ fontSize: '2.2rem', fontWeight: 200, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#fff', marginBottom: '14px' }}>
-                L'excellence au service<br />
-                <span style={{ fontWeight: 700, color: '#E60000' }}>de votre patrimoine.</span>
+                {t.login.tagline}<br />
+                <span style={{ fontWeight: 700, color: '#E60000' }}>{t.login.tagline2}</span>
               </h1>
               <p style={{ fontSize: '0.88rem', fontWeight: 300, color: 'rgba(255,255,255,0.45)', lineHeight: 1.65, maxWidth: '340px' }}>
-                Plateforme institutionnelle UBS de gestion de fortune, réservée à notre clientèle privée. Confidentialité, performance et sécurité maximales.
+                {t.login.subtitle}
               </p>
             </div>
 
             {/* Key stats */}
             <div className="anim-fadeup-3 grid grid-cols-2 gap-3 mb-7">
               {[
-                { value: '1862', label: 'Fondée en' },
-                { value: 'CHF 5,7 Trn', label: 'Actifs gérés' },
+                { value: '1862', label: t.login.founded },
+                { value: 'CHF 5,7 Trn', label: t.login.assets },
               ].map(stat => (
                 <div key={stat.label} style={{ borderTop: '1px solid rgba(230,0,0,0.30)', paddingTop: '12px' }}>
                   <div style={{ fontSize: '1.3rem', fontWeight: 600, color: '#fff', letterSpacing: '-0.02em', marginBottom: '4px' }}>{stat.value}</div>
@@ -303,10 +326,10 @@ const ClientLogin = () => {
               {/* ── Heading ── */}
               <div className="mb-5">
                 <h2 style={{ fontSize: '1.6rem', fontWeight: 700, color: '#111111', marginBottom: '6px', lineHeight: 1.2 }}>
-                  Bienvenue dans votre espace<br />client sécurisé
+                  {t.login.welcome}
                 </h2>
                 <p style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.6 }}>
-                  Accédez à vos comptes, consultez vos placements et gérez votre patrimoine en toute confidentialité.
+                  {t.login.welcomeSub}
                 </p>
               </div>
 
@@ -317,7 +340,7 @@ const ClientLogin = () => {
                 {/* Email */}
                 <div className="space-y-1.5">
                   <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
-                    E-mail ou identifiant
+                    {t.login.emailLabel}
                   </label>
                   <div className="relative">
                     <Mail size={15} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
@@ -325,7 +348,7 @@ const ClientLogin = () => {
                       type="email"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
-                      placeholder="Entrez votre identifiant"
+                      placeholder={t.login.emailPlaceholder}
                       autoComplete="email"
                       className="login-input w-full text-sm outline-none transition-all text-slate-800 placeholder-slate-300"
                       style={{ height: '50px', paddingLeft: '44px', paddingRight: '16px', border: '1.5px solid #e2e8f0', borderRadius: '12px', background: '#f8f8f8' }}
@@ -337,11 +360,11 @@ const ClientLogin = () => {
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
-                      Mot de passe
+                      {t.login.passwordLabel}
                     </label>
                     <a href="#" style={{ fontSize: '0.72rem', color: '#E60000', textDecoration: 'none', opacity: 0.75 }}
                       className="hover:opacity-100 transition-opacity">
-                      Mot de passe oublié ?
+                      {t.login.forgotPassword}
                     </a>
                   </div>
                   <div className="relative">
@@ -350,7 +373,7 @@ const ClientLogin = () => {
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={e => setPassword(e.target.value)}
-                      placeholder="Entrez votre mot de passe"
+                      placeholder={t.login.passwordPlaceholder}
                       autoComplete="current-password"
                       className="login-input w-full text-sm outline-none transition-all text-slate-800 placeholder-slate-300"
                       style={{ height: '50px', paddingLeft: '44px', paddingRight: '48px', border: '1.5px solid #e2e8f0', borderRadius: '12px', background: '#f8f8f8' }}
@@ -367,7 +390,7 @@ const ClientLogin = () => {
                 <label className="flex items-center gap-2.5 cursor-pointer">
                   <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}
                     className="w-4 h-4 rounded cursor-pointer" style={{ accentColor: '#E60000' }} />
-                  <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Se souvenir de cet appareil pendant 30 jours</span>
+                  <span style={{ fontSize: '0.82rem', color: '#64748b' }}>{t.login.rememberMe}</span>
                 </label>
 
                 {/* Error */}
@@ -396,7 +419,7 @@ const ClientLogin = () => {
                 >
                   {loading
                     ? <Loader2 className="w-5 h-5 animate-spin" />
-                    : <><Lock size={14} /><span>Accéder à mon espace</span></>
+                    : <><Lock size={14} /><span>{t.login.submitButton}</span></>
                   }
                 </button>
 
@@ -404,7 +427,7 @@ const ClientLogin = () => {
                 <p className="text-center" style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
                   <a href="#" style={{ color: '#111111', textDecoration: 'none', opacity: 0.5 }}
                     className="hover:opacity-90 transition-opacity">
-                    Besoin d'aide pour vous connecter ?
+                    {t.login.needHelp}
                   </a>
                 </p>
               </form>
@@ -412,13 +435,13 @@ const ClientLogin = () => {
               {/* ── Security pillars ── */}
               <div className="mt-6 pt-5" style={{ borderTop: '1px solid #f1f5f9' }}>
                 <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#94a3b8', fontWeight: 600, marginBottom: '10px' }}>
-                  Votre sécurité avant tout
+                  {lang === 'en' ? 'Your security first' : 'Votre sécurité avant tout'}
                 </p>
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { icon: KeyRound,   label: 'Authentification sécurisée' },
-                    { icon: ShieldCheck, label: 'Données chiffrées' },
-                    { icon: Activity,   label: 'Surveillance 24h/24' },
+                    { icon: KeyRound,    label: t.login.secureAuth },
+                    { icon: ShieldCheck, label: t.login.encryptedData },
+                    { icon: Activity,    label: t.login.monitoring },
                   ].map(({ icon: Icon, label }) => (
                     <div key={label} className="flex flex-col items-center gap-1.5 rounded-xl py-3 px-2"
                       style={{ background: '#f8f8f8', border: '1px solid #eeeeee' }}>
@@ -432,19 +455,19 @@ const ClientLogin = () => {
               {/* ── Security advice ── */}
               <div className="mt-4 rounded-xl p-4" style={{ background: 'rgba(230,0,0,0.04)', border: '1px solid rgba(230,0,0,0.15)' }}>
                 <p style={{ fontSize: '0.72rem', color: '#4a1010', lineHeight: 1.6 }}>
-                  <span style={{ fontWeight: 700 }}>Conseil sécurité :</span>{' '}
-                  Ne communiquez jamais vos identifiants ou votre code confidentiel. UBS ne vous demandera jamais ces informations par téléphone ou par e-mail.
+                  <span style={{ fontWeight: 700 }}>{t.login.securityTip} :</span>{' '}
+                  {t.login.securityTipText}
                 </p>
               </div>
 
               {/* ── Assistance section ── */}
               <div className="mt-5 pt-5" style={{ borderTop: '1px solid #f1f5f9' }}>
                 <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#94a3b8', fontWeight: 600, marginBottom: '10px' }}>
-                  Besoin d'assistance ?
+                  {lang === 'en' ? 'Need assistance?' : 'Besoin d\'assistance ?'}
                 </p>
                 <div className="flex flex-col gap-2">
                   {[
-                    { icon: Clock, text: 'Assistance disponible', sub: 'Lun – Ven, 9h00 – 18h00' },
+                    { icon: Clock, text: lang === 'en' ? 'Support available' : 'Assistance disponible', sub: lang === 'en' ? 'Mon – Fri, 9am – 6pm' : 'Lun – Ven, 9h00 – 18h00' },
                   ].map(({ icon: Icon, text, sub }) => (
                     <div key={text} className="flex items-center gap-3">
                       <div className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center"

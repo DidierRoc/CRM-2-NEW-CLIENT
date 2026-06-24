@@ -120,9 +120,13 @@ const hideAppLoader = () => {
   }
 };
 
+import { LanguageProvider } from './contexts/LanguageContext';
+
 createRoot(document.getElementById("root")!).render(
   <AppErrorBoundary>
-    <App />
+    <LanguageProvider>
+      <App />
+    </LanguageProvider>
   </AppErrorBoundary>
 );
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -68,10 +69,11 @@ async function fetchAllNews(): Promise<Article[]> {
 }
 
 const ClientNews = () => {
+  const { t } = useLanguage();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [filter, setFilter] = useState('Tous');
+  const [filter, setFilter] = useState<string>(t.news.all);
 
   const fetchNews = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -98,7 +100,7 @@ const ClientNews = () => {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Newspaper className="w-6 h-6 text-primary" /> Actu et Info
+          <Newspaper className="w-6 h-6 text-primary" /> {t.news.title}
         </h1>
         <div className="space-y-4">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -114,7 +116,7 @@ const ClientNews = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <Newspaper className="w-6 h-6 text-primary" />
-          Actu et Info
+          {t.news.title}
         </h1>
         <button
           onClick={() => fetchNews(true)}
@@ -122,7 +124,7 @@ const ClientNews = () => {
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-muted hover:bg-muted/80 transition-all disabled:opacity-50"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-          Actualiser
+          {t.news.refresh}
         </button>
       </div>
 

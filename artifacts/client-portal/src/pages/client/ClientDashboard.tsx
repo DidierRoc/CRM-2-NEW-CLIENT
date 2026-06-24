@@ -1,4 +1,5 @@
 import { useMemo, useEffect, useState, useRef } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { TrendingUp, TrendingDown, Wallet, BarChart3, AlertCircle, Activity, History, Target, Coins, User, MessageCircle, Phone, Mail, Briefcase, FileText, Download, Eye, ArrowRight, CheckCircle2, Gift, ArrowDownLeft, ArrowUpRight, CalendarDays, Shield, Clock, Percent, Zap, CreditCard, ChevronRight, Star, Banknote, Loader2, CheckCircle, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -107,6 +108,7 @@ function resolveContractDuration(
 const ClientDashboard = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const leadId = clientAccount?.lead_id;
 
   const { data: bundleData, isLoading: loadingPortfolio } = useClientDashboardBundle(leadId);

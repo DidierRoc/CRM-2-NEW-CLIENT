@@ -266,8 +266,9 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
               tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : `${v}`}
             />
             <Tooltip
-              formatter={(value: number | null, name: string) => {
-                if (value === null || value === undefined) return ['-', ''];
+              formatter={(value: unknown, name: string) => {
+                const v = value as number | null;
+                if (v === null || v === undefined) return ['-', ''];
                 const labels: Record<string, string> = {
                   pastTotal: 'Valeur (réel)',
                   futureTotal: 'Valeur (projection)',
@@ -275,7 +276,7 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
                   pastInterests: 'Intérêts (réel)',
                   futureInterests: 'Intérêts (projection)',
                 };
-                return [`${value.toLocaleString('fr-FR')} €`, labels[name] || name];
+                return [`${v.toLocaleString('fr-FR')} €`, labels[name] || name];
               }}
               contentStyle={{
                 background: 'hsl(var(--card))',

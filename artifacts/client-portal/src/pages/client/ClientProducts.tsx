@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import {
   Package, TrendingUp, PiggyBank, Landmark, ShieldCheck,
@@ -157,6 +158,7 @@ function resolveCategory(product: { _category?: { slug?: string } | null; catego
 const ClientProducts = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { data: assignedData, isLoading: loading } = useClientProducts(clientAccount?.lead_id);
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [search, setSearch] = useState('');

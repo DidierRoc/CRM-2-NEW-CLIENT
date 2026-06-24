@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Building2, Copy, Check, Upload, Loader2,
@@ -176,6 +177,7 @@ function UploadProof({
 export default function ClientVersement() {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const leadId = clientAccount?.lead_id;
   const { copied, copy } = useCopyToClipboard();
   const { branding } = useCompanySignature();

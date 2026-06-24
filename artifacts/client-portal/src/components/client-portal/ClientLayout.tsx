@@ -4,6 +4,7 @@ import { callCrmApi, getStoredUser, isCrmAdvisorMissingError, isCrmProfileMissin
 import { usePrefetchClientData } from '@/hooks/useClientData';
 import { useClientRealtimeSync } from '@/hooks/useClientRealtimeSync';
 import { useCrm } from '@/contexts/CrmContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   LayoutDashboard, User, FileText, Package, Upload, LogOut, Menu, X,
   Wallet, Clock, Newspaper, HelpCircle, Link2, UserCircle, BarChart3, MessageCircle,
@@ -65,22 +66,34 @@ const allNavItems: NavItem[] = [
   { label: 'Trading', icon: BarChart3, path: '/client/trading', key: 'trading' },
   { label: 'Mes contrats', icon: FileText, path: '/client/contracts', key: 'contracts' },
   { label: 'Retrait de fonds', icon: Wallet, path: '/client/withdrawal', key: 'withdrawal' },
-
   { label: 'Actu et info', icon: Newspaper, path: '/client/news', key: 'news' },
   { label: 'Ma messagerie', icon: MessageCircle, path: '/client/help', key: 'help' },
   { label: 'Mon compte', icon: UserCircle, path: '/client/profile', key: 'profile' },
 ];
 
-const sectionDefs: { title: string; keys: string[] }[] = [
-  { title: 'Tableau de bord', keys: ['dashboard'] },
-  { title: 'Investissements', keys: ['products', 'trading'] },
-  { title: 'Mes services', keys: ['contracts', 'withdrawal', 'history', 'news'] },
-  { title: 'Support et compte', keys: ['help', 'profile'] },
-];
-
 const ClientLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { lang, setLang, t } = useLanguage();
+
+  const translatedNavItems: NavItem[] = [
+    { label: t.nav.dashboard, icon: LayoutDashboard, path: '/client/dashboard', key: 'dashboard' },
+    { label: t.nav.products,  icon: Package,         path: '/client/products',  key: 'products' },
+    { label: t.nav.trading,   icon: BarChart3,        path: '/client/trading',   key: 'trading' },
+    { label: t.nav.contracts, icon: FileText,         path: '/client/contracts', key: 'contracts' },
+    { label: t.nav.withdrawal,icon: Wallet,           path: '/client/withdrawal',key: 'withdrawal' },
+    { label: t.nav.news,      icon: Newspaper,        path: '/client/news',      key: 'news' },
+    { label: t.nav.help,      icon: MessageCircle,    path: '/client/help',      key: 'help' },
+    { label: t.nav.profile,   icon: UserCircle,       path: '/client/profile',   key: 'profile' },
+  ];
+
+  const translatedSectionDefs = [
+    { title: t.sections.dashboard,   keys: ['dashboard'] },
+    { title: t.sections.investments, keys: ['products', 'trading'] },
+    { title: t.sections.services,    keys: ['contracts', 'withdrawal', 'history', 'news'] },
+    { title: t.sections.support,     keys: ['help', 'profile'] },
+  ];
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
@@ -244,20 +257,21 @@ const ClientLayout = () => {
     const visibleKeys = new Set(
       configuredItems.length > 0
         ? configuredItems.map(item => item.key)
-        : allNavItems.map(item => item.key)
+        : translatedNavItems.map(item => item.key)
     );
     if (!tradingActive) visibleKeys.delete('trading');
 
-    return sectionDefs
+    return translatedSectionDefs
       .map(sd => ({
         title: sd.title,
         items: sd.keys
           .filter(k => visibleKeys.has(k))
-          .map(k => allNavItems.find(n => n.key === k)!)
+          .map(k => translatedNavItems.find(n => n.key === k)!)
           .filter(Boolean),
       }))
       .filter(s => s.items.length > 0);
-  }, [portalSettings, tradingActive]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [portalSettings, tradingActive, lang]);
 
   // Init open sections
   useEffect(() => {
@@ -491,6 +505,26 @@ const ClientLayout = () => {
             </div>
             {/* Right: actions */}
             <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
+              {/* Language switcher */}
+              <div className="flex items-center gap-0.5 rounded-lg overflow-hidden border border-white/15 mr-1">
+                <button
+                  onClick={() => setLang('fr')}
+                  className={`flex items-center gap-1 px-2 py-1 text-xs font-semibold transition-all ${lang === 'fr' ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10'}`}
+                  title="Français"
+                >
+                  <span className="text-base leading-none">🇫🇷</span>
+                  <span className="hidden sm:inline text-[11px]">FR</span>
+                </button>
+                <div className="w-px h-4 bg-white/15" />
+                <button
+                  onClick={() => setLang('en')}
+                  className={`flex items-center gap-1 px-2 py-1 text-xs font-semibold transition-all ${lang === 'en' ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10'}`}
+                  title="English"
+                >
+                  <span className="text-base leading-none">🇬🇧</span>
+                  <span className="hidden sm:inline text-[11px]">EN</span>
+                </button>
+              </div>
               {/* Guide — desktop only */}
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -498,12 +532,12 @@ const ClientLayout = () => {
                     onClick={() => setOnboardingTriggerKey((k) => k + 1)}
                     className="hidden sm:flex p-2 rounded-lg transition hover:bg-white/10"
                     style={{ color: headerTextColor }}
-                    aria-label="Revoir le guide de bienvenue"
+                    aria-label={t.header.guide}
                   >
                     <HelpCircle className="w-4 h-4" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">Revoir le guide</TooltipContent>
+                <TooltipContent side="bottom">{t.header.guide}</TooltipContent>
               </Tooltip>
               <NotificationBell textColor={headerTextColor} accentColor={colors.accent} />
               <Tooltip>
@@ -518,7 +552,7 @@ const ClientLayout = () => {
                     <UserCircle className="w-5 h-5" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">Mon compte</TooltipContent>
+                <TooltipContent side="bottom">{t.header.myAccount}</TooltipContent>
               </Tooltip>
               <Button
                 variant="ghost"
@@ -528,7 +562,7 @@ const ClientLayout = () => {
                 style={{ color: headerTextColor }}
               >
                 <LogOut className="w-4 h-4 sm:mr-1.5" />
-                <span className="hidden sm:inline">Déconnexion</span>
+                <span className="hidden sm:inline">{t.header.logout}</span>
               </Button>
             </div>
           </div>

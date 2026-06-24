@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { logConnection } from '@/lib/connectionLog';
 import { useOutletContext } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -251,6 +252,7 @@ const AddressAutocomplete = ({
 // ═══════════════════════════════════════════════════
 const ClientProfile = () => {
   const { clientAccount } = useOutletContext<{ clientAccount: any }>();
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<TabId>('personal');
   const [lead, setLead] = useState<any>(null);
