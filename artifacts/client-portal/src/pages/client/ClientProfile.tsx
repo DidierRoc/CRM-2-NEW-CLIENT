@@ -408,8 +408,8 @@ const ClientProfile = () => {
   };
 
   const handleChangePassword = async () => {
-    if (newPwd.length < 8) { toast.error('Le mot de passe doit contenir au moins 8 caractères'); return; }
-    if (newPwd !== confirmPwd) { toast.error('Les mots de passe ne correspondent pas'); return; }
+    if (newPwd.length < 8) { toast.error(lang === 'en' ? 'Password must be at least 8 characters' : 'Le mot de passe doit contenir au moins 8 caractères'); return; }
+    if (newPwd !== confirmPwd) { toast.error(lang === 'en' ? 'Passwords do not match' : 'Les mots de passe ne correspondent pas'); return; }
     setChangingPwd(true);
     try {
       await callCrmApi('client-self-service', 'change-password', {
@@ -417,16 +417,16 @@ const ClientProfile = () => {
         newPassword: newPwd,
       });
       setCurrentPwd(''); setNewPwd(''); setConfirmPwd('');
-      toast.success('Mot de passe modifié avec succès');
+      toast.success(lang === 'en' ? 'Password changed successfully' : 'Mot de passe modifié avec succès');
       logConnection(clientAccount?.id, 'password_change');
     } catch (err: any) {
-      toast.error(err.message || 'Erreur lors du changement de mot de passe');
+      toast.error(err.message || (lang === 'en' ? 'Error changing password' : 'Erreur lors du changement de mot de passe'));
     }
     setChangingPwd(false);
   };
 
   const handleAddBank = async () => {
-    if (!bankForm.iban || !bankForm.titulaire) { toast.error("Veuillez remplir le titulaire et l'IBAN"); return; }
+    if (!bankForm.iban || !bankForm.titulaire) { toast.error(lang === 'en' ? 'Please fill in the account holder and IBAN' : "Veuillez remplir le titulaire et l'IBAN"); return; }
     setSavingBank(true);
 
     if (editingBankId) {
@@ -927,7 +927,7 @@ const ClientProfile = () => {
             <div className="mt-6 flex items-start gap-3 bg-[#111111]/3 border border-[#111111]/10 rounded-xl px-4 py-3">
               <ShieldCheck className="w-4 h-4 text-[#E60000] mt-0.5 shrink-0" />
               <p className="text-xs text-slate-500 leading-relaxed">
-                Vos données bancaires sont protégées et chiffrées conformément aux normes de sécurité bancaire en vigueur.
+                {lang === 'en' ? 'Your banking data is protected and encrypted in accordance with applicable banking security standards.' : 'Vos données bancaires sont protégées et chiffrées conformément aux normes de sécurité bancaire en vigueur.'}
               </p>
             </div>
           </div>

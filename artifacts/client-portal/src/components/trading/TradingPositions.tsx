@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { callCrmApi } from '@/lib/crmApi';
 import { useToast } from '@/hooks/use-toast';
 import { getBidAskPrices } from '@/lib/tradingMarketData';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Props {
   positions: any[];
@@ -16,6 +17,7 @@ interface Props {
 
 const TradingPositions = ({ positions, portfolioId, leadId, onClose, onPortfolioUpdate, isHistory, currentPrices = {}, symbolSpreads = {} }: Props) => {
   const { toast } = useToast();
+  const { lang } = useLanguage();
   const [closingId, setClosingId] = useState<string | null>(null);
 
   const getClosePrice = (pos: any) => {
@@ -43,15 +45,15 @@ const TradingPositions = ({ positions, portfolioId, leadId, onClose, onPortfolio
 
       const result = await callCrmApi('client-trading', 'close-position', { positionId: pos.id, exitPrice, pnl });
       if (result?.portfolio) onPortfolioUpdate?.(result.portfolio);
-      toast({ title: 'Position fermée', description: `PnL: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}` });
+      toast({ title: lang === 'en' ? 'Position closed' : 'Position fermée', description: `PnL: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}` });
       onClose?.();
     } catch (err: any) {
-      toast({ title: 'Erreur', description: err.message, variant: 'destructive' });
+      toast({ title: lang === 'en' ? 'Error' : 'Erreur', description: err.message, variant: 'destructive' });
     } finally { setClosingId(null); }
   };
 
   if (positions.length === 0) {
-    return <p className="text-[11px] text-[#6b7082] text-center py-4">{isHistory ? 'Aucun historique' : 'Aucune position ouverte'}</p>;
+    return <p className="text-[11px] text-[#6b7082] text-center py-4">{isHistory ? (lang === 'en' ? 'No history' : 'Aucun historique') : (lang === 'en' ? 'No open positions' : 'Aucune position ouverte')}</p>;
   }
 
   const fmt = (v: number) => {
@@ -66,16 +68,16 @@ const TradingPositions = ({ positions, portfolioId, leadId, onClose, onPortfolio
         <thead>
           <tr className="text-[#6b7082] uppercase border-b border-[#2d2d44]">
             <th className="text-left py-1 px-2 font-medium">#</th>
-            <th className="text-left py-1 px-2 font-medium">Symbole</th>
-            <th className="text-center py-1 px-2 font-medium">Type</th>
-            <th className="text-right py-1 px-2 font-medium">Volume</th>
-            <th className="text-right py-1 px-2 font-medium">Entrée</th>
+            <th className="text-left py-1 px-2 font-medium">{lang === 'en' ? 'Symbol' : 'Symbole'}</th>
+            <th className="text-center py-1 px-2 font-medium">{lang === 'en' ? 'Type' : 'Type'}</th>
+            <th className="text-right py-1 px-2 font-medium">{lang === 'en' ? 'Volume' : 'Volume'}</th>
+            <th className="text-right py-1 px-2 font-medium">{lang === 'en' ? 'Entry' : 'Entrée'}</th>
             <th className="text-right py-1 px-2 font-medium">S/L</th>
             <th className="text-right py-1 px-2 font-medium">T/P</th>
-            <th className="text-right py-1 px-2 font-medium">{isHistory ? 'Sortie' : 'Prix'}</th>
-            <th className="text-right py-1 px-2 font-medium">Levier</th>
-            <th className="text-right py-1 px-2 font-medium">Profit</th>
-            {!isHistory && <th className="text-center py-1 px-2 font-medium">Action</th>}
+            <th className="text-right py-1 px-2 font-medium">{isHistory ? (lang === 'en' ? 'Exit' : 'Sortie') : (lang === 'en' ? 'Price' : 'Prix')}</th>
+            <th className="text-right py-1 px-2 font-medium">{lang === 'en' ? 'Leverage' : 'Levier'}</th>
+            <th className="text-right py-1 px-2 font-medium">{lang === 'en' ? 'Profit' : 'Profit'}</th>
+            {!isHistory && <th className="text-center py-1 px-2 font-medium">{lang === 'en' ? 'Action' : 'Action'}</th>}
           </tr>
         </thead>
         <tbody>
@@ -118,7 +120,7 @@ const TradingPositions = ({ positions, portfolioId, leadId, onClose, onPortfolio
                       onClick={() => { if (closePrice) closePosition(pos, closePrice); }}
                       className="px-2 py-0.5 rounded text-[9px] font-bold bg-[#ef5350] text-white hover:bg-[#f44336] disabled:opacity-30 transition-colors"
                     >
-                      {closingId === pos.id ? '...' : 'Fermer'}
+                      {closingId === pos.id ? '...' : (lang === 'en' ? 'Close' : 'Fermer')}
                     </button>
                   </td>
                 )}

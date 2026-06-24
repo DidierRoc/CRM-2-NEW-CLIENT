@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { callCrmApi } from '@/lib/crmApi';
 import { useToast } from '@/hooks/use-toast';
 import { formatMarketPrice, getBidAskPrices } from '@/lib/tradingMarketData';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Props {
   symbol: string;
@@ -19,6 +20,7 @@ const TradingOrderPanel = ({
   onOrderPlaced, onPortfolioUpdate, spread = 0
 }: Props) => {
   const { toast } = useToast();
+  const { lang } = useLanguage();
   const [direction, setDirection] = useState<'long' | 'short'>('long');
   const [orderType, setOrderType] = useState<'market' | 'limit' | 'stop'>('market');
   const [quantity, setQuantity] = useState('');
@@ -39,15 +41,15 @@ const TradingOrderPanel = ({
 
   const handleSubmit = async () => {
     const qty = parseFloat(quantity);
-    if (!qty || qty <= 0) { toast({ title: 'Erreur', description: 'Quantité invalide', variant: 'destructive' }); return; }
-    if (orderType === 'market' && (!Number.isFinite(executionPrice) || executionPrice <= 0)) { toast({ title: 'Erreur', description: "Prix indisponible", variant: 'destructive' }); return; }
+    if (!qty || qty <= 0) { toast({ title: lang === 'en' ? 'Error' : 'Erreur', description: lang === 'en' ? 'Invalid quantity' : 'Quantité invalide', variant: 'destructive' }); return; }
+    if (orderType === 'market' && (!Number.isFinite(executionPrice) || executionPrice <= 0)) { toast({ title: lang === 'en' ? 'Error' : 'Erreur', description: lang === 'en' ? 'Price unavailable' : 'Prix indisponible', variant: 'destructive' }); return; }
 
     const price = orderType === 'market' ? executionPrice : parseFloat(targetPrice);
-    if (orderType !== 'market' && (!price || price <= 0)) { toast({ title: 'Erreur', description: 'Prix cible invalide', variant: 'destructive' }); return; }
+    if (orderType !== 'market' && (!price || price <= 0)) { toast({ title: lang === 'en' ? 'Error' : 'Erreur', description: lang === 'en' ? 'Invalid target price' : 'Prix cible invalide', variant: 'destructive' }); return; }
 
     const totalCost = (orderType === 'market' ? executionPrice : price) * qty;
     if (totalCost > portfolio.balance) {
-      toast({ title: 'Fonds insuffisants', description: `Coût: $${fmt(totalCost)}, Solde: $${fmt(portfolio.balance)}`, variant: 'destructive' });
+      toast({ title: lang === 'en' ? 'Insufficient funds' : 'Fonds insuffisants', description: `${lang === 'en' ? 'Cost' : 'Coût'}: $${fmt(totalCost)}, ${lang === 'en' ? 'Balance' : 'Solde'}: $${fmt(portfolio.balance)}`, variant: 'destructive' });
       return;
     }
 
@@ -65,11 +67,11 @@ const TradingOrderPanel = ({
       if (result?.portfolio) onPortfolioUpdate(result.portfolio);
       else onPortfolioUpdate({ ...portfolio, balance: portfolio.balance - totalCost });
 
-      toast({ title: 'Succès', description: orderType === 'market' ? 'Position ouverte' : 'Ordre placé' });
+      toast({ title: lang === 'en' ? 'Success' : 'Succès', description: orderType === 'market' ? (lang === 'en' ? 'Position opened' : 'Position ouverte') : (lang === 'en' ? 'Order placed' : 'Ordre placé') });
       setQuantity(''); setTargetPrice(''); setStopLoss(''); setTakeProfit('');
       onOrderPlaced();
     } catch (err: any) {
-      toast({ title: 'Erreur', description: err.message, variant: 'destructive' });
+      toast({ title: lang === 'en' ? 'Error' : 'Erreur', description: err.message, variant: 'destructive' });
     } finally { setLoading(false); }
   };
 
@@ -81,7 +83,7 @@ const TradingOrderPanel = ({
       {/* Title */}
       <div className="flex items-center justify-between">
         <p className="text-[11px] font-bold text-[#c5c8d6]">{symbolLabel}</p>
-        <p className="text-[10px] font-mono text-[#6b7082]">Nouvel Ordre</p>
+        <p className="text-[10px] font-mono text-[#6b7082]">{lang === 'en' ? 'New Order' : 'Nouvel Ordre'}</p>
       </div>
 
       {/* Buy/Sell buttons */}
@@ -92,7 +94,7 @@ const TradingOrderPanel = ({
             direction === 'long' ? 'bg-[#26a69a] text-white' : 'bg-[#252540] text-[#6b7082] hover:bg-[#2d2d44]'
           }`}
         >
-          <div className="text-[9px] font-normal opacity-80">Achat</div>
+          <div className="text-[9px] font-normal opacity-80">{lang === 'en' ? 'Buy' : 'Achat'}</div>
           <div className="font-mono">{fmt(askPrice)}</div>
         </button>
         <button
@@ -101,7 +103,7 @@ const TradingOrderPanel = ({
             direction === 'short' ? 'bg-[#ef5350] text-white' : 'bg-[#252540] text-[#6b7082] hover:bg-[#2d2d44]'
           }`}
         >
-          <div className="text-[9px] font-normal opacity-80">Vente</div>
+          <div className="text-[9px] font-normal opacity-80">{lang === 'en' ? 'Sell' : 'Vente'}</div>
           <div className="font-mono">{fmt(bidPrice)}</div>
         </button>
       </div>
@@ -131,20 +133,20 @@ const TradingOrderPanel = ({
       {/* Target price for limit/stop */}
       {orderType !== 'market' && (
         <div>
-          <label className={labelClass}>Prix cible</label>
+          <label className={labelClass}>{lang === 'en' ? 'Target price' : 'Prix cible'}</label>
           <input type="number" value={targetPrice} onChange={e => setTargetPrice(e.target.value)} placeholder="0.00" className={inputClass} />
         </div>
       )}
 
       {/* Volume / Quantity */}
       <div>
-        <label className={labelClass}>Volume (Quantité)</label>
+        <label className={labelClass}>{lang === 'en' ? 'Volume (Quantity)' : 'Volume (Quantité)'}</label>
         <input type="number" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="0.01" className={inputClass} />
       </div>
 
       {/* Leverage */}
       <div>
-        <label className={labelClass}>Levier</label>
+        <label className={labelClass}>{lang === 'en' ? 'Leverage' : 'Levier'}</label>
         <div className="flex gap-0.5">
           {['1', '2', '5', '10', '25', '50', '100'].map(l => (
             <button
@@ -174,13 +176,13 @@ const TradingOrderPanel = ({
 
       {/* Cost estimate */}
       <div className="flex items-center justify-between px-2 py-1.5 bg-[#252540] rounded text-[10px]">
-        <span className="text-[#6b7082]">Coût estimé</span>
+        <span className="text-[#6b7082]">{lang === 'en' ? 'Estimated cost' : 'Coût estimé'}</span>
         <span className="font-mono font-bold text-[#c5c8d6]">${fmt(cost)}</span>
       </div>
 
       {/* Balance */}
       <div className="flex items-center justify-between px-2 py-1 text-[10px]">
-        <span className="text-[#6b7082]">Solde disponible</span>
+        <span className="text-[#6b7082]">{lang === 'en' ? 'Available balance' : 'Solde disponible'}</span>
         <span className="font-mono text-[#8a8fa3]">${fmt(portfolio.balance || 0)}</span>
       </div>
 
@@ -194,7 +196,7 @@ const TradingOrderPanel = ({
             : 'bg-[#ef5350] hover:bg-[#f44336]'
         }`}
       >
-        {loading ? 'Envoi...' : direction === 'long' ? `Buy ${symbolLabel}` : `Sell ${symbolLabel}`}
+        {loading ? (lang === 'en' ? 'Sending...' : 'Envoi...') : direction === 'long' ? `Buy ${symbolLabel}` : `Sell ${symbolLabel}`}
       </button>
     </div>
   );

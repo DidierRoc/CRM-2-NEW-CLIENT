@@ -18,15 +18,15 @@ type LoginErrorDetails = {
   requestId: string;
 };
 
-const friendlyMessage = (err: CrmSignInError): string => {
+const friendlyMessage = (err: CrmSignInError, lang: 'fr' | 'en'): string => {
   if (err.step === 'auth') {
-    if (err.status === 400) return 'Identifiant ou mot de passe incorrect.';
-    if (err.status === 429) return 'Trop de tentatives. Merci de patienter quelques minutes.';
-    if (err.status >= 500) return "Service d'authentification momentanément indisponible.";
+    if (err.status === 400) return lang === 'en' ? 'Incorrect username or password.' : 'Identifiant ou mot de passe incorrect.';
+    if (err.status === 429) return lang === 'en' ? 'Too many attempts. Please wait a few minutes.' : 'Trop de tentatives. Merci de patienter quelques minutes.';
+    if (err.status >= 500) return lang === 'en' ? 'Authentication service temporarily unavailable.' : "Service d'authentification momentanément indisponible.";
   }
-  if (err.step === 'role_check') return "Ce compte n'est pas autorisé à accéder à l'espace client.";
-  if (err.step === 'network') return 'Connexion impossible. Vérifiez votre connexion Internet.';
-  return err.message || 'Erreur inconnue.';
+  if (err.step === 'role_check') return lang === 'en' ? 'This account is not authorized to access the client space.' : "Ce compte n'est pas autorisé à accéder à l'espace client.";
+  if (err.step === 'network') return lang === 'en' ? 'Unable to connect. Check your Internet connection.' : 'Connexion impossible. Vérifiez votre connexion Internet.';
+  return err.message || (lang === 'en' ? 'Unknown error.' : 'Erreur inconnue.');
 };
 
 
@@ -89,11 +89,13 @@ const ClientLogin = () => {
       let nextAttempts = failedAttempts;
       if (isWrongPassword) { nextAttempts = failedAttempts + 1; setFailedAttempts(nextAttempts); }
       const remaining = Math.max(0, MAX_ATTEMPTS - nextAttempts);
-      let baseMessage = isCrm ? friendlyMessage(err) : (err?.message || 'Erreur inconnue');
+      let baseMessage = isCrm ? friendlyMessage(err, lang) : (err?.message || (lang === 'en' ? 'Unknown error' : 'Erreur inconnue'));
       if (isWrongPassword) {
         baseMessage = remaining > 0
-          ? `Mot de passe incorrect. Il vous reste ${remaining} tentative${remaining > 1 ? 's' : ''}.`
-          : 'Trop de tentatives. Contactez votre conseiller.';
+          ? (lang === 'en'
+              ? `Incorrect password. You have ${remaining} attempt${remaining > 1 ? 's' : ''} remaining.`
+              : `Mot de passe incorrect. Il vous reste ${remaining} tentative${remaining > 1 ? 's' : ''}.`)
+          : (lang === 'en' ? 'Too many attempts. Contact your advisor.' : 'Trop de tentatives. Contactez votre conseiller.');
       }
       setLoginError({
         message: baseMessage,

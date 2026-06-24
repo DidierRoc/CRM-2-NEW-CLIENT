@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { Bell, CheckCircle2, FileSignature, FileText, MessageCircle, AlertTriangle } from 'lucide-react';
 import { callCrmApi } from '@/lib/crmApi';
 import { useSmartPolling } from '@/hooks/useSmartPolling';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export type NotifKind =
   | 'withdrawal_validated'
@@ -81,6 +82,7 @@ interface ProviderProps {
 
 export function ClientNotificationsProvider({ children, leadId, messagingEnabled }: ProviderProps) {
   const queryClient = useQueryClient();
+  const { lang } = useLanguage();
   const [notifications, setNotifications] = useState<ClientNotification[]>(() => loadStored());
   const seenRef = useRef<Set<string>>(loadSeen());
   const initializedRef = useRef<Record<string, any>>({});
@@ -139,8 +141,10 @@ export function ClientNotificationsProvider({ children, leadId, messagingEnabled
           pushNotification(
             {
               kind: 'advisor_message',
-              title: 'Nouveau message conseiller',
-              description: `${count} message${count > 1 ? 's' : ''} non lu${count > 1 ? 's' : ''}`,
+              title: lang === 'en' ? 'New advisor message' : 'Nouveau message conseiller',
+              description: lang === 'en'
+                ? `${count} unread message${count > 1 ? 's' : ''}`
+                : `${count} message${count > 1 ? 's' : ''} non lu${count > 1 ? 's' : ''}`,
               href: '/client/help',
             },
             `msg-${count}-${Date.now()}`,
@@ -176,8 +180,10 @@ export function ClientNotificationsProvider({ children, leadId, messagingEnabled
               pushNotification(
                 {
                   kind: 'withdrawal_validated',
-                  title: 'Retrait validé ✅',
-                  description: `Votre demande de ${Number(w.amount || 0).toLocaleString('fr-FR')} € a été traitée.`,
+                  title: lang === 'en' ? 'Withdrawal approved ✅' : 'Retrait validé ✅',
+                  description: lang === 'en'
+                    ? `Your request of ${Number(w.amount || 0).toLocaleString('en-CA')} $ has been processed.`
+                    : `Votre demande de ${Number(w.amount || 0).toLocaleString('fr-FR')} € a été traitée.`,
                   href: '/client/withdrawal',
                 },
                 `wd-${w.id}-${w.status}`,
@@ -186,8 +192,8 @@ export function ClientNotificationsProvider({ children, leadId, messagingEnabled
               pushNotification(
                 {
                   kind: 'withdrawal_rejected',
-                  title: 'Retrait refusé',
-                  description: w.reason || w.admin_note || 'Voir détails dans votre espace.',
+                  title: lang === 'en' ? 'Withdrawal declined' : 'Retrait refusé',
+                  description: w.reason || w.admin_note || (lang === 'en' ? 'See details in your space.' : 'Voir détails dans votre espace.'),
                   href: '/client/withdrawal',
                 },
                 `wd-${w.id}-${w.status}`,
@@ -224,13 +230,18 @@ export function ClientNotificationsProvider({ children, leadId, messagingEnabled
               pushNotification(
                 {
                   kind: 'contract_signed',
-                  title:
-                    s.status === 'active'
+                  title: lang === 'en'
+                    ? s.status === 'active'
+                      ? 'Contract activated 🎉'
+                      : s.status === 'pending_payment'
+                      ? 'Contract signed — awaiting payment'
+                      : 'Contract signed ✍️'
+                    : s.status === 'active'
                       ? 'Contrat activé 🎉'
                       : s.status === 'pending_payment'
                       ? 'Contrat signé — en attente de paiement'
                       : 'Contrat signé ✍️',
-                  description: s.products?.nom || 'Votre contrat a été mis à jour.',
+                  description: s.products?.nom || (lang === 'en' ? 'Your contract has been updated.' : 'Votre contrat a été mis à jour.'),
                   href: '/client/contracts',
                 },
                 `ctr-${s.id}-${s.status}`,
@@ -268,8 +279,8 @@ export function ClientNotificationsProvider({ children, leadId, messagingEnabled
             pushNotification(
               {
                 kind: 'new_document',
-                title: 'Nouveau document disponible',
-                description: d.nom || 'Un document a été ajouté à votre espace.',
+                title: lang === 'en' ? 'New document available' : 'Nouveau document disponible',
+                description: d.nom || (lang === 'en' ? 'A document has been added to your space.' : 'Un document a été ajouté à votre espace.'),
                 href: '/client/documents',
               },
               `doc-${d.id}`,

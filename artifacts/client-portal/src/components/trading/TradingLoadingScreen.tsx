@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { BarChart3, ShieldAlert, TrendingUp, Activity } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-const ADVICES = [
+const ADVICES_FR = [
   {
     icon: ShieldAlert,
     title: 'Maîtrisez votre effet de levier',
@@ -34,19 +35,54 @@ const ADVICES = [
   },
 ];
 
+const ADVICES_EN = [
+  {
+    icon: ShieldAlert,
+    title: 'Master your leverage',
+    text: "High leverage amplifies both your gains and your losses. Stay cautious and adapt it to your risk tolerance.",
+  },
+  {
+    icon: Activity,
+    title: 'Monitor market indicators',
+    text: "Before each entry, check trends, volume and support/resistance levels to confirm your analysis.",
+  },
+  {
+    icon: TrendingUp,
+    title: 'Stick to your trading strategy',
+    text: "Never trade on emotion. Follow your plan, your stop-losses and your profit targets.",
+  },
+  {
+    icon: ShieldAlert,
+    title: 'Diversify your positions',
+    text: "Avoid concentrating your capital on a single asset. Diversification reduces exposure to an adverse event.",
+  },
+  {
+    icon: Activity,
+    title: 'Always set a Stop-Loss',
+    text: "A stop-loss is your best protection. It limits your losses and preserves your capital for future opportunities.",
+  },
+  {
+    icon: TrendingUp,
+    title: 'Trading involves risks',
+    text: "Only trade money you can afford to lose. Past performance does not guarantee future results.",
+  },
+];
+
 interface Props {
   progress: number; // 0-100
 }
 
 const TradingLoadingScreen = ({ progress }: Props) => {
+  const { lang } = useLanguage();
   const [currentIdx, setCurrentIdx] = useState(0);
+  const ADVICES = lang === 'en' ? ADVICES_EN : ADVICES_FR;
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIdx(prev => (prev + 1) % ADVICES.length);
     }, 3500);
     return () => clearInterval(interval);
-  }, []);
+  }, [ADVICES.length]);
 
   const advice = ADVICES[currentIdx];
   const Icon = advice.icon;
@@ -58,7 +94,7 @@ const TradingLoadingScreen = ({ progress }: Props) => {
         <div className="flex items-center justify-center gap-3 mb-10">
           <BarChart3 className="w-7 h-7 text-[#4a90d9]" />
           <h1 className="text-2xl font-bold text-[#e2e4ea] tracking-tight">
-            Préparation de votre plateforme de trading
+            {lang === 'en' ? 'Preparing your trading platform' : 'Préparation de votre plateforme de trading'}
           </h1>
         </div>
 
@@ -73,7 +109,7 @@ const TradingLoadingScreen = ({ progress }: Props) => {
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-widest text-amber-400/80 font-semibold mb-2">
-                Conseil de prévention
+                {lang === 'en' ? 'Prevention tip' : 'Conseil de prévention'}
               </p>
               <h3 className="text-lg font-semibold text-[#e2e4ea] mb-2">{advice.title}</h3>
               <p className="text-sm text-[#a0a4b8] leading-relaxed">{advice.text}</p>
@@ -84,7 +120,7 @@ const TradingLoadingScreen = ({ progress }: Props) => {
         {/* Progress bar */}
         <div className="space-y-3">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#8a8fa3]">Chargement des cours et données de marché…</span>
+            <span className="text-[#8a8fa3]">{lang === 'en' ? 'Loading market data and prices…' : 'Chargement des cours et données de marché…'}</span>
             <span className="text-[#4a90d9] font-mono font-semibold">{Math.round(progress)}%</span>
           </div>
           <div className="h-1.5 bg-[#2d2d44] rounded-full overflow-hidden">
@@ -106,7 +142,9 @@ const TradingLoadingScreen = ({ progress }: Props) => {
         </div>
 
         <p className="text-center text-[10px] text-[#6b7082] mt-8 italic">
-          Les marchés financiers comportent des risques. Tradez de manière responsable.
+          {lang === 'en'
+            ? 'Financial markets carry risks. Trade responsibly.'
+            : 'Les marchés financiers comportent des risques. Tradez de manière responsable.'}
         </p>
       </div>
     </div>

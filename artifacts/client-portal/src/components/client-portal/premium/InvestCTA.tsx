@@ -2,6 +2,7 @@ import { Sparkles, TrendingUp, ArrowRight, Calculator } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { track } from '@/lib/clientTracking';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Props {
   projectedGain?: number;
@@ -20,6 +21,7 @@ const InvestCTA = ({
   accentColor = '#2D5FA0',
 }: Props) => {
   const navigate = useNavigate();
+  const { lang } = useLanguage();
   const hasProjection = projectedGain > 0;
 
   return (
@@ -38,29 +40,47 @@ const InvestCTA = ({
         <div className="flex-1 min-w-0">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-sm text-[11px] font-medium mb-2.5">
             <Sparkles className="w-3 h-3" />
-            <span>Faites fructifier votre capital</span>
+            <span>{lang === 'en' ? 'Grow your capital' : 'Faites fructifier votre capital'}</span>
           </div>
           <h2 className="text-lg sm:text-xl font-bold leading-tight">
             {hasProjection ? (
-              <>
-                Vous pourriez gagner{' '}
-                <span className="text-white underline decoration-white/40 underline-offset-4">
-                  {fmtEUR(projectedGain)}
-                </span>{' '}
-                supplémentaires
-              </>
+              lang === 'en' ? (
+                <>
+                  You could earn{' '}
+                  <span className="text-white underline decoration-white/40 underline-offset-4">
+                    {fmtEUR(projectedGain)}
+                  </span>{' '}
+                  more
+                </>
+              ) : (
+                <>
+                  Vous pourriez gagner{' '}
+                  <span className="text-white underline decoration-white/40 underline-offset-4">
+                    {fmtEUR(projectedGain)}
+                  </span>{' '}
+                  supplémentaires
+                </>
+              )
             ) : (
-              <>Découvrez nos contrats jusqu'à {bestRate > 0 ? `${bestRate}%` : '8%'} annuel</>
+              lang === 'en'
+                ? <>Discover our contracts up to {bestRate > 0 ? `${bestRate}%` : '8%'} annual return</>
+                : <>Découvrez nos contrats jusqu'à {bestRate > 0 ? `${bestRate}%` : '8%'} annuel</>
             )}
           </h2>
           <p className="text-sm text-white/80 mt-1.5 max-w-md">
             {hasProjection
-              ? 'Simulez un nouvel investissement et visualisez vos rendements futurs en quelques secondes.'
-              : 'Des produits sécurisés, transparents et adaptés à votre profil.'}
+              ? (lang === 'en'
+                  ? 'Simulate a new investment and visualise your future returns in seconds.'
+                  : 'Simulez un nouvel investissement et visualisez vos rendements futurs en quelques secondes.')
+              : (lang === 'en'
+                  ? 'Secure, transparent products tailored to your profile.'
+                  : 'Des produits sécurisés, transparents et adaptés à votre profil.')}
           </p>
           {hasProjection && (
             <p className="text-[10px] text-white/55 mt-2 italic">
-              Simulation basée sur vos contrats actifs et leur taux contractuel.
+              {lang === 'en'
+                ? 'Simulation based on your active contracts and their contractual rate.'
+                : 'Simulation basée sur vos contrats actifs et leur taux contractuel.'}
             </p>
           )}
         </div>
@@ -75,7 +95,7 @@ const InvestCTA = ({
             className="bg-white text-slate-900 hover:bg-white/90 font-semibold shadow-lg"
           >
             <TrendingUp className="w-4 h-4 mr-1.5" />
-            Investir
+            {lang === 'en' ? 'Invest' : 'Investir'}
             <ArrowRight className="w-4 h-4 ml-1.5" />
           </Button>
           <Button
@@ -88,7 +108,7 @@ const InvestCTA = ({
             className="bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white"
           >
             <Calculator className="w-4 h-4 mr-1.5" />
-            Simuler
+            {lang === 'en' ? 'Simulate' : 'Simuler'}
           </Button>
         </div>
       </div>

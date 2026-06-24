@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { QrCode, Smartphone, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ClientQRCodeProps {
   portalUrl: string;
@@ -13,6 +13,7 @@ interface ClientQRCodeProps {
 
 const ClientQRCode = ({ portalUrl, logoUrl, primaryColor = '#6366f1', textColor = '#f8fafc' }: ClientQRCodeProps) => {
   const [open, setOpen] = useState(false);
+  const { lang } = useLanguage();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -20,7 +21,7 @@ const ClientQRCode = ({ portalUrl, logoUrl, primaryColor = '#6366f1', textColor 
         <button
           className="relative p-2 rounded-lg transition-all hover:scale-105 group"
           style={{ backgroundColor: `${primaryColor}20` }}
-          title="Installer l'application"
+          title={lang === 'en' ? 'Install the app' : "Installer l'application"}
         >
           <QrCode className="w-5 h-5" style={{ color: textColor }} />
           <span
@@ -33,12 +34,14 @@ const ClientQRCode = ({ portalUrl, logoUrl, primaryColor = '#6366f1', textColor 
         <DialogHeader>
           <DialogTitle className="flex items-center justify-center gap-2 text-lg">
             <Smartphone className="w-5 h-5" />
-            Installer sur votre téléphone
+            {lang === 'en' ? 'Install on your phone' : 'Installer sur votre téléphone'}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-2">
           <p className="text-sm text-muted-foreground">
-            Scannez ce QR code avec votre téléphone pour accéder à votre espace client et l'installer en raccourci.
+            {lang === 'en'
+              ? 'Scan this QR code with your phone to access your client space and install it as a shortcut.'
+              : "Scannez ce QR code avec votre téléphone pour accéder à votre espace client et l'installer en raccourci."}
           </p>
           
           <div className="flex justify-center">
@@ -62,18 +65,31 @@ const ClientQRCode = ({ portalUrl, logoUrl, primaryColor = '#6366f1', textColor 
 
           <div className="bg-muted/50 rounded-xl p-4 text-left space-y-2">
             <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-              <Download className="w-3.5 h-3.5" /> Comment installer :
+              <Download className="w-3.5 h-3.5" /> {lang === 'en' ? 'How to install:' : 'Comment installer :'}
             </p>
             <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
-              <li>Scannez le QR code avec l'appareil photo</li>
-              <li>Ouvrez le lien dans votre navigateur</li>
-              <li><strong>iPhone</strong> : Partager → Ajouter à l'écran d'accueil</li>
-              <li><strong>Android</strong> : Menu → Installer l'application</li>
+              {lang === 'en' ? (
+                <>
+                  <li>Scan the QR code with your camera</li>
+                  <li>Open the link in your browser</li>
+                  <li><strong>iPhone</strong>: Share → Add to Home Screen</li>
+                  <li><strong>Android</strong>: Menu → Install app</li>
+                </>
+              ) : (
+                <>
+                  <li>Scannez le QR code avec l'appareil photo</li>
+                  <li>Ouvrez le lien dans votre navigateur</li>
+                  <li><strong>iPhone</strong> : Partager → Ajouter à l'écran d'accueil</li>
+                  <li><strong>Android</strong> : Menu → Installer l'application</li>
+                </>
+              )}
             </ol>
           </div>
 
           <p className="text-[10px] text-muted-foreground/60">
-            L'application s'installera comme un raccourci avec logo sur votre téléphone
+            {lang === 'en'
+              ? 'The app will be installed as a shortcut with logo on your phone.'
+              : "L'application s'installera comme un raccourci avec logo sur votre téléphone"}
           </p>
         </div>
       </DialogContent>

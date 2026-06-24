@@ -48,24 +48,24 @@ const notifyMessagesRead = (readAt = new Date().toISOString()) => {
   window.dispatchEvent(new Event(CLIENT_MESSAGES_READ_EVENT));
 };
 
-const buildAdvisorDisplayName = (data: ConversationResponse | null | undefined): string => {
+const buildAdvisorDisplayName = (data: ConversationResponse | null | undefined, lang: 'fr' | 'en' = 'fr'): string => {
   const advisor: any = data?.advisor;
   const prenom = advisor?.prenom?.trim?.();
   const nom = advisor?.nom?.trim?.();
   if (prenom || nom) return [prenom, nom].filter(Boolean).join(' ');
   const raw = data?.advisorName ?? advisor?.login;
-  if (!raw) return 'Votre conseiller';
+  if (!raw) return lang === 'en' ? 'Your advisor' : 'Votre conseiller';
   if (raw.includes('@')) {
     return raw.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
   }
   return raw;
 };
 
-const getConversationMeta = (data: ConversationResponse | null | undefined) => ({
+const getConversationMeta = (data: ConversationResponse | null | undefined, lang: 'fr' | 'en' = 'fr') => ({
   conversationId: data?.conversationId ?? null,
   myProfileId: data?.myProfileId ?? data?.clientProfileId ?? null,
   advisorProfileId: data?.advisor?.id ?? null,
-  advisorName: buildAdvisorDisplayName(data),
+  advisorName: buildAdvisorDisplayName(data, lang),
   advisorAvatar: data?.advisorAvatar ?? data?.advisor?.avatar_url ?? null,
 });
 
@@ -251,7 +251,7 @@ const MessagesTab = () => {
       try {
         const data = await callCrmApi<ConversationResponse>('client-messaging', 'get-conversation');
         if (data) {
-          const meta = getConversationMeta(data);
+          const meta = getConversationMeta(data, lang);
           const stableConversationId = await resolveStableConversation(
             meta.conversationId,
             meta.myProfileId,
@@ -551,8 +551,8 @@ const AlertesTab = () => {
 };
 
 /* ─── CONSEILLER TAB ─── */
-const formatAdvisorName = (login: string | null | undefined): string => {
-  if (!login) return 'Votre conseiller';
+const formatAdvisorName = (login: string | null | undefined, lang: 'fr' | 'en' = 'fr'): string => {
+  if (!login) return lang === 'en' ? 'Your advisor' : 'Votre conseiller';
   // If login is an email, extract the name part and format it
   const name = login.includes('@') ? login.split('@')[0] : login;
   return name
@@ -576,6 +576,7 @@ const ConseillerTab = ({ onContactClick }: { onContactClick: () => void }) => {
   const [advisor, setAdvisor] = useState<AdvisorProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
+  const { lang: advisorLang } = useLanguage();
 
   useEffect(() => {
     callCrmApi('client-self-service', 'get-advisor')
@@ -592,10 +593,10 @@ const ConseillerTab = ({ onContactClick }: { onContactClick: () => void }) => {
   }
 
   if (!advisor) {
-    return <Card><CardContent className="py-12 text-center text-muted-foreground">Aucun conseiller assigné</CardContent></Card>;
+    return <Card><CardContent className="py-12 text-center text-muted-foreground">{advisorLang === 'en' ? 'No advisor assigned' : 'Aucun conseiller assigné'}</CardContent></Card>;
   }
 
-  const displayName = formatAdvisorName(advisor.login);
+  const displayName = formatAdvisorName(advisor.login, advisorLang);
   const displayFonction = isValidFonction(advisor.fonction) ? advisor.fonction : null;
   const initials = getAdvisorInitials(advisor);
 

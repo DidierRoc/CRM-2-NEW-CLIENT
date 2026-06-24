@@ -43,11 +43,12 @@ const ClientAssistant = ({
   const leadId = ctx?.clientAccount?.lead_id;
 
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Msg[]>([
+  const [messages, setMessages] = useState<Msg[]>(() => [
     {
       role: 'assistant',
-      content:
-        "Bonjour 👋 Je suis votre assistant patrimonial. Posez-moi vos questions sur votre portefeuille, vos contrats ou simulez un scénario.",
+      content: lang === 'en'
+        ? "Hello 👋 I am your wealth management assistant. Ask me questions about your portfolio, your contracts, or simulate a scenario."
+        : "Bonjour 👋 Je suis votre assistant patrimonial. Posez-moi vos questions sur votre portefeuille, vos contrats ou simulez un scénario.",
     },
   ]);
   const [input, setInput] = useState('');

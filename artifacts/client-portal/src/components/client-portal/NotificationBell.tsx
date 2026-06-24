@@ -4,15 +4,24 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useClientNotifications, KIND_META, type ClientNotification } from '@/contexts/ClientNotificationsContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Props {
   textColor: string;
   accentColor: string;
 }
 
-function timeAgo(ts: number) {
+function timeAgo(ts: number, lang: 'fr' | 'en') {
   const diff = Date.now() - ts;
   const m = Math.floor(diff / 60000);
+  if (lang === 'en') {
+    if (m < 1) return 'just now';
+    if (m < 60) return `${m} min ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    const d = Math.floor(h / 24);
+    return `${d}d ago`;
+  }
   if (m < 1) return "à l'instant";
   if (m < 60) return `il y a ${m} min`;
   const h = Math.floor(m / 60);
@@ -23,6 +32,7 @@ function timeAgo(ts: number) {
 
 export default function NotificationBell({ textColor, accentColor }: Props) {
   const navigate = useNavigate();
+  const { lang } = useLanguage();
   const { notifications, unreadCount, markAllRead, markRead, clearAll } = useClientNotifications();
 
   const handleClick = (n: ClientNotification) => {
@@ -36,7 +46,7 @@ export default function NotificationBell({ textColor, accentColor }: Props) {
         <button
           className="relative p-2 rounded-lg transition-colors hover:bg-white/10"
           style={{ color: textColor }}
-          aria-label="Notifications"
+          aria-label={lang === 'en' ? 'Notifications' : 'Notifications'}
         >
           <Bell className="w-5 h-5" />
           {unreadCount > 0 && (
@@ -56,19 +66,39 @@ export default function NotificationBell({ textColor, accentColor }: Props) {
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Notifications</h3>
+            <h3 className="text-sm font-semibold text-foreground">
+              {lang === 'en' ? 'Notifications' : 'Notifications'}
+            </h3>
             <p className="text-[11px] text-muted-foreground">
-              {unreadCount > 0 ? `${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : 'Tout est à jour'}
+              {unreadCount > 0
+                ? lang === 'en'
+                  ? `${unreadCount} unread`
+                  : `${unreadCount} non lue${unreadCount > 1 ? 's' : ''}`
+                : lang === 'en'
+                ? 'All caught up'
+                : 'Tout est à jour'}
             </p>
           </div>
           <div className="flex items-center gap-1">
             {unreadCount > 0 && (
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={markAllRead} title="Tout marquer comme lu">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={markAllRead}
+                title={lang === 'en' ? 'Mark all as read' : 'Tout marquer comme lu'}
+              >
                 <CheckCheck className="w-4 h-4" />
               </Button>
             )}
             {notifications.length > 0 && (
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={clearAll} title="Effacer tout">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={clearAll}
+                title={lang === 'en' ? 'Clear all' : 'Effacer tout'}
+              >
                 <Trash2 className="w-4 h-4" />
               </Button>
             )}
@@ -79,9 +109,13 @@ export default function NotificationBell({ textColor, accentColor }: Props) {
           {notifications.length === 0 ? (
             <div className="py-12 px-6 text-center">
               <Bell className="w-10 h-10 mx-auto mb-3 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">Aucune notification</p>
+              <p className="text-sm text-muted-foreground">
+                {lang === 'en' ? 'No notifications' : 'Aucune notification'}
+              </p>
               <p className="text-[11px] text-muted-foreground/70 mt-1">
-                Vous serez notifié des événements importants ici.
+                {lang === 'en'
+                  ? "You'll be notified of important events here."
+                  : 'Vous serez notifié des événements importants ici.'}
               </p>
             </div>
           ) : (
@@ -120,7 +154,7 @@ export default function NotificationBell({ textColor, accentColor }: Props) {
                         {n.description && (
                           <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.description}</p>
                         )}
-                        <p className="text-[10px] text-muted-foreground/70 mt-1">{timeAgo(n.createdAt)}</p>
+                        <p className="text-[10px] text-muted-foreground/70 mt-1">{timeAgo(n.createdAt, lang)}</p>
                       </div>
                     </button>
                   </li>

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 const WELCOME_STORAGE_KEY = 'lovable.client.welcome.shown';
 import AnimatedCurrency from './AnimatedCurrency';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Props {
   clientName: string;
@@ -32,6 +33,7 @@ const PortfolioHeroCard = ({
   rightSlot,
 }: Props) => {
 
+  const { lang } = useLanguage();
   const [hidden, setHidden] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const positive = performancePct >= 0;
@@ -88,7 +90,7 @@ const PortfolioHeroCard = ({
             className="h-9 px-3 rounded-full bg-foreground/5 hover:bg-foreground/10 text-foreground text-xs gap-1.5 border border-foreground/10"
           >
             <Download className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Relevé</span>
+            <span className="hidden sm:inline">{lang === 'en' ? 'Statement' : 'Relevé'}</span>
           </Button>
         )}
         <Button
@@ -96,7 +98,7 @@ const PortfolioHeroCard = ({
           size="sm"
           onClick={() => setHidden(h => !h)}
           className="h-9 w-9 p-0 rounded-full bg-foreground/5 hover:bg-foreground/10 text-foreground border border-foreground/10"
-          aria-label={hidden ? 'Afficher les montants' : 'Masquer les montants'}
+          aria-label={hidden ? (lang === 'en' ? 'Show amounts' : 'Afficher les montants') : (lang === 'en' ? 'Hide amounts' : 'Masquer les montants')}
         >
           {hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
         </Button>
@@ -111,10 +113,12 @@ const PortfolioHeroCard = ({
             <div className="flex items-end justify-between flex-wrap gap-3 mb-6">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/55 font-semibold mb-2">
-                  {showWelcome ? 'Bienvenue' : 'Solde global'}
+                  {showWelcome ? (lang === 'en' ? 'Welcome' : 'Bienvenue') : (lang === 'en' ? 'Global balance' : 'Solde global')}
                 </p>
                 <h2 className="text-base md:text-lg font-medium text-foreground/85">
-                  {showWelcome ? <>Bonjour, <span className="font-bold text-foreground">{clientName}</span></> : <>Aperçu de votre compte <span className="font-semibold text-foreground">{clientName}</span></>}
+                  {showWelcome
+                    ? (lang === 'en' ? <>Hello, <span className="font-bold text-foreground">{clientName}</span></> : <>Bonjour, <span className="font-bold text-foreground">{clientName}</span></>)
+                    : (lang === 'en' ? <>Account overview <span className="font-semibold text-foreground">{clientName}</span></> : <>Aperçu de votre compte <span className="font-semibold text-foreground">{clientName}</span></>)}
                 </h2>
 
               </div>
@@ -143,9 +147,13 @@ const PortfolioHeroCard = ({
               </div>
 
               <div className="relative flex items-center gap-2 mt-3 text-xs md:text-sm text-foreground/60">
-                <span>Valeur totale réelle de vos investissements</span>
+                <span>{lang === 'en' ? 'Total real value of your investments' : 'Valeur totale réelle de vos investissements'}</span>
                 <span className="text-foreground/30">•</span>
-                <span className="tabular-nums">{activeContracts} contrat{activeContracts > 1 ? 's' : ''} actif{activeContracts > 1 ? 's' : ''}</span>
+                <span className="tabular-nums">
+                  {lang === 'en'
+                    ? `${activeContracts} active contract${activeContracts > 1 ? 's' : ''}`
+                    : `${activeContracts} contrat${activeContracts > 1 ? 's' : ''} actif${activeContracts > 1 ? 's' : ''}`}
+                </span>
               </div>
 
             </div>

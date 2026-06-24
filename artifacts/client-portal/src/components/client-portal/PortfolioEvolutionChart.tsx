@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Download, TrendingUp, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -45,6 +46,7 @@ interface Props {
 type TimeRange = 'all' | '6m' | '1y' | '2y';
 
 const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => {
+  const { lang } = useLanguage();
   const [selectedContract, setSelectedContract] = useState<string>('all');
   const [timeRange, setTimeRange] = useState<TimeRange>('all');
 
@@ -161,11 +163,11 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
     <div className="border rounded-lg bg-card p-5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
-          <h2 className="font-semibold text-foreground">Évolution du portefeuille</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">Passé et projection future de vos investissements</p>
+          <h2 className="font-semibold text-foreground">{lang === 'en' ? 'Portfolio evolution' : 'Évolution du portefeuille'}</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">{lang === 'en' ? 'Past and future projection of your investments' : 'Passé et projection future de vos investissements'}</p>
         </div>
         <Button variant="outline" size="sm" onClick={onDownloadStatement}>
-          <Download className="w-3.5 h-3.5 mr-1" />Relevé PDF
+          <Download className="w-3.5 h-3.5 mr-1" />{lang === 'en' ? 'PDF Statement' : 'Relevé PDF'}
         </Button>
       </div>
 
@@ -173,7 +175,7 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
       <div className="flex flex-wrap items-center gap-2 mb-4">
         {/* Contract filter */}
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-muted-foreground">Contrat :</span>
+          <span className="text-xs text-muted-foreground">{lang === 'en' ? 'Contract:' : 'Contrat :'}</span>
           <div className="flex gap-1">
             <button
               onClick={() => setSelectedContract('all')}
@@ -183,7 +185,7 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
                   : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
             >
-              Tous
+              {lang === 'en' ? 'All' : 'Tous'}
             </button>
             {activeSubs.map(sub => (
               <button
@@ -196,7 +198,7 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
                 }`}
                 title={sub.products?.nom || sub.custom_name}
               >
-                {sub.products?.nom || sub.custom_name || 'Contrat'}
+                {sub.products?.nom || sub.custom_name || (lang === 'en' ? 'Contract' : 'Contrat')}
               </button>
             ))}
           </div>
@@ -208,12 +210,17 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
         <div className="flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-muted-foreground" />
           <div className="flex gap-1">
-            {([
-              { value: 'all', label: 'Tout' },
-              { value: '6m', label: '6 mois' },
-              { value: '1y', label: '1 an' },
-              { value: '2y', label: '2 ans' },
-            ] as { value: TimeRange; label: string }[]).map(opt => (
+            {(lang === 'en' ? [
+              { value: 'all' as TimeRange, label: 'All' },
+              { value: '6m' as TimeRange, label: '6 months' },
+              { value: '1y' as TimeRange, label: '1 year' },
+              { value: '2y' as TimeRange, label: '2 years' },
+            ] : [
+              { value: 'all' as TimeRange, label: 'Tout' },
+              { value: '6m' as TimeRange, label: '6 mois' },
+              { value: '1y' as TimeRange, label: '1 an' },
+              { value: '2y' as TimeRange, label: '2 ans' },
+            ]).map(opt => (
               <button
                 key={opt.value}
                 onClick={() => setTimeRange(opt.value)}
@@ -238,14 +245,14 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(var(--chart-2, 142 71% 45%))' }} />
-          <span className="text-muted-foreground">Intérêts (passé)</span>
+          <span className="text-muted-foreground">{lang === 'en' ? 'Interest (past)' : 'Intérêts (passé)'}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-sm border-2 border-dashed" style={{ borderColor: 'hsl(var(--chart-2, 142 71% 45%))' }} />
-          <span className="text-muted-foreground">Intérêts (projection)</span>
+          <span className="text-muted-foreground">{lang === 'en' ? 'Interest (projection)' : 'Intérêts (projection)'}</span>
         </div>
         <Badge variant="outline" className="text-[10px] ml-auto">
-          <TrendingUp className="w-3 h-3 mr-1" />Aujourd'hui
+          <TrendingUp className="w-3 h-3 mr-1" />{lang === 'en' ? 'Today' : "Aujourd'hui"}
         </Badge>
       </div>
 
@@ -269,7 +276,13 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
               formatter={(value: unknown, name: string) => {
                 const v = value as number | null;
                 if (v === null || v === undefined) return ['-', ''];
-                const labels: Record<string, string> = {
+                const labels: Record<string, string> = lang === 'en' ? {
+                  pastTotal: 'Value (actual)',
+                  futureTotal: 'Value (projection)',
+                  capital: 'Capital',
+                  pastInterests: 'Interest (actual)',
+                  futureInterests: 'Interest (projection)',
+                } : {
                   pastTotal: 'Valeur (réel)',
                   futureTotal: 'Valeur (projection)',
                   capital: 'Capital',
@@ -292,7 +305,7 @@ const PortfolioEvolutionChart = ({ activeSubs, onDownloadStatement }: Props) => 
                 strokeDasharray="4 4"
                 strokeWidth={2}
                 label={{
-                  value: "Aujourd'hui",
+                  value: lang === 'en' ? 'Today' : "Aujourd'hui",
                   position: 'top',
                   style: { fontSize: 10, fill: 'hsl(var(--primary))' },
                 }}

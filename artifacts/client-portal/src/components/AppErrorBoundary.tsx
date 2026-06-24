@@ -15,6 +15,10 @@ const isChunkLoadError = (err: unknown): boolean => {
   );
 };
 
+const getLang = (): 'fr' | 'en' => {
+  try { return localStorage.getItem('ubs.portal.lang') === 'en' ? 'en' : 'fr'; } catch { return 'fr'; }
+};
+
 export class AppErrorBoundary extends Component<Props, State> {
   state: State = { error: null, chunkError: false };
 
@@ -42,6 +46,8 @@ export class AppErrorBoundary extends Component<Props, State> {
     const { error, chunkError } = this.state;
     if (!error) return this.props.children;
 
+    const lang = getLang();
+
     return (
       <div
         style={{
@@ -67,12 +73,18 @@ export class AppErrorBoundary extends Component<Props, State> {
         >
           <div style={{ fontSize: '40px', marginBottom: '16px' }}>⚠️</div>
           <h1 style={{ fontSize: '20px', fontWeight: 700, color: '#111111', margin: '0 0 8px' }}>
-            {chunkError ? 'Mise à jour disponible' : 'Une erreur est survenue'}
+            {chunkError
+              ? (lang === 'en' ? 'Update available' : 'Mise à jour disponible')
+              : (lang === 'en' ? 'An error occurred' : 'Une erreur est survenue')}
           </h1>
           <p style={{ fontSize: '14px', color: '#64748b', margin: '0 0 24px', lineHeight: 1.6 }}>
             {chunkError
-              ? 'Une nouvelle version de la plateforme est disponible. Rechargez la page pour continuer.'
-              : 'La page a rencontré un problème inattendu. Rechargez pour réessayer.'}
+              ? (lang === 'en'
+                  ? 'A new version of the platform is available. Reload the page to continue.'
+                  : 'Une nouvelle version de la plateforme est disponible. Rechargez la page pour continuer.')
+              : (lang === 'en'
+                  ? 'The page encountered an unexpected problem. Reload to try again.'
+                  : 'La page a rencontré un problème inattendu. Rechargez pour réessayer.')}
           </p>
           <button
             onClick={this.handleReload}
@@ -87,7 +99,7 @@ export class AppErrorBoundary extends Component<Props, State> {
               cursor: 'pointer',
             }}
           >
-            Recharger la page
+            {lang === 'en' ? 'Reload page' : 'Recharger la page'}
           </button>
         </div>
       </div>
