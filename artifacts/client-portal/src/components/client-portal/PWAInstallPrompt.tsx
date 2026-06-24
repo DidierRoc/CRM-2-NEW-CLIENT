@@ -92,7 +92,7 @@ const PWAInstallPrompt = () => {
           onClick={() => setShowIOSGuide(false)}
         >
           <div
-            className="w-full max-w-md rounded-2xl bg-[hsl(220_30%_12%)] border border-white/10 p-5 premium-rise"
+            className="w-full max-w-md rounded-2xl bg-[hsl(0_0%_8%)] border border-white/10 p-5 premium-rise"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between mb-4">

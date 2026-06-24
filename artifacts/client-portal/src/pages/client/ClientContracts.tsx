@@ -341,7 +341,7 @@ const ClientContracts = () => {
       <input ref={fileInputRef} type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" className="hidden" onChange={handleFileSelected} />
 
       {/* ── EN-TÊTE ─────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#111111] via-[#cc0000] to-[#111111] p-6 md:p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#080808] via-[#111111] to-[#0A0A0A] p-6 md:p-8 text-white shadow-xl">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-[#c9a84c]/10 blur-2xl" />

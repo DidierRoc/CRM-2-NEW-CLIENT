@@ -334,7 +334,7 @@ const ClientProducts = () => {
     <div className="space-y-0 animate-in fade-in-0 duration-300">
 
       {/* ── Hero header ─────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-3xl mb-6 bg-gradient-to-br from-[hsl(var(--primary))] via-[hsl(215_55%_28%)] to-[hsl(218_60%_15%)] shadow-[0_16px_48px_-12px_rgba(0,0,0,0.35)]">
+      <div className="relative overflow-hidden rounded-3xl mb-6 bg-gradient-to-br from-[#111111] via-[#1a1a1a] to-[#080808] shadow-[0_16px_48px_-12px_rgba(0,0,0,0.35)]">
         {/* Decorative blobs */}
         <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/5 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 -left-16 w-64 h-64 rounded-full bg-white/5 blur-2xl pointer-events-none" />
