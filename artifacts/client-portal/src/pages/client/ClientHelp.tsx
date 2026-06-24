@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MessageCircle, Bell, Phone, Mail, Briefcase, ShieldCheck, Lock } from 'lucide-react';
@@ -164,6 +165,7 @@ const resolveStableConversation = async (
 };
 
 const ClientHelp = () => {
+  const { lang } = useLanguage();
   const [activeTab, setActiveTab] = useState('messages');
 
   return (
@@ -178,19 +180,19 @@ const ClientHelp = () => {
               <MessageCircle className="w-6 h-6" strokeWidth={2.2} />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-white/60 font-semibold">Espace sécurisé</p>
-              <h1 className="text-2xl md:text-3xl font-bold leading-tight">Messagerie privée</h1>
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/60 font-semibold">{lang === 'en' ? 'Secure area' : 'Espace sécurisé'}</p>
+              <h1 className="text-2xl md:text-3xl font-bold leading-tight">{lang === 'en' ? 'Private messaging' : 'Messagerie privée'}</h1>
               <p className="text-sm text-white/70 mt-1 max-w-md">
-                Échangez en toute confidentialité avec votre conseiller dédié.
+                {lang === 'en' ? 'Communicate confidentially with your dedicated advisor.' : 'Échangez en toute confidentialité avec votre conseiller dédié.'}
               </p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur px-3 py-1.5 text-xs font-medium ring-1 ring-white/15">
-              <Lock className="w-3.5 h-3.5" /> Chiffrement de bout en bout
+              <Lock className="w-3.5 h-3.5" /> {lang === 'en' ? 'End-to-end encryption' : 'Chiffrement de bout en bout'}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-3 py-1.5 text-xs font-medium text-emerald-100 ring-1 ring-emerald-300/30">
-              <ShieldCheck className="w-3.5 h-3.5" /> Canal vérifié
+              <ShieldCheck className="w-3.5 h-3.5" /> {lang === 'en' ? 'Verified channel' : 'Canal vérifié'}
             </span>
           </div>
         </div>
@@ -202,7 +204,7 @@ const ClientHelp = () => {
             <MessageCircle className="w-4 h-4" /> Messages
           </TabsTrigger>
           <TabsTrigger value="alertes" className="gap-1.5 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-            <Bell className="w-4 h-4" /> Alertes
+            <Bell className="w-4 h-4" /> {lang === 'en' ? 'Alerts' : 'Alertes'}
           </TabsTrigger>
         </TabsList>
 
@@ -231,6 +233,7 @@ const writeConvMetaCache = (meta: { conversationId: string; myProfileId: string;
 };
 
 const MessagesTab = () => {
+  const { lang } = useLanguage();
   const cachedMeta = readConvMetaCache();
   const [conversationId, setConversationId] = useState<string | null>(cachedMeta?.conversationId ?? null);
   const [myProfileId, setMyProfileId] = useState<string | null>(cachedMeta?.myProfileId ?? null);
@@ -455,8 +458,8 @@ const MessagesTab = () => {
     return (
       <Card>
         <CardContent className="py-12 text-center text-muted-foreground space-y-2">
-          <p>Messagerie temporairement indisponible.</p>
-          <p className="text-xs">Le backend CRM ne trouve pas encore le profil client nécessaire à la conversation.</p>
+          <p>{lang === 'en' ? 'Messaging temporarily unavailable.' : 'Messagerie temporairement indisponible.'}</p>
+          <p className="text-xs">{lang === 'en' ? 'The CRM backend has not yet found the client profile required for the conversation.' : 'Le backend CRM ne trouve pas encore le profil client nécessaire à la conversation.'}</p>
         </CardContent>
       </Card>
     );
@@ -466,8 +469,8 @@ const MessagesTab = () => {
     return (
       <Card>
         <CardContent className="py-12 text-center text-muted-foreground space-y-2">
-          <p>Aucun conseiller assigné pour le moment.</p>
-          <p className="text-xs">La messagerie sera disponible dès qu’un conseiller vous sera attribué.</p>
+          <p>{lang === 'en' ? 'No advisor assigned yet.' : 'Aucun conseiller assigné pour le moment.'}</p>
+          <p className="text-xs">{lang === 'en' ? "Messaging will be available once an advisor is assigned to you." : "La messagerie sera disponible dès qu’un conseiller vous sera attribué."}</p>
         </CardContent>
       </Card>
     );
@@ -480,7 +483,7 @@ const MessagesTab = () => {
   if (!conversationId || !myProfileId) {
     return (
       <Card>
-        <CardContent className="py-12 text-center text-muted-foreground">Conversation indisponible pour le moment.</CardContent>
+        <CardContent className="py-12 text-center text-muted-foreground">{lang === 'en' ? 'Conversation currently unavailable.' : 'Conversation indisponible pour le moment.'}</CardContent>
       </Card>
     );
   }
@@ -497,22 +500,22 @@ const MessagesTab = () => {
             </div>
           )}
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-foreground truncate">{advisorName || 'Votre conseiller'}</p>
+            <p className="text-sm font-semibold text-foreground truncate">{advisorName || (lang === 'en' ? 'Your advisor' : 'Votre conseiller')}</p>
             <p className="text-[11px] text-muted-foreground flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Conseiller dédié · ligne privée
+              {lang === 'en' ? 'Dedicated advisor · private line' : 'Conseiller dédié · ligne privée'}
             </p>
           </div>
         </div>
         <span className="hidden sm:inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-          <Lock className="w-3 h-3" /> Chiffré
+          <Lock className="w-3 h-3" /> {lang === 'en' ? 'Encrypted' : 'Chiffré'}
         </span>
       </div>
       <div style={{ height: 'calc(70vh - 57px)' }}>
         <ProfessionalChat
           conversationId={conversationId}
           myProfileId={myProfileId}
-          otherName={advisorName || 'Votre conseiller'}
+          otherName={advisorName || (lang === 'en' ? 'Your advisor' : 'Votre conseiller')}
           otherAvatar={advisorAvatar}
           variant="panel"
           loadMessages={loadMessages}
@@ -526,23 +529,26 @@ const MessagesTab = () => {
 };
 
 /* ─── ALERTES TAB ─── */
-const AlertesTab = () => (
+const AlertesTab = () => {
+  const { lang } = useLanguage();
+  return (
   <Card>
     <CardHeader>
       <CardTitle className="flex items-center gap-2 text-base">
         <Bell className="w-5 h-5 text-primary" />
-        Alertes et notifications
+        {lang === 'en' ? 'Alerts & notifications' : 'Alertes et notifications'}
       </CardTitle>
     </CardHeader>
     <CardContent>
       <div className="text-center py-12 text-muted-foreground space-y-3">
         <Bell className="w-12 h-12 mx-auto opacity-30" />
-        <p className="text-sm">Aucune alerte pour le moment</p>
-        <p className="text-xs">Cette fonctionnalité sera bientôt disponible.</p>
+        <p className="text-sm">{lang === 'en' ? 'No alerts at the moment' : 'Aucune alerte pour le moment'}</p>
+        <p className="text-xs">{lang === 'en' ? 'This feature will be available soon.' : 'Cette fonctionnalité sera bientôt disponible.'}</p>
       </div>
     </CardContent>
   </Card>
-);
+  );
+};
 
 /* ─── CONSEILLER TAB ─── */
 const formatAdvisorName = (login: string | null | undefined): string => {

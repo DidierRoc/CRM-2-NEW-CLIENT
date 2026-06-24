@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/lib/crmSupabaseClient';
 import type { Message } from '@/types/messaging';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProfessionalChatProps {
   conversationId: string;
@@ -22,13 +23,14 @@ interface ProfessionalChatProps {
   memberLastRead?: Map<string, string>;
 }
 
-const formatDate = (dateStr: string) => {
+const formatDate = (dateStr: string, lang: string) => {
   const d = new Date(dateStr);
   const now = new Date();
   const diffDays = Math.floor((now.getTime() - d.getTime()) / 86400000);
-  if (diffDays === 0) return "Aujourd'hui";
-  if (diffDays === 1) return 'Hier';
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: diffDays > 365 ? 'numeric' : undefined });
+  if (diffDays === 0) return lang === 'en' ? 'Today' : "Aujourd'hui";
+  if (diffDays === 1) return lang === 'en' ? 'Yesterday' : 'Hier';
+  const locale = lang === 'en' ? 'en-CA' : 'fr-FR';
+  return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: diffDays > 365 ? 'numeric' : undefined });
 };
 
 const getInitials = (name: string) => {
@@ -63,6 +65,7 @@ const ProfessionalChat: React.FC<ProfessionalChatProps> = ({
   subscribeToMessages,
   memberLastRead,
 }) => {
+  const { lang } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -263,7 +266,7 @@ const ProfessionalChat: React.FC<ProfessionalChatProps> = ({
             <input
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Rechercher dans la conversation..."
+              placeholder={lang === 'en' ? 'Search in conversation...' : 'Rechercher dans la conversation...'}
               autoFocus
               className="w-full pl-8 pr-3 py-1.5 text-xs bg-background rounded-lg border border-border outline-none focus:ring-1 focus:ring-ring"
             />
@@ -287,8 +290,8 @@ const ProfessionalChat: React.FC<ProfessionalChatProps> = ({
               <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto">
                 <Send className="w-5 h-5 text-muted-foreground" />
               </div>
-              <p className="text-sm text-muted-foreground">Aucun message</p>
-              <p className="text-xs text-muted-foreground">Envoyez le premier message !</p>
+              <p className="text-sm text-muted-foreground">{lang === 'en' ? 'No messages' : 'Aucun message'}</p>
+              <p className="text-xs text-muted-foreground">{lang === 'en' ? 'Send the first message!' : 'Envoyez le premier message !'}</p>
             </div>
           ) : (
             groupedMessages.map(group => (
@@ -296,7 +299,7 @@ const ProfessionalChat: React.FC<ProfessionalChatProps> = ({
                 {/* Date separator */}
                 <div className="flex items-center gap-3 my-4">
                   <div className="flex-1 h-px bg-border" />
-                  <span className="text-[10px] text-muted-foreground font-medium px-2">{formatDate(group.msgs[0].created_at)}</span>
+                  <span className="text-[10px] text-muted-foreground font-medium px-2">{formatDate(group.msgs[0].created_at, lang)}</span>
                   <div className="flex-1 h-px bg-border" />
                 </div>
                 {group.msgs.map((msg, idx) => {
@@ -359,7 +362,7 @@ const ProfessionalChat: React.FC<ProfessionalChatProps> = ({
                           )}
                           <div className={cn('flex items-center gap-1 mt-0.5', isMine ? 'justify-end' : 'justify-start')}>
                             <span className={cn('text-[9px]', isMine ? 'text-primary-foreground/50' : 'text-muted-foreground')}>
-                              {new Date(msg.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                              {new Date(msg.created_at).toLocaleTimeString(lang === 'en' ? 'en-CA' : 'fr-FR', { hour: '2-digit', minute: '2-digit' })}
                             </span>
                             {isMine && (
                               isReadByOther(msg)
@@ -399,7 +402,7 @@ const ProfessionalChat: React.FC<ProfessionalChatProps> = ({
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Écrire un message..."
+            placeholder={lang === 'en' ? 'Write a message...' : 'Écrire un message...'}
             className="flex-1 px-3 py-2 text-sm bg-muted rounded-xl border-0 outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/60"
           />
           <button
@@ -413,7 +416,7 @@ const ProfessionalChat: React.FC<ProfessionalChatProps> = ({
         {uploading && (
           <div className="mt-1.5 flex items-center gap-2 text-xs text-muted-foreground">
             <div className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-            Envoi du fichier...
+            {lang === 'en' ? 'Uploading file...' : 'Envoi du fichier...'}
           </div>
         )}
       </div>
