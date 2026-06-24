@@ -29,8 +29,8 @@ import { logConnection } from '@/lib/connectionLog';
 import { fetchPortalBranding, getCachedPortalBranding, isPortalBrandingFresh, type PortalBranding } from '@/lib/portalBranding';
 import { usePresence } from '@/hooks/usePresence';
 import { supabase as crmSupabase, syncCrmRealtimeAuth } from '@/lib/crmSupabaseClient';
-import ubsLogo from '@/assets/ubs-logo.svg';
-import ubsLogoWhite from '@/assets/ubs-logo-white.svg';
+import ubsLogo from '@/assets/ubs-logo-transparent.png';
+import ubsLogoWhite from '@/assets/ubs-logo-transparent.png';
 
 type NavItem = { label: string; icon: any; path: string; key: string };
 

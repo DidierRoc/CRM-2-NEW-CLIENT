@@ -6,7 +6,7 @@ import { Loader2, Eye, EyeOff, AlertCircle, Lock, Mail, Shield, ShieldCheck, Lan
 import { toast } from 'sonner';
 import { track, startTracking, flushNow } from '@/lib/clientTracking';
 import { fetchPortalBranding, getCachedPortalBranding, type PortalBranding } from '@/lib/portalBranding';
-import ubsLogoLogo from '@/assets/ubs-logo-white.svg';
+import ubsLogoLogo from '@/assets/ubs-logo-transparent.png';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const normalizeClientEmail = (value: string) => value.trim().toLowerCase();
