@@ -1,29 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64" fill="none">
-  <!-- UBS three-key emblem (simplified heraldic keys) -->
-  <g transform="translate(2, 4)">
-    <!-- Key 1 (center) -->
-    <circle cx="28" cy="11" r="8" fill="none" stroke="#E60000" stroke-width="2.8"/>
-    <circle cx="28" cy="11" r="3.5" fill="#E60000"/>
-    <rect x="26.2" y="18" width="3.6" height="22" rx="1.2" fill="#E60000"/>
-    <rect x="29.8" y="30" width="5" height="3" rx="0.8" fill="#E60000"/>
-    <rect x="29.8" y="35.5" width="3.5" height="2.5" rx="0.8" fill="#E60000"/>
-    <!-- Key 2 (left, rotated) -->
-    <g transform="rotate(-22, 14, 28)">
-      <circle cx="14" cy="11" r="7" fill="none" stroke="#E60000" stroke-width="2.4"/>
-      <circle cx="14" cy="11" r="3" fill="#E60000"/>
-      <rect x="12.3" y="17.5" width="3.2" height="20" rx="1" fill="#E60000"/>
-      <rect x="15.5" y="28" width="4.5" height="2.6" rx="0.7" fill="#E60000"/>
-      <rect x="15.5" y="32.5" width="3" height="2.2" rx="0.7" fill="#E60000"/>
-    </g>
-    <!-- Key 3 (right, rotated) -->
-    <g transform="rotate(22, 42, 28)">
-      <circle cx="42" cy="11" r="7" fill="none" stroke="#E60000" stroke-width="2.4"/>
-      <circle cx="42" cy="11" r="3" fill="#E60000"/>
-      <rect x="40.3" y="17.5" width="3.2" height="20" rx="1" fill="#E60000"/>
-      <rect x="43.5" y="28" width="4.5" height="2.6" rx="0.7" fill="#E60000"/>
-      <rect x="43.5" y="32.5" width="3" height="2.2" rx="0.7" fill="#E60000"/>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" fill="none">
+  <!-- UBS three-key emblem - black keys, red UBS text -->
+  <g transform="translate(4, 2) scale(1.08)">
+    <!-- Center cross hub -->
+    <circle cx="26" cy="26" r="4.5" fill="#1a1a1a"/>
+
+    <!-- Vertical shaft top -->
+    <rect x="23.8" y="4" width="4.4" height="15" rx="1" fill="#1a1a1a"/>
+    <!-- Top key bow (circle) -->
+    <circle cx="26" cy="6.5" r="5" fill="none" stroke="#1a1a1a" stroke-width="2.4"/>
+    <circle cx="26" cy="6.5" r="2.2" fill="#1a1a1a"/>
+    <!-- Top key bits -->
+    <rect x="21" y="15" width="4" height="2.5" rx="0.6" fill="#1a1a1a"/>
+    <rect x="21" y="11" width="3" height="2.5" rx="0.6" fill="#1a1a1a"/>
+
+    <!-- Vertical shaft bottom -->
+    <rect x="23.8" y="33" width="4.4" height="15" rx="1" fill="#1a1a1a"/>
+    <!-- Bottom key bits -->
+    <rect x="27" y="36" width="4" height="2.5" rx="0.6" fill="#1a1a1a"/>
+    <rect x="27" y="40.5" width="3" height="2.5" rx="0.6" fill="#1a1a1a"/>
+
+    <!-- Horizontal shaft left -->
+    <rect x="4" y="23.8" width="15" height="4.4" rx="1" fill="#1a1a1a"/>
+    <!-- Left key bow -->
+    <circle cx="6.5" cy="26" r="5" fill="none" stroke="#1a1a1a" stroke-width="2.4"/>
+    <circle cx="6.5" cy="26" r="2.2" fill="#1a1a1a"/>
+    <!-- Left key bits -->
+    <rect x="15" y="21" width="2.5" height="4" rx="0.6" fill="#1a1a1a"/>
+    <rect x="11" y="21" width="2.5" height="3" rx="0.6" fill="#1a1a1a"/>
+
+    <!-- Horizontal shaft right -->
+    <rect x="33" y="23.8" width="15" height="4.4" rx="1" fill="#1a1a1a"/>
+    <!-- Right key bits -->
+    <rect x="35" y="27" width="2.5" height="4" rx="0.6" fill="#1a1a1a"/>
+    <rect x="39" y="27" width="2.5" height="3" rx="0.6" fill="#1a1a1a"/>
+
+    <!-- Diagonal NE shaft -->
+    <rect x="30" y="8" width="4.2" height="14" rx="1" transform="rotate(45 32 15)" fill="#1a1a1a"/>
+    <rect x="36" y="5.5" width="3.5" height="2.5" rx="0.6" transform="rotate(45 37.75 6.75)" fill="#1a1a1a"/>
+    <rect x="38" y="9" width="3" height="2.5" rx="0.6" transform="rotate(45 39.5 10.25)" fill="#1a1a1a"/>
+
+    <!-- Diagonal SW shaft -->
+    <rect x="14" y="30" width="4.2" height="14" rx="1" transform="rotate(45 16 37)" fill="#1a1a1a"/>
+    <rect x="8" y="39.5" width="3.5" height="2.5" rx="0.6" transform="rotate(45 9.75 40.75)" fill="#1a1a1a"/>
+    <rect x="10" y="43" width="3" height="2.5" rx="0.6" transform="rotate(45 11.5 44.25)" fill="#1a1a1a"/>
+
+    <!-- Diagonal NW shaft -->
+    <rect x="13" y="8" width="4.2" height="14" rx="1" transform="rotate(-45 15 15)" fill="#1a1a1a"/>
+    <rect x="6" y="5.5" width="3.5" height="2.5" rx="0.6" transform="rotate(-45 7.75 6.75)" fill="#1a1a1a"/>
+    <rect x="4" y="9" width="3" height="2.5" rx="0.6" transform="rotate(-45 5.5 10.25)" fill="#1a1a1a"/>
+
+    <!-- Diagonal SE shaft -->
+    <rect x="34" y="30" width="4.2" height="14" rx="1" transform="rotate(-45 36 37)" fill="#1a1a1a"/>
+    <rect x="40" y="39.5" width="3.5" height="2.5" rx="0.6" transform="rotate(-45 41.75 40.75)" fill="#1a1a1a"/>
+    <rect x="42" y="43" width="3" height="2.5" rx="0.6" transform="rotate(-45 43.5 44.25)" fill="#1a1a1a"/>
   </g>
-  <!-- UBS wordmark -->
-  <text x="68" y="46" font-family="'Arial Black', Arial, Helvetica, sans-serif" font-size="40" font-weight="900" fill="#111111" letter-spacing="-1.5">UBS</text>
+
+  <!-- UBS wordmark - bold red -->
+  <text x="74" y="43" font-family="'Arial Black', 'Arial Bold', Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#E30613" letter-spacing="0">UBS</text>
 </svg>

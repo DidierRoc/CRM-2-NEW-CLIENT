@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { PortalBranding } from '@/lib/portalBranding';
-import ubsLogoSrc from '@/assets/ubs-logo.png';
+import ubsLogoSrc from '@/assets/ubs-logo.svg';
 
 type BrandLogoSize = 'header' | 'login' | 'sidebar';
 type LogoTone = 'dark' | 'light';
@@ -34,7 +34,7 @@ const sizeClasses: Record<BrandLogoSize, { frame: string; image: string; text: s
   },
 };
 
-const hasTransparentExtension = (url: string) => /\.(png|webp)(\?|#|$)/i.test(url);
+const hasTransparentExtension = (url: string) => /\.(png|webp|svg)(\?|#|$)/i.test(url);
 const hasSolidExtension = (url: string) => /\.(jpe?g|avif)(\?|#|$)/i.test(url);
 
 export default function BrandLogo({ branding, size, tone = 'dark', className = '', showTextFallback = true }: BrandLogoProps) {
