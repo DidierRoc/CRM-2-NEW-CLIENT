@@ -29,8 +29,8 @@ import { logConnection } from '@/lib/connectionLog';
 import { fetchPortalBranding, getCachedPortalBranding, isPortalBrandingFresh, type PortalBranding } from '@/lib/portalBranding';
 import { usePresence } from '@/hooks/usePresence';
 import { supabase as crmSupabase, syncCrmRealtimeAuth } from '@/lib/crmSupabaseClient';
-import ubsLogo from '@/assets/ubs-logo-transparent.png';
-import ubsLogoWhite from '@/assets/ubs-logo-transparent.png';
+import UBSLogoInline from './UBSLogoInline';
+import ubsLogoTransparent from '@/assets/ubs-logo-transparent.png';
 
 type NavItem = { label: string; icon: any; path: string; key: string };
 
@@ -455,7 +455,7 @@ const ClientLayout = () => {
   };
 
   const portalTitle = 'UBS';
-  const headerLogoUrl = ubsLogoWhite;
+  const headerLogoUrl = null;
   const headerBannerUrl = null;
   const companyName = 'UBS';
   const headerTagline = '';
@@ -496,12 +496,7 @@ const ClientLayout = () => {
               >
                 {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-              <img
-                src={ubsLogoWhite}
-                alt="UBS"
-                className="h-8 sm:h-14 w-auto shrink-0"
-                style={{ filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.25))' }}
-              />
+              <UBSLogoInline keysColor="white" className="h-10 sm:h-16 w-auto shrink-0" />
             </div>
             {/* Right: actions */}
             <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">

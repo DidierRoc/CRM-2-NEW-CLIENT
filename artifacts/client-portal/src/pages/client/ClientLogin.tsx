@@ -6,7 +6,7 @@ import { Loader2, Eye, EyeOff, AlertCircle, Lock, Mail, Shield, ShieldCheck, Lan
 import { toast } from 'sonner';
 import { track, startTracking, flushNow } from '@/lib/clientTracking';
 import { fetchPortalBranding, getCachedPortalBranding, type PortalBranding } from '@/lib/portalBranding';
-import ubsLogoLogo from '@/assets/ubs-logo-transparent.png';
+import UBSLogoInline from '@/components/client-portal/UBSLogoInline';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const normalizeClientEmail = (value: string) => value.trim().toLowerCase();
@@ -203,8 +203,7 @@ const ClientLogin = () => {
 
             {/* Logo */}
             <div className="anim-fadeup-1 mb-10">
-              <img src={ubsLogoLogo} alt="UBS" className="h-14 w-auto"
-                style={{ filter: 'brightness(1.1) drop-shadow(0 2px 10px rgba(0,0,0,0.6))' }} />
+              <UBSLogoInline keysColor="white" className="h-16 w-auto" />
             </div>
 
             {/* Language switcher — top right of left panel */}
@@ -307,7 +306,7 @@ const ClientLogin = () => {
 
           {/* Mobile logo */}
           <div className="lg:hidden relative z-10 mb-8">
-            <img src={ubsLogoLogo} alt="UBS" className="h-12 w-auto mx-auto" />
+            <UBSLogoInline keysColor="white" className="h-12 w-auto mx-auto" />
           </div>
 
           {/* Card */}

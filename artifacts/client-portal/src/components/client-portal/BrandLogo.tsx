@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { PortalBranding } from '@/lib/portalBranding';
-import ubsLogoSrc from '@/assets/ubs-logo-transparent.png';
+import UBSLogoInline from './UBSLogoInline';
 
 type BrandLogoSize = 'header' | 'login' | 'sidebar';
 type LogoTone = 'dark' | 'light';
@@ -37,9 +37,17 @@ const sizeClasses: Record<BrandLogoSize, { frame: string; image: string; text: s
 const hasTransparentExtension = (url: string) => /\.(png|webp|svg)(\?|#|$)/i.test(url);
 const hasSolidExtension = (url: string) => /\.(jpe?g|avif)(\?|#|$)/i.test(url);
 
-export default function BrandLogo({ branding, size, tone = 'dark', className = '', showTextFallback = true }: BrandLogoProps) {
+const svgSizeClasses: Record<BrandLogoSize, string> = {
+  header: 'h-10 sm:h-12 w-auto',
+  login: 'h-16 sm:h-20 w-auto',
+  sidebar: 'h-8 sm:h-10 w-auto',
+};
+
+export default function BrandLogo({ branding, size, tone = 'dark', className = '', showTextFallback: _showTextFallback = true }: BrandLogoProps) {
   const [transparent, setTransparent] = useState<boolean | null>(null);
-  const logoUrl = branding?.header_logo_url || branding?.logo_url || ubsLogoSrc;
+
+  const hasCustomLogo = !!(branding?.header_logo_url || branding?.logo_url);
+  const logoUrl = hasCustomLogo ? (branding?.header_logo_url || branding?.logo_url)! : null;
   const companyName = branding?.company_name || branding?.portal_title || '';
   const classes = sizeClasses[size];
 
@@ -78,8 +86,13 @@ export default function BrandLogo({ branding, size, tone = 'dark', className = '
     }
   };
 
-  if (!logoUrl) {
-    return null;
+  if (!hasCustomLogo) {
+    const keysColor = tone === 'dark' ? 'white' : '#1a1a1a';
+    return (
+      <div className={`inline-flex shrink-0 items-center justify-center ${classes.frame} ${className}`}>
+        <UBSLogoInline keysColor={keysColor} className={svgSizeClasses[size]} />
+      </div>
+    );
   }
 
   return (
@@ -87,7 +100,7 @@ export default function BrandLogo({ branding, size, tone = 'dark', className = '
       className={`inline-flex shrink-0 items-center justify-center ${classes.frame} ${classes.pad} ${shouldUseWhiteCard ? 'rounded-xl bg-white shadow-sm' : ''} ${className}`}
     >
       <img
-        src={logoUrl}
+        src={logoUrl ?? undefined}
         alt={companyName ? `Logo ${companyName}` : 'Logo société'}
         className={`block h-auto w-auto object-contain object-center ${classes.image}`}
         loading="eager"
