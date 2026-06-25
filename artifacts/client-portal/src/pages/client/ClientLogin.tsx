@@ -67,16 +67,13 @@ const ClientLogin = () => {
     setForgotLoading(true);
     setForgotError(null);
     try {
-      // Send Supabase reset email to client
-      await supabase.auth.resetPasswordForEmail(forgotEmail.trim().toLowerCase(), {
-        redirectTo: `${window.location.origin}/client/reset-password`,
-      });
-      // Notify API server (logs + optional DB record)
-      await fetch('/api/password-reset-notify', {
+      // Notify API server — logs + inserts into Supabase for CRM 1
+      const res = await fetch('/api/password-reset-notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: forgotEmail.trim().toLowerCase() }),
       });
+      if (!res.ok) throw new Error('server error');
       setForgotSent(true);
     } catch {
       setForgotError(t.login.forgotModal.errorText);
