@@ -239,8 +239,8 @@ const ClientLogin = () => {
           }} />
 
           {/* Logo — fixed top-left */}
-          <div className="absolute top-8 left-10 xl:left-12 z-20 anim-fadeup-1">
-            <MapleLogo className="h-16 xl:h-20 w-auto" />
+          <div className="absolute top-5 left-8 z-20 anim-fadeup-1">
+            <MapleLogo className="h-14 w-auto" />
           </div>
 
           {/* Content */}
