@@ -60,6 +60,18 @@ const translations = {
       errServiceDown: "Service d'authentification momentanément indisponible.",
       errNotAuthorized: "Ce compte n'est pas autorisé à accéder à l'espace client.",
       errNetwork: 'Connexion impossible. Vérifiez votre connexion Internet.',
+      forgotModal: {
+        title: 'Mot de passe oublié',
+        subtitle: 'Entrez votre adresse e-mail. Votre conseiller sera notifié et vous contactera rapidement.',
+        emailLabel: 'Adresse e-mail',
+        emailPlaceholder: 'Votre adresse e-mail',
+        submit: 'Envoyer la demande',
+        cancel: 'Annuler',
+        successTitle: 'Demande envoyée',
+        successText: 'Votre conseiller a bien été notifié et vous contactera dans les plus brefs délais.',
+        close: 'Fermer',
+        errorText: 'Une erreur est survenue. Veuillez réessayer.',
+      },
     },
     // ── Dashboard ────────────────────────────────────────────────────────
     dashboard: {
@@ -245,6 +257,18 @@ const translations = {
       errServiceDown: 'Authentication service temporarily unavailable.',
       errNotAuthorized: 'This account is not authorised to access the client area.',
       errNetwork: 'Connection failed. Please check your internet connection.',
+      forgotModal: {
+        title: 'Forgot password',
+        subtitle: 'Enter your email address. Your advisor will be notified and will contact you shortly.',
+        emailLabel: 'Email address',
+        emailPlaceholder: 'Your email address',
+        submit: 'Send request',
+        cancel: 'Cancel',
+        successTitle: 'Request sent',
+        successText: 'Your advisor has been notified and will contact you as soon as possible.',
+        close: 'Close',
+        errorText: 'An error occurred. Please try again.',
+      },
     },
     // ── Dashboard ────────────────────────────────────────────────────────
     dashboard: {

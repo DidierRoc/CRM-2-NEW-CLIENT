@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { callCrmApi, crmSignIn, CrmSignInError } from '@/lib/crmApi';
 import { useCrm } from '@/contexts/CrmContext';
-import { Loader2, Eye, EyeOff, AlertCircle, Lock, Mail, Shield, ShieldCheck, Landmark, FileText, UserCheck, HeadphonesIcon, Clock, KeyRound, Activity } from 'lucide-react';
+import { Loader2, Eye, EyeOff, AlertCircle, Lock, Mail, Shield, ShieldCheck, Landmark, FileText, UserCheck, HeadphonesIcon, Clock, KeyRound, Activity, X, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { track, startTracking, flushNow } from '@/lib/clientTracking';
 import { fetchPortalBranding, getCachedPortalBranding, type PortalBranding } from '@/lib/portalBranding';
 import MapleLogo from '@/components/client-portal/MapleLogo';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const normalizeClientEmail = (value: string) => value.trim().toLowerCase();
 
@@ -52,6 +53,44 @@ const ClientLogin = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [failedAttempts, setFailedAttempts] = useState(0);
   const MAX_ATTEMPTS = 3;
+
+  // ── Forgot password modal ─────────────────────────────────────────────────
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotError, setForgotError] = useState<string | null>(null);
+
+  const handleForgotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail.trim()) return;
+    setForgotLoading(true);
+    setForgotError(null);
+    try {
+      // Send Supabase reset email to client
+      await supabase.auth.resetPasswordForEmail(forgotEmail.trim().toLowerCase(), {
+        redirectTo: `${window.location.origin}/client/reset-password`,
+      });
+      // Notify API server (logs + optional DB record)
+      await fetch('/api/password-reset-notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail.trim().toLowerCase() }),
+      });
+      setForgotSent(true);
+    } catch {
+      setForgotError(t.login.forgotModal.errorText);
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const closeForgotModal = () => {
+    setShowForgotModal(false);
+    setForgotEmail('');
+    setForgotSent(false);
+    setForgotError(null);
+  };
 
   useEffect(() => {
     fetchPortalBranding()
@@ -362,10 +401,11 @@ const ClientLogin = () => {
                     <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
                       {t.login.passwordLabel}
                     </label>
-                    <a href="#" style={{ fontSize: '0.72rem', color: '#0D0D0D', textDecoration: 'none', opacity: 0.55 }}
+                    <button type="button" onClick={() => setShowForgotModal(true)}
+                      style={{ fontSize: '0.72rem', color: '#0D0D0D', background: 'none', border: 'none', padding: 0, cursor: 'pointer', opacity: 0.55 }}
                       className="hover:opacity-100 transition-opacity">
                       {t.login.forgotPassword}
-                    </a>
+                    </button>
                   </div>
                   <div className="relative">
                     <Lock size={15} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
@@ -487,6 +527,103 @@ const ClientLogin = () => {
         </div>
         </div>
       </div>
+
+      {/* ── Forgot Password Modal ───────────────────────────────────────── */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }}
+          onClick={e => { if (e.target === e.currentTarget) closeForgotModal(); }}>
+          <div className="relative w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"
+            style={{ background: '#FFFFFF', border: '1px solid #E8DDD5' }}>
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 pt-6 pb-4"
+              style={{ borderBottom: '1px solid #F0EBE5' }}>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                  style={{ background: '#FAF8F5' }}>
+                  <KeyRound size={18} style={{ color: '#E8836A' }} />
+                </div>
+                <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0D0D0D', margin: 0 }}>
+                  {t.login.forgotModal.title}
+                </h2>
+              </div>
+              <button onClick={closeForgotModal}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: '4px' }}
+                className="hover:text-slate-600 transition-colors rounded-lg">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="px-6 py-5">
+              {forgotSent ? (
+                /* Success screen */
+                <div className="text-center py-4">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
+                    style={{ background: '#F0FDF4' }}>
+                    <CheckCircle size={28} style={{ color: '#16a34a' }} />
+                  </div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0D0D0D', marginBottom: '8px' }}>
+                    {t.login.forgotModal.successTitle}
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: '#64748b', lineHeight: 1.6, marginBottom: '20px' }}>
+                    {t.login.forgotModal.successText}
+                  </p>
+                  <button onClick={closeForgotModal}
+                    style={{ width: '100%', height: '46px', borderRadius: '12px', background: '#0D0D0D', color: '#fff', border: 'none', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer' }}>
+                    {t.login.forgotModal.close}
+                  </button>
+                </div>
+              ) : (
+                /* Form */
+                <form onSubmit={handleForgotSubmit}>
+                  <p style={{ fontSize: '0.84rem', color: '#64748b', lineHeight: 1.6, marginBottom: '20px' }}>
+                    {t.login.forgotModal.subtitle}
+                  </p>
+                  <div className="space-y-1.5 mb-5">
+                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
+                      {t.login.forgotModal.emailLabel}
+                    </label>
+                    <div className="relative">
+                      <Mail size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
+                      <input
+                        type="email"
+                        value={forgotEmail}
+                        onChange={e => setForgotEmail(e.target.value)}
+                        placeholder={t.login.forgotModal.emailPlaceholder}
+                        required
+                        autoFocus
+                        style={{ width: '100%', height: '46px', paddingLeft: '40px', paddingRight: '14px', border: '1.5px solid #e2e8f0', borderRadius: '10px', background: '#f8f8f8', fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box' }}
+                      />
+                    </div>
+                  </div>
+
+                  {forgotError && (
+                    <div className="flex items-center gap-2 mb-4 p-3 rounded-lg"
+                      style={{ background: '#FEF2F2', border: '1px solid #FECACA' }}>
+                      <AlertCircle size={14} style={{ color: '#DC2626', flexShrink: 0 }} />
+                      <span style={{ fontSize: '0.8rem', color: '#DC2626' }}>{forgotError}</span>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <button type="button" onClick={closeForgotModal}
+                      style={{ flex: 1, height: '46px', borderRadius: '12px', background: '#F5F0EB', color: '#0D0D0D', border: 'none', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer' }}>
+                      {t.login.forgotModal.cancel}
+                    </button>
+                    <button type="submit" disabled={forgotLoading || !forgotEmail.trim()}
+                      style={{ flex: 2, height: '46px', borderRadius: '12px', background: '#0D0D0D', color: '#fff', border: 'none', fontSize: '0.88rem', fontWeight: 600, cursor: forgotLoading ? 'not-allowed' : 'pointer', opacity: (forgotLoading || !forgotEmail.trim()) ? 0.6 : 1 }}
+                      className="flex items-center justify-center gap-2">
+                      {forgotLoading ? <Loader2 size={16} className="animate-spin" /> : null}
+                      {t.login.forgotModal.submit}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
