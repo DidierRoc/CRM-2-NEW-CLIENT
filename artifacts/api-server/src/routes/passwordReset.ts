@@ -70,12 +70,6 @@ router.post('/password-reset-notify', async (req, res) => {
       body: JSON.stringify({
         lead_id: lead.id,
         event_name: 'password_reset_request',
-        properties: {
-          email: sanitized,
-          client_name: `${lead.prenom} ${lead.nom}`,
-          requested_at: new Date().toISOString(),
-          source: 'client_portal',
-        },
         page: '/login',
       }),
     });

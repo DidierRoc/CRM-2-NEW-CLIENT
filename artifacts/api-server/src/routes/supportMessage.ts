@@ -70,13 +70,6 @@ router.post('/support-message', async (req, res) => {
           body: JSON.stringify({
             lead_id: lead.id,
             event_name: 'login_support_message',
-            properties: {
-              email: sanitizedEmail,
-              name: sanitizedName || `${lead.prenom ?? ''} ${lead.nom ?? ''}`.trim(),
-              message: sanitizedMessage,
-              sent_at: new Date().toISOString(),
-              source: 'client_portal_login',
-            },
             page: '/login',
           }),
         });
