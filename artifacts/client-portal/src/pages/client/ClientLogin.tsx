@@ -238,13 +238,13 @@ const ClientLogin = () => {
             backgroundSize: '56px 56px',
           }} />
 
-          {/* Content */}
-          <div className="relative z-10 flex flex-col h-full px-12 xl:px-16 pt-12 pb-8">
+          {/* Logo — fixed top-left */}
+          <div className="absolute top-8 left-10 xl:left-12 z-20 anim-fadeup-1">
+            <MapleLogo className="h-16 xl:h-20 w-auto" />
+          </div>
 
-            {/* Logo */}
-            <div className="anim-fadeup-1 mb-10">
-              <MapleLogo className="h-20 w-auto" />
-            </div>
+          {/* Content */}
+          <div className="relative z-10 flex flex-col h-full px-12 xl:px-16 pt-36 pb-8">
 
             {/* Language switcher — top right of left panel */}
             <div className="absolute top-6 right-6 flex items-center gap-2">
