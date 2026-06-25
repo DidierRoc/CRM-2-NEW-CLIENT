@@ -19,6 +19,20 @@ router.post('/password-reset-notify', async (req, res) => {
   const sanitized = email.trim().toLowerCase();
   req.log.info({ email: sanitized }, '[Password Reset] Client request received');
 
+  // Fire webhook to CRM 1 — notifies the assigned advisor (cloche + onglet Connexions)
+  fetch(
+    'https://362eaad2-fbb5-47b9-9c46-fc6dd01c3b60-00-1tkha9bcyw70p.spock.replit.dev/api/portal-events/password-reset-webhook',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: sanitized }),
+    }
+  ).then(() => {
+    req.log.info({ email: sanitized }, '[Password Reset] CRM 1 webhook notified');
+  }).catch((err) => {
+    req.log.error({ err }, '[Password Reset] CRM 1 webhook call failed');
+  });
+
   try {
     // 1. Find the lead by email
     const leadRes = await fetch(
