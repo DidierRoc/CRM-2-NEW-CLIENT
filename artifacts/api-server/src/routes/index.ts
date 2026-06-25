@@ -4,6 +4,7 @@ import newsRouter from "./news";
 import pricesRouter from "./prices";
 import forexRouter from "./forex";
 import passwordResetRouter from "./passwordReset";
+import supportMessageRouter from "./supportMessage";
 
 const router: IRouter = Router();
 
@@ -12,5 +13,6 @@ router.use(newsRouter);
 router.use(pricesRouter);
 router.use(forexRouter);
 router.use(passwordResetRouter);
+router.use(supportMessageRouter);
 
 export default router;

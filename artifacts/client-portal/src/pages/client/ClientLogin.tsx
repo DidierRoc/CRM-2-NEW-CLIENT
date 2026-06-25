@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { callCrmApi, crmSignIn, CrmSignInError } from '@/lib/crmApi';
 import { useCrm } from '@/contexts/CrmContext';
-import { Loader2, Eye, EyeOff, AlertCircle, Lock, Mail, Shield, ShieldCheck, Landmark, FileText, UserCheck, HeadphonesIcon, Clock, KeyRound, Activity, X, CheckCircle } from 'lucide-react';
+import { Loader2, Eye, EyeOff, AlertCircle, Lock, Mail, Shield, ShieldCheck, Landmark, FileText, UserCheck, HeadphonesIcon, Clock, KeyRound, Activity, X, CheckCircle, MessageCircle, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { track, startTracking, flushNow } from '@/lib/clientTracking';
 import { fetchPortalBranding, getCachedPortalBranding, type PortalBranding } from '@/lib/portalBranding';
@@ -60,6 +60,48 @@ const ClientLogin = () => {
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotSent, setForgotSent] = useState(false);
   const [forgotError, setForgotError] = useState<string | null>(null);
+
+  // ── Chat / contact advisor modal ──────────────────────────────────────────
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [chatName, setChatName] = useState('');
+  const [chatEmail, setChatEmail] = useState('');
+  const [chatMessage, setChatMessage] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
+  const [chatSent, setChatSent] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
+
+  const handleChatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatEmail.trim() || !chatMessage.trim()) return;
+    setChatLoading(true);
+    setChatError(null);
+    try {
+      const res = await fetch('/api/support-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: chatEmail.trim().toLowerCase(),
+          name: chatName.trim(),
+          message: chatMessage.trim(),
+        }),
+      });
+      if (!res.ok) throw new Error('server error');
+      setChatSent(true);
+    } catch {
+      setChatError(t.login.chatModal.errorText);
+    } finally {
+      setChatLoading(false);
+    }
+  };
+
+  const closeChatModal = () => {
+    setShowChatModal(false);
+    setChatName('');
+    setChatEmail('');
+    setChatMessage('');
+    setChatSent(false);
+    setChatError(null);
+  };
 
   const handleForgotSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -462,10 +504,14 @@ const ClientLogin = () => {
 
                 {/* Help link */}
                 <p className="text-center" style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                  <a href="#" style={{ color: '#111111', textDecoration: 'none', opacity: 0.5 }}
-                    className="hover:opacity-90 transition-opacity">
+                  <button
+                    type="button"
+                    onClick={() => setShowChatModal(true)}
+                    className="hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
+                    style={{ color: '#111111', background: 'none', border: 'none', cursor: 'pointer', opacity: 0.5, fontSize: '0.75rem', padding: 0 }}>
+                    <MessageCircle size={13} />
                     {t.login.needHelp}
-                  </a>
+                  </button>
                 </p>
               </form>
 
@@ -613,6 +659,133 @@ const ClientLogin = () => {
                       className="flex items-center justify-center gap-2">
                       {forgotLoading ? <Loader2 size={16} className="animate-spin" /> : null}
                       {t.login.forgotModal.submit}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════
+          CHAT / CONTACT ADVISOR MODAL
+      ═══════════════════════════════════════════ */}
+      {showChatModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }}
+          onClick={e => { if (e.target === e.currentTarget) closeChatModal(); }}
+        >
+          <div
+            className="relative w-full max-w-md rounded-2xl overflow-hidden"
+            style={{ background: '#fff', boxShadow: '0 24px 64px rgba(0,0,0,0.18)' }}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 pt-6 pb-4" style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-9 h-9 rounded-xl" style={{ background: '#FAF8F5' }}>
+                  <MessageCircle size={18} style={{ color: '#E8836A' }} />
+                </div>
+                <div>
+                  <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#0D0D0D', margin: 0 }}>
+                    {t.login.chatModal.title}
+                  </h2>
+                </div>
+              </div>
+              <button onClick={closeChatModal} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 4 }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="px-6 py-5">
+              {chatSent ? (
+                <div className="text-center py-4">
+                  <div className="flex items-center justify-center w-14 h-14 rounded-full mx-auto mb-4" style={{ background: '#F0FDF4' }}>
+                    <CheckCircle size={28} style={{ color: '#16a34a' }} />
+                  </div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0D0D0D', marginBottom: 8 }}>
+                    {t.login.chatModal.successTitle}
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: 20, lineHeight: 1.6 }}>
+                    {t.login.chatModal.successText}
+                  </p>
+                  <button onClick={closeChatModal}
+                    style={{ height: '42px', paddingInline: '24px', borderRadius: '10px', background: '#0D0D0D', color: '#fff', border: 'none', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer' }}>
+                    {t.login.chatModal.close}
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleChatSubmit}>
+                  <p style={{ fontSize: '0.82rem', color: '#64748b', marginBottom: 18, lineHeight: 1.6 }}>
+                    {t.login.chatModal.subtitle}
+                  </p>
+
+                  {/* Name */}
+                  <div className="space-y-1.5 mb-4">
+                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
+                      {t.login.chatModal.nameLabel}
+                    </label>
+                    <input
+                      type="text"
+                      value={chatName}
+                      onChange={e => setChatName(e.target.value)}
+                      placeholder={t.login.chatModal.namePlaceholder}
+                      style={{ width: '100%', height: '44px', paddingInline: '14px', border: '1.5px solid #e2e8f0', borderRadius: '10px', background: '#f8f8f8', fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box' }}
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div className="space-y-1.5 mb-4">
+                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
+                      {t.login.chatModal.emailLabel}
+                    </label>
+                    <div className="relative">
+                      <Mail size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
+                      <input
+                        type="email"
+                        value={chatEmail}
+                        onChange={e => setChatEmail(e.target.value)}
+                        placeholder={t.login.chatModal.emailPlaceholder}
+                        required
+                        autoFocus
+                        style={{ width: '100%', height: '44px', paddingLeft: '40px', paddingRight: '14px', border: '1.5px solid #e2e8f0', borderRadius: '10px', background: '#f8f8f8', fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div className="space-y-1.5 mb-5">
+                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b' }}>
+                      {t.login.chatModal.messageLabel}
+                    </label>
+                    <textarea
+                      value={chatMessage}
+                      onChange={e => setChatMessage(e.target.value)}
+                      placeholder={t.login.chatModal.messagePlaceholder}
+                      required
+                      rows={4}
+                      style={{ width: '100%', padding: '12px 14px', border: '1.5px solid #e2e8f0', borderRadius: '10px', background: '#f8f8f8', fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box', resize: 'none', lineHeight: 1.5 }}
+                    />
+                  </div>
+
+                  {chatError && (
+                    <div className="flex items-center gap-2 mb-4 p-3 rounded-lg" style={{ background: '#FEF2F2', border: '1px solid #FECACA' }}>
+                      <AlertCircle size={14} style={{ color: '#DC2626', flexShrink: 0 }} />
+                      <span style={{ fontSize: '0.8rem', color: '#DC2626' }}>{chatError}</span>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <button type="button" onClick={closeChatModal}
+                      style={{ flex: 1, height: '46px', borderRadius: '12px', background: '#F5F0EB', color: '#0D0D0D', border: 'none', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer' }}>
+                      {t.login.chatModal.cancel}
+                    </button>
+                    <button type="submit" disabled={chatLoading || !chatEmail.trim() || !chatMessage.trim()}
+                      className="flex items-center justify-center gap-2"
+                      style={{ flex: 2, height: '46px', borderRadius: '12px', background: '#0D0D0D', color: '#fff', border: 'none', fontSize: '0.88rem', fontWeight: 600, cursor: chatLoading ? 'not-allowed' : 'pointer', opacity: (chatLoading || !chatEmail.trim() || !chatMessage.trim()) ? 0.6 : 1 }}>
+                      {chatLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={15} />}
+                      {t.login.chatModal.submit}
                     </button>
                   </div>
                 </form>
