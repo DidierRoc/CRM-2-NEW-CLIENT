@@ -1,8 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="white"/>
-  <g fill="none" stroke="#E8836A" stroke-width="2.6" stroke-linecap="round">
-    <path d="M5 10 C8.5 7, 12.5 7, 16 10 C19.5 13, 23.5 13, 27 10"/>
-    <path d="M5 16 C8.5 13, 12.5 13, 16 16 C19.5 19, 23.5 19, 27 16"/>
-    <path d="M5 22 C8.5 19, 12.5 19, 16 22 C19.5 25, 23.5 25, 27 22"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Background rounded square -->
+  <rect width="64" height="64" rx="14" fill="#0D0D0D"/>
+  <!-- Shield shape -->
+  <path d="M32 8 L52 16 L52 34 C52 46 32 57 32 57 C32 57 12 46 12 34 L12 16 Z" fill="#E8613C"/>
+  <!-- Lock body -->
+  <rect x="24" y="33" width="16" height="12" rx="2.5" fill="#0D0D0D"/>
+  <!-- Lock shackle -->
+  <path d="M26 33 L26 28 C26 23.6 38 23.6 38 28 L38 33" fill="none" stroke="#0D0D0D" stroke-width="3" stroke-linecap="round"/>
+  <!-- Keyhole dot -->
+  <circle cx="32" cy="39" r="2.2" fill="#E8613C"/>
 </svg>
