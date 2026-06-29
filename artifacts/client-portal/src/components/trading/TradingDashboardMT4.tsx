@@ -8,7 +8,8 @@ import MT4AccountBar from './MT4AccountBar';
 import { useTradingData } from '@/hooks/useTradingData';
 import { useRealtimeMarketPrices } from '@/hooks/useRealtimeMarketPrices';
 import { getBidAskPrices } from '@/lib/tradingMarketData';
-import { SYMBOLS, SYMBOL_CATEGORIES, TERMINAL_TABS } from '@/lib/tradingSymbols';
+import { SYMBOLS, TERMINAL_TABS, getLocalizedCategories, getLocalizedTerminalTabs } from '@/lib/tradingSymbols';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Props {
   portfolio: any;
@@ -17,6 +18,9 @@ interface Props {
 }
 
 const TradingDashboardMT4 = ({ portfolio, leadId, onPortfolioUpdate }: Props) => {
+  const { lang } = useLanguage();
+  const localizedCategories = getLocalizedCategories(lang);
+  const localizedTabs = getLocalizedTerminalTabs(lang);
   const [selectedSymbol, setSelectedSymbol] = useState(SYMBOLS[0]);
   const [activeTerminalTab, setActiveTerminalTab] = useState('positions');
   const [showOrderPanel, setShowOrderPanel] = useState(true);
@@ -84,7 +88,7 @@ const TradingDashboardMT4 = ({ portfolio, leadId, onPortfolioUpdate }: Props) =>
       <div className="flex-1 flex overflow-hidden">
         <MT4MarketWatch
           symbols={SYMBOLS}
-          categories={SYMBOL_CATEGORIES}
+          categories={localizedCategories}
           livePrices={livePrices}
           spreadsConfig={spreadsConfig}
           selectedSymbol={selectedSymbol.symbol}
@@ -121,7 +125,7 @@ const TradingDashboardMT4 = ({ portfolio, leadId, onPortfolioUpdate }: Props) =>
 
       <div className="h-[200px] shrink-0 border-t border-[#3a3a52] bg-[#1e1e32] flex flex-col">
         <div className="flex items-center border-b border-[#2d2d44] bg-[#252540]">
-          {TERMINAL_TABS.map(tab => (
+          {localizedTabs.map(tab => (
             <button
               key={tab.key}
               onClick={() => setActiveTerminalTab(tab.key)}
@@ -145,7 +149,7 @@ const TradingDashboardMT4 = ({ portfolio, leadId, onPortfolioUpdate }: Props) =>
             onClick={() => setShowOrderPanel(!showOrderPanel)}
             className="px-3 py-1 text-[10px] text-[#8a8fa3] hover:text-[#c5c8d6] transition-colors"
           >
-            {showOrderPanel ? 'Masquer Ordres' : 'Afficher Ordres'}
+            {showOrderPanel ? (lang === 'en' ? 'Hide Orders' : 'Masquer Ordres') : (lang === 'en' ? 'Show Orders' : 'Afficher Ordres')}
           </button>
         </div>
 
@@ -178,12 +182,12 @@ const TradingDashboardMT4 = ({ portfolio, leadId, onPortfolioUpdate }: Props) =>
           {activeTerminalTab === 'account' && (
             <div className="grid grid-cols-6 gap-2 p-2 text-[11px]">
               {[
-                { label: 'Solde',        value: `$${portfolio.balance?.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,                     color: '#c5c8d6' },
-                { label: 'Equité',       value: `$${equity.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,                                 color: '#c5c8d6' },
-                { label: 'Marge',        value: `$${margin.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,                                  color: '#f0ad4e' },
-                { label: 'Marge libre',  value: `$${freeMargin.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,                             color: freeMargin >= 0 ? '#5cb85c' : '#d9534f' },
-                { label: 'Niveau marge', value: margin > 0 ? `${marginLevel.toFixed(1)}%` : '—',                                                     color: marginLevel > 100 ? '#5cb85c' : '#d9534f' },
-                { label: 'PnL flottant', value: `${unrealizedPnl >= 0 ? '+' : ''}$${unrealizedPnl.toFixed(2)}`,                                     color: unrealizedPnl >= 0 ? '#5cb85c' : '#d9534f' },
+                { label: lang === 'en' ? 'Balance'       : 'Solde',        value: `$${portfolio.balance?.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,  color: '#c5c8d6' },
+                { label: lang === 'en' ? 'Equity'        : 'Equité',       value: `$${equity.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,              color: '#c5c8d6' },
+                { label: lang === 'en' ? 'Margin'        : 'Marge',        value: `$${margin.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,              color: '#f0ad4e' },
+                { label: lang === 'en' ? 'Free margin'   : 'Marge libre',  value: `$${freeMargin.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,         color: freeMargin >= 0 ? '#5cb85c' : '#d9534f' },
+                { label: lang === 'en' ? 'Margin level'  : 'Niveau marge', value: margin > 0 ? `${marginLevel.toFixed(1)}%` : '—',                                color: marginLevel > 100 ? '#5cb85c' : '#d9534f' },
+                { label: lang === 'en' ? 'Floating PnL'  : 'PnL flottant', value: `${unrealizedPnl >= 0 ? '+' : ''}$${unrealizedPnl.toFixed(2)}`,                 color: unrealizedPnl >= 0 ? '#5cb85c' : '#d9534f' },
               ].map(item => (
                 <div key={item.label} className="bg-[#252540] rounded p-2">
                   <p className="text-[#6b7082] mb-0.5">{item.label}</p>

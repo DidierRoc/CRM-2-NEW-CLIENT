@@ -7,6 +7,24 @@ export const SYMBOL_CATEGORIES = [
   { key: 'stocks',      label: 'Actions'         },
 ];
 
+export function getLocalizedCategories(lang: string) {
+  return [
+    { key: 'crypto',      label: 'Crypto'                                    },
+    { key: 'forex',       label: 'Forex'                                     },
+    { key: 'commodities', label: lang === 'en' ? 'Commodities' : 'Matières 1ères' },
+    { key: 'stocks',      label: lang === 'en' ? 'Stocks'      : 'Actions'        },
+  ];
+}
+
+export function getLocalizedTerminalTabs(lang: string) {
+  return [
+    { key: 'positions', label: 'Positions'                                          },
+    { key: 'orders',    label: lang === 'en' ? 'Orders'          : 'Ordres'         },
+    { key: 'history',   label: lang === 'en' ? 'History'         : 'Historique'     },
+    { key: 'account',   label: lang === 'en' ? 'Account Summary' : 'Résumé Compte'  },
+  ];
+}
+
 export const SYMBOLS: TradingSymbolDef[] = [
   // ── Crypto (Binance USDT) ────────────────────────────────────────────────
   { symbol: 'BTCUSDT',     label: 'BTC/USDT',     type: 'crypto',      spreadKey: 'BTCUSDT'     },
@@ -72,14 +90,14 @@ export const SYMBOLS: TradingSymbolDef[] = [
   { symbol: 'USD/SEK',     label: 'USD/SEK',       type: 'forex',       spreadKey: 'USD/SEK'     },
   { symbol: 'USD/ZAR',     label: 'USD/ZAR',       type: 'forex',       spreadKey: 'USD/ZAR'     },
   // ── Matières premières (Twelve Data) ─────────────────────────────────────
-  { symbol: 'XAU/USD',    label: 'Or (XAU)',        type: 'commodities', spreadKey: 'XAU/USD'    },
-  { symbol: 'XAG/USD',    label: 'Argent (XAG)',    type: 'commodities', spreadKey: 'XAG/USD'    },
-  { symbol: 'WTI/USD',    label: 'Pétrole WTI',     type: 'commodities', spreadKey: 'WTI/USD'    },
+  { symbol: 'XAU/USD',    label: 'Gold (XAU)',      type: 'commodities', spreadKey: 'XAU/USD'    },
+  { symbol: 'XAG/USD',    label: 'Silver (XAG)',    type: 'commodities', spreadKey: 'XAG/USD'    },
+  { symbol: 'WTI/USD',    label: 'WTI Oil',         type: 'commodities', spreadKey: 'WTI/USD'    },
   { symbol: 'BRENT/USD',  label: 'Brent Crude',     type: 'commodities', spreadKey: 'BRENT/USD'  },
-  { symbol: 'XPT/USD',    label: 'Platine (XPT)',   type: 'commodities', spreadKey: 'XPT/USD'    },
+  { symbol: 'XPT/USD',    label: 'Platinum (XPT)',  type: 'commodities', spreadKey: 'XPT/USD'    },
   { symbol: 'XPD/USD',    label: 'Palladium (XPD)', type: 'commodities', spreadKey: 'XPD/USD'    },
-  { symbol: 'NG/USD',     label: 'Gaz naturel',     type: 'commodities', spreadKey: 'NG/USD'     },
-  { symbol: 'COPPER/USD', label: 'Cuivre',          type: 'commodities', spreadKey: 'COPPER/USD' },
+  { symbol: 'NG/USD',     label: 'Natural Gas',     type: 'commodities', spreadKey: 'NG/USD'     },
+  { symbol: 'COPPER/USD', label: 'Copper',          type: 'commodities', spreadKey: 'COPPER/USD' },
   // ── Actions US (Twelve Data) ──────────────────────────────────────────────
   { symbol: 'AAPL',   label: 'Apple',            type: 'stocks',      spreadKey: 'AAPL'   },
   { symbol: 'MSFT',   label: 'Microsoft',        type: 'stocks',      spreadKey: 'MSFT'   },
@@ -151,7 +169,7 @@ export const SYMBOLS: TradingSymbolDef[] = [
 
 export const TERMINAL_TABS = [
   { key: 'positions', label: 'Positions'     },
-  { key: 'orders',    label: 'Ordres'        },
-  { key: 'history',   label: 'Historique'    },
-  { key: 'account',   label: 'Résumé Compte' },
+  { key: 'orders',    label: 'Orders'        },
+  { key: 'history',   label: 'History'       },
+  { key: 'account',   label: 'Account Summary' },
 ];
