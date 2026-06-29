@@ -1,4 +1,5 @@
 import { Wallet, TrendingUp, TrendingDown, BarChart3, Activity } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Props {
   portfolio: any;
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const TradingPortfolioHeader = ({ portfolio, positions, currentPrices }: Props) => {
+  const { lang } = useLanguage();
   const openPositions = positions.filter(p => p.status === 'open');
   const closedPositions = positions.filter(p => p.status === 'closed');
   const realizedPnl = closedPositions.reduce((sum, p) => sum + (parseFloat(p.pnl) || 0), 0);
@@ -34,7 +36,7 @@ const TradingPortfolioHeader = ({ portfolio, positions, currentPrices }: Props) 
       <div className="bg-card rounded-xl border shadow-sm p-4">
         <div className="flex items-center gap-2 text-muted-foreground mb-1">
           <Wallet className="w-4 h-4" />
-          <span className="text-xs font-medium">Solde disponible</span>
+          <span className="text-xs font-medium">{lang === 'en' ? 'Available balance' : 'Solde disponible'}</span>
         </div>
         <p className="text-xl font-bold font-mono text-foreground">
           ${portfolio.balance?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -43,7 +45,7 @@ const TradingPortfolioHeader = ({ portfolio, positions, currentPrices }: Props) 
       <div className="bg-card rounded-xl border shadow-sm p-4">
         <div className="flex items-center gap-2 text-muted-foreground mb-1">
           <BarChart3 className="w-4 h-4" />
-          <span className="text-xs font-medium">Équité totale</span>
+          <span className="text-xs font-medium">{lang === 'en' ? 'Total equity' : 'Équité totale'}</span>
         </div>
         <p className="text-xl font-bold font-mono text-foreground">
           ${totalEquity.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -52,7 +54,7 @@ const TradingPortfolioHeader = ({ portfolio, positions, currentPrices }: Props) 
       <div className="bg-card rounded-xl border shadow-sm p-4">
         <div className="flex items-center gap-2 text-muted-foreground mb-1">
           <Activity className="w-4 h-4" />
-          <span className="text-xs font-medium">PnL non réalisé</span>
+          <span className="text-xs font-medium">{lang === 'en' ? 'Unrealized PnL' : 'PnL non réalisé'}</span>
         </div>
         <p className={`text-xl font-bold font-mono ${unrealizedPnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
           {unrealizedPnl >= 0 ? '+' : ''}${unrealizedPnl.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -61,7 +63,7 @@ const TradingPortfolioHeader = ({ portfolio, positions, currentPrices }: Props) 
       <div className="bg-card rounded-xl border shadow-sm p-4">
         <div className="flex items-center gap-2 text-muted-foreground mb-1">
           {totalPnl >= 0 ? <TrendingUp className="w-4 h-4 text-green-500" /> : <TrendingDown className="w-4 h-4 text-red-500" />}
-          <span className="text-xs font-medium">PnL total</span>
+          <span className="text-xs font-medium">{lang === 'en' ? 'Total PnL' : 'PnL total'}</span>
         </div>
         <p className={`text-xl font-bold font-mono ${totalPnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
           {totalPnl >= 0 ? '+' : ''}${totalPnl.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -70,7 +72,7 @@ const TradingPortfolioHeader = ({ portfolio, positions, currentPrices }: Props) 
       <div className="bg-card rounded-xl border shadow-sm p-4">
         <div className="flex items-center gap-2 text-muted-foreground mb-1">
           <TrendingUp className="w-4 h-4" />
-          <span className="text-xs font-medium">Positions ouvertes</span>
+          <span className="text-xs font-medium">{lang === 'en' ? 'Open positions' : 'Positions ouvertes'}</span>
         </div>
         <p className="text-xl font-bold text-foreground">{openPositions.length}</p>
       </div>

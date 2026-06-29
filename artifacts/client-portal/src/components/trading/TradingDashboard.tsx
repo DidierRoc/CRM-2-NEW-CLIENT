@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, History, ListOrdered } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import TradingChart from './TradingChart';
 import TradingOrderPanel from './TradingOrderPanel';
 import TradingPositions from './TradingPositions';
@@ -13,12 +14,6 @@ interface Props {
   leadId: string;
   onPortfolioUpdate: (p: any) => void;
 }
-
-const SYMBOL_CATEGORIES = [
-  { key: 'crypto', label: 'Crypto' },
-  { key: 'forex', label: 'Forex' },
-  { key: 'commodities', label: 'Matières Premières' },
-];
 
 const SYMBOLS = [
   { symbol: 'BTCUSDT', label: 'BTC/USDT', type: 'crypto', spreadKey: 'BTCUSDT' },
@@ -35,11 +30,17 @@ const SYMBOLS = [
   { symbol: 'CHFUSDT', label: 'USD/CHF', type: 'forex', spreadKey: 'CHFUSDT' },
   { symbol: 'AUDUSDT', label: 'AUD/USD', type: 'forex', spreadKey: 'AUDUSDT' },
   { symbol: 'CADUSDT', label: 'USD/CAD', type: 'forex', spreadKey: 'CADUSDT' },
-  { symbol: 'PAXGUSDT', label: 'Or (PAXG)', type: 'commodities', spreadKey: 'XAUUSD' },
-  { symbol: 'AUCTIONUSDT', label: 'Argent (AUCTION)', type: 'commodities', spreadKey: 'XAGUSD' },
+  { symbol: 'PAXGUSDT', labelFr: 'Or (PAXG)', labelEn: 'Gold (PAXG)', type: 'commodities', spreadKey: 'XAUUSD' },
+  { symbol: 'AUCTIONUSDT', labelFr: 'Argent (AUCTION)', labelEn: 'Silver (AUCTION)', type: 'commodities', spreadKey: 'XAGUSD' },
 ];
 
 const TradingDashboard = ({ portfolio, leadId, onPortfolioUpdate }: Props) => {
+  const { lang } = useLanguage();
+  const SYMBOL_CATEGORIES = [
+    { key: 'crypto', label: 'Crypto' },
+    { key: 'forex', label: 'Forex' },
+    { key: 'commodities', label: lang === 'en' ? 'Commodities' : 'Matières Premières' },
+  ];
   const [selectedSymbol, setSelectedSymbol] = useState(SYMBOLS[0]);
   const [selectedCategory, setSelectedCategory] = useState('crypto');
   const [currentPrice, setCurrentPrice] = useState<number>(0);
@@ -141,7 +142,7 @@ const TradingDashboard = ({ portfolio, leadId, onPortfolioUpdate }: Props) => {
                 : 'bg-muted/50 text-muted-foreground hover:bg-muted/80'
             }`}
           >
-            {s.label}
+            {(s as any).labelEn ? (lang === 'en' ? (s as any).labelEn : (s as any).labelFr) : s.label}
           </button>
         ))}
       </div>
@@ -158,7 +159,7 @@ const TradingDashboard = ({ portfolio, leadId, onPortfolioUpdate }: Props) => {
         <div>
           <TradingOrderPanel
             symbol={selectedSymbol.symbol}
-            symbolLabel={selectedSymbol.label}
+            symbolLabel={(selectedSymbol as any).labelEn ? (lang === 'en' ? (selectedSymbol as any).labelEn : (selectedSymbol as any).labelFr) : selectedSymbol.label}
             currentPrice={currentPrice}
             portfolio={portfolio}
             leadId={leadId}
@@ -176,10 +177,10 @@ const TradingDashboard = ({ portfolio, leadId, onPortfolioUpdate }: Props) => {
             <TrendingUp className="w-3.5 h-3.5" />Positions ({openPositions.length})
           </TabsTrigger>
           <TabsTrigger value="orders" className="gap-1.5 data-[state=active]:bg-primary/10">
-            <ListOrdered className="w-3.5 h-3.5" />Ordres ({orders.filter(o => o.status === 'pending').length})
+            <ListOrdered className="w-3.5 h-3.5" />{lang === 'en' ? 'Orders' : 'Ordres'} ({orders.filter(o => o.status === 'pending').length})
           </TabsTrigger>
           <TabsTrigger value="history" className="gap-1.5 data-[state=active]:bg-primary/10">
-            <History className="w-3.5 h-3.5" />Historique
+            <History className="w-3.5 h-3.5" />{lang === 'en' ? 'History' : 'Historique'}
           </TabsTrigger>
         </TabsList>
         <TabsContent value="positions" className="p-4">

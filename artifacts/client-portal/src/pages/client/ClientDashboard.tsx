@@ -1497,16 +1497,16 @@ const ClientDashboard = () => {
         <div className="border rounded-lg bg-card p-5">
           <div className="flex items-center gap-2 mb-3">
             <BarChart3 className="w-5 h-5 text-primary" />
-            <h2 className="font-semibold text-foreground">Compte de Trading</h2>
+            <h2 className="font-semibold text-foreground">{lang === 'en' ? 'Trading Account' : 'Compte de Trading'}</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-muted/50 rounded-lg p-3">
-              <p className="text-xs text-muted-foreground">Solde</p>
-              <p className="text-lg font-bold text-foreground">{Number(tradingPortfolio.balance).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} {tradingPortfolio.currency}</p>
+              <p className="text-xs text-muted-foreground">{lang === 'en' ? 'Balance' : 'Solde'}</p>
+              <p className="text-lg font-bold text-foreground">{Number(tradingPortfolio.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })} {tradingPortfolio.currency}</p>
             </div>
             <div className="bg-muted/50 rounded-lg p-3">
-              <p className="text-xs text-muted-foreground">Capital initial</p>
-              <p className="text-lg font-bold text-foreground">{Number(tradingPortfolio.initial_balance).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} {tradingPortfolio.currency}</p>
+              <p className="text-xs text-muted-foreground">{lang === 'en' ? 'Initial capital' : 'Capital initial'}</p>
+              <p className="text-lg font-bold text-foreground">{Number(tradingPortfolio.initial_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })} {tradingPortfolio.currency}</p>
             </div>
             <div className="bg-muted/50 rounded-lg p-3">
               <p className="text-xs text-muted-foreground">P&L total</p>
@@ -1515,12 +1515,12 @@ const ClientDashboard = () => {
               </p>
             </div>
             <div className="bg-muted/50 rounded-lg p-3">
-              <p className="text-xs text-muted-foreground">Positions ouvertes</p>
+              <p className="text-xs text-muted-foreground">{lang === 'en' ? 'Open positions' : 'Positions ouvertes'}</p>
               <p className="text-lg font-bold text-foreground">{openPositions.length}</p>
             </div>
           </div>
           <Button variant="outline" size="sm" className="mt-3" onClick={() => navigate('/client/trading')}>
-            <TrendingUp className="w-3.5 h-3.5 mr-1" />Accéder au trading
+            <TrendingUp className="w-3.5 h-3.5 mr-1" />{lang === 'en' ? 'Go to trading' : 'Accéder au trading'}
           </Button>
         </div>
       )}
