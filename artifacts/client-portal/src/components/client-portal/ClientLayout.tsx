@@ -514,7 +514,7 @@ const ClientLayout = () => {
                   title="English"
                   className={`w-8 h-8 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'en' ? 'ring-white shadow-md scale-110' : 'ring-transparent opacity-40 hover:opacity-75 hover:scale-105'}`}
                 >
-                  <img src="/flag-gb.svg" alt="English" className="w-full h-full object-cover" />
+                  <img src="/flag-us.svg" alt="English" className="w-full h-full object-cover" />
                 </button>
               </div>
               {/* Guide — desktop only */}

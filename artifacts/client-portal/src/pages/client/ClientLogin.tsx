@@ -302,7 +302,7 @@ const ClientLogin = () => {
                 title="English"
                 className={`w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ring-2 ${lang === 'en' ? 'ring-[#0D0D0D] shadow-lg scale-110' : 'ring-transparent opacity-45 hover:opacity-80 hover:scale-105'}`}
               >
-                <img src="/flag-gb.svg" alt="English" className="w-full h-full object-cover" />
+                <img src="/flag-us.svg" alt="English" className="w-full h-full object-cover" />
               </button>
             </div>
 
