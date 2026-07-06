@@ -175,12 +175,12 @@ async function replaceClientNameOnCanvases(
 
 /**
  * Scans text items across the LAST TWO pages only.
- * Collects all items whose full text normalises to exactly "INVESTISSEUR".
+ * Collects all items whose full text normalises to exactly "INVESTOR".
  * Among those, picks the one with the smallest PDF y-value (= most bottom of page).
  * Returns canvas-space coordinates for the empty signature rectangle that sits
  * just below the copper header label.
  */
-async function findInvestisseurBox(
+async function findInvestorBox(
   pages: pdfjsLib.PDFPageProxy[],
   viewports: pdfjsLib.PageViewport[],
   canvases: HTMLCanvasElement[],
@@ -207,9 +207,9 @@ async function findInvestisseurBox(
     for (const item of textContent.items) {
       if (!('str' in item)) continue;
 
-      // Must be EXACTLY "INVESTISSEUR" after stripping diacritics and uppercasing.
+      // Must be EXACTLY "INVESTOR" after stripping diacritics and uppercasing.
       const raw = (item.str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim();
-      if (raw !== 'INVESTISSEUR') continue;
+      if (raw !== 'INVESTOR') continue;
 
       const [, , , , pdfX, pdfY] = item.transform as number[];
       const [cvX, cvY] = viewport.convertToViewportPoint(pdfX, pdfY);
@@ -231,7 +231,7 @@ async function findInvestisseurBox(
   const ctx = canvas.getContext('2d')!;
 
   // ── X axis ────────────────────────────────────────────────────────────────
-  // The "INVESTISSEUR" text is CENTERED inside the copper header.
+  // The "INVESTOR" text is CENTERED inside the copper header.
   const textCenter = best.cvX + best.itemW / 2;
   const boxW = Math.max(best.itemW * 2.2, canvas.width * 0.36);
   const boxX = Math.max(0, textCenter - boxW / 2);
@@ -266,7 +266,7 @@ async function findInvestisseurBox(
 
 /**
  * Fetches the PDF, renders every page on an offscreen canvas via pdf.js,
- * places the signature image inside the "INVESTISSEUR" box on the last page,
+ * places the signature image inside the "INVESTOR" box on the last page,
  * then re-encodes the whole thing as a PDF via pdf-lib.
  */
 export async function appendSignatureToPdf(
@@ -302,8 +302,8 @@ export async function appendSignatureToPdf(
     canvases.push(canvas);
   }
 
-  // Locate the INVESTISSEUR box
-  const box = await findInvestisseurBox(pages, viewports, canvases, SCALE);
+  // Locate the INVESTOR box
+  const box = await findInvestorBox(pages, viewports, canvases, SCALE);
 
   // Draw the signature onto the correct canvas
   if (box) {
