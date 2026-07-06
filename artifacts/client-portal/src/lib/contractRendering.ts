@@ -387,20 +387,22 @@ export function buildSignatureBlockHtml({
     ? `<img src="${signatureDataUrl}" alt="Signature de l'investisseur" style="max-height:100px;max-width:80%;object-fit:contain;" />`
     : `<span style="color:#b0b0b0;font-size:12px;font-style:italic;">En attente de la signature</span>`;
 
-  const resolvedStampUrl = companyStampUrl || '/bank-signature.png';
-  const companySigContent = `<img src="${resolvedStampUrl}" alt="Cachet de la société" style="max-height:120px;max-width:70%;object-fit:contain;" />`;
+  const mapleSignatureSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" width="260" height="58" style="display:block;margin:4px auto 0;"><text x="10" y="52" font-family="'Brush Script MT','Segoe Script','URW Chancery L','Comic Sans MS',cursive" font-size="40" fill="#1a2540" letter-spacing="2">Maple Finance</text><path d="M8,62 Q160,57 312,62" stroke="#1a2540" stroke-width="0.8" fill="none" opacity="0.28"/></svg>`;
+  const companySigContent = companyStampUrl
+    ? `<img src="${companyStampUrl}" alt="Cachet de la société" style="max-height:120px;max-width:70%;object-fit:contain;" />`
+    : mapleSignatureSvg;
 
   return `<div data-contract-signature-block="true" style="margin-top:28px;page-break-inside:avoid;">
   <table style="width:100%;border-collapse:separate;border-spacing:24px 0;table-layout:fixed;"><tr>
     <td style="width:50%;vertical-align:top;">
-      <div style="background:#B8893E;color:#fff;text-align:center;font-weight:700;letter-spacing:2px;font-size:13px;padding:11px;border-radius:6px 6px 0 0;">INVESTISSEUR</div>
+      <div style="background:#B8893E;color:#fff;text-align:center;font-weight:700;letter-spacing:2px;font-size:13px;padding:11px;border-radius:6px 6px 0 0;">INVESTOR</div>
       <div style="border:1px solid #d8d8d8;border-top:none;border-radius:0 0 6px 6px;min-height:170px;padding:16px 12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#fff;">
         ${clientSigContent}
-        <p style="font-size:10px;color:#9ca3af;margin:0;">Signé le ${signatureDate}</p>
+        <p style="font-size:10px;color:#9ca3af;margin:0;">Signed on ${signatureDate}</p>
       </div>
     </td>
     <td style="width:50%;vertical-align:top;">
-      <div style="background:#2C3E50;color:#fff;text-align:center;font-weight:700;letter-spacing:2px;font-size:13px;padding:11px;border-radius:6px 6px 0 0;">LA BANQUE</div>
+      <div style="background:#2C3E50;color:#fff;text-align:center;font-weight:700;letter-spacing:2px;font-size:13px;padding:11px;border-radius:6px 6px 0 0;">INVESTMENT HOUSE</div>
       <div style="border:1px solid #d8d8d8;border-top:none;border-radius:0 0 6px 6px;min-height:170px;padding:16px 12px;display:flex;align-items:center;justify-content:center;background:#fff;">
         ${companySigContent}
       </div>
