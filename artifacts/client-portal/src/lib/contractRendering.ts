@@ -387,10 +387,11 @@ export function buildSignatureBlockHtml({
     ? `<img src="${signatureDataUrl}" alt="Signature de l'investisseur" style="max-height:100px;max-width:80%;object-fit:contain;" />`
     : `<span style="color:#b0b0b0;font-size:12px;font-style:italic;">En attente de la signature</span>`;
 
-  const mapleSignatureSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" width="260" height="58" style="display:block;margin:4px auto 0;"><text x="10" y="52" font-family="'Brush Script MT','Segoe Script','URW Chancery L','Comic Sans MS',cursive" font-size="40" fill="#1a2540" letter-spacing="2">Maple Finance</text><path d="M8,62 Q160,57 312,62" stroke="#1a2540" stroke-width="0.8" fill="none" opacity="0.28"/></svg>`;
-  const companySigContent = companyStampUrl
-    ? `<img src="${companyStampUrl}" alt="Cachet de la société" style="max-height:120px;max-width:70%;object-fit:contain;" />`
-    : mapleSignatureSvg;
+  const companySigContent = `<div style="text-align:center;padding:8px 0;">
+    <p style="margin:0 0 4px 0;font-size:13px;font-weight:600;color:#1a2540;letter-spacing:0.5px;">Maple Finance</p>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" width="240" height="54" style="display:block;margin:0 auto;"><text x="10" y="52" font-family="'Brush Script MT','Segoe Script','URW Chancery L','Comic Sans MS',cursive" font-size="40" fill="#1a2540" letter-spacing="2">Maple Finance</text><path d="M8,62 Q160,57 312,62" stroke="#1a2540" stroke-width="0.8" fill="none" opacity="0.28"/></svg>
+    <p style="margin:4px 0 0 0;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#6b7280;">Authorized Signatory</p>
+  </div>`;
 
   return `<div data-contract-signature-block="true" style="margin-top:28px;page-break-inside:avoid;">
   <table style="width:100%;border-collapse:separate;border-spacing:24px 0;table-layout:fixed;"><tr>
